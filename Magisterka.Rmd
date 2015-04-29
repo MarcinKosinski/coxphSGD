@@ -1,0 +1,23 @@
+---
+title: "Magisterka"
+author: "Marcin Kosiński"
+date: "Tuesday, July 29, 2014"
+cls: mini.cls
+output:
+  pdf_document:
+    includes:
+      in_header: naglowek.tex
+---
+
+\maketitle
+\tableofcontents
+
+#Wstęp
+
+
+\appendix
+
+# Kody w R
+# Dokumentacja pakietu RTCGA
+
+
