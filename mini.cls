@@ -101,6 +101,8 @@
 \def\@type{\@latex@error{No type given}\@ehc}
 \def\discipline#1{\gdef\@discipline{#1}}
 \def\@discipline{\@latex@error{No discipline given}\@ehc}
+\def\specialty#1{\gdef\@specialty{#1}}
+\def\@specialty{\@latex@error{No specialty given}\@ehc}
 \def\monthyear#1{\gdef\@monthyear{#1}}
 \def\@monthyear{\@latex@error{No month and year given}\@ehc}
 \def\date#1{\gdef\@date{#1}}
@@ -112,6 +114,7 @@
 \def\@faculty{Wydzia{\l} Matematyki i Nauk Informacyjnych}
 \def\@descriptionfirst{Praca dyplomowa \@type ka}
 \def\@descriptionsecond{na kierunku \@discipline}
+\def\@descriptionthird{Specjalno\'{s}\'{c} \@specialty}
 \def\@authorcap{Autor}
 \def\@supervisorcap{Promotor}
 \def\@location{Warszawa}
@@ -133,6 +136,7 @@
   \def\@faculty{Faculty of Mathematics and~Information~Science}
   \def\@descriptionfirst{\@type's Thesis}
   \def\@descriptionsecond{\@discipline}
+    \def\@descriptionthird{\@specialty}
   \def\@authorcap{Author}
   \def\@supervisorcap{Supervisor}
   \def\@location{Warsaw}
@@ -187,7 +191,8 @@
   \vspace{30mm}
   {\large
     \MakeUppercase{\@descriptionfirst}\\
-    \MakeUppercase{\@descriptionsecond}
+    \MakeUppercase{\@descriptionsecond}\\
+    \MakeUppercase{\@descriptionthird}
   \par}
   \vfill
   \begin{spacing}{1.3}

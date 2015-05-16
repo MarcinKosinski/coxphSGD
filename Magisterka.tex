@@ -1,14 +1,16 @@
 \documentclass{mini}
 \usepackage[utf8]{inputenc}
+\usepackage{pdfpages}
 %------------------------------------------------------------------------------%
-\title{ Estymacja w modelu Coxa metodą stochastycznego spadku gradientu \newline dla $p >> n$ na przykładzie danych \newline z The Cancer Genome Atlas}
-\author{Marcin Kosiński}
+\title{ Estymacja w modelu Coxa \newline \textbf{metodą stochastycznego spadku gradientu} \newline \text{na przykładzie danych} \newline \text{z The Cancer Genome Atlas}}
+\author{Marcin Piotr Kosiński}
 \supervisor{\text{prof. ndzw. dr hab. inż Przemysław Biecek}}
 \type{magisters}
 \discipline{matematyka}
+\specialty{Statystyka Matematyczna i Analiza Danych}
 \monthyear{lipiec 2015}
 \date{\today}
-\album{123123}
+\album{265361}
 %------------------------------------------------------------------------------%
 \begin{document}
 \maketitle
@@ -16,39 +18,26 @@
 
 \chapter*{Wprowadzenie}
 
-
-\chapter{Estymacja metodą największej wiarogodności}
-\chapter{Numeryczne metody estymacji}
-\subsection{Ogólne pojęcia związane ze zbieżnością algorytmu}
-\subsubsection{Warunki stopu itp}
-\section{Algorytmy spadku wzdłuż gradientu}
-\subsection{Algorytm Cauchy'ego}
-\subsection{Algorytm Raphsona-Newtona}
-\section{Algorytmy stochastycznego spadku wzdłuż gradientu}
-\subsection{Metoda estymacji stochastycznego spadku gradientu I}
-\subsubsection{Algorytm SGD}
-\subsection{Metoda estymacji stochastycznego spadku gradientu II}
-
-\chapter{Model Coxa}
-\section{Estymacja analityczna w oparciu o metodę największej wiarogodności dla funkcji pseudo/sub-wiarogodności}
-\section{Estymacja numeryczna w oparciu o metodę stochastycznego spadku gradientu rzędu I dla funkcji pseudo/sub-wiarogodności}
+\input{Rozdzialy/EMNW.tex}
+\input{Rozdzialy/Cox.tex}
+\input{Rozdzialy/Numeryka.tex}
+\input{Rozdzialy/Implementacja.tex}
+\input{Rozdzialy/Analiza.tex}
 
 
-\chapter{A gdzie to $p>>n$?}
 
-\chapter{Zaimplementowany algorytm}
-\chapter{Analiza danych genomicznych - model Coxa z estymacją metodą stochastycznego spadku gradientu}
-\section{Opis i pobranie danych}
-\section{Analiza}
-
-\chapter{Studium przypadku}
-\section{Porównanie wyników algorytmu SGD z R-N}
+%\chapter{Studium przypadku}
+%\section{Porównanie wyników algorytmu SGD z R-N}
 
 
 \appendix
 
+\chapter{Wykorzystane narzędzia}
 \chapter{Kody w R}
 \chapter{Dokumentacja pakietu RTCGA}
+\includepdf[pages=-]{Rd2.pdf}
+
+\input{Rozdzialy/Biblio.tex}
 
 
 \makestatement

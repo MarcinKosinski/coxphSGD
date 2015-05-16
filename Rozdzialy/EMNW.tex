@@ -1,0 +1,51 @@
+\chapter{Estymacja metodą największej wiarogodności}
+\begin{flushright}
+\textit{The making of maximum likelihood was one of \\
+the most important developments in 20th century statistics. \\
+It was the work of one man but it was no simple process (...). \\
+John Aldrich o R. A. Fisher'ze, 1997 \cite{aldrich1}
+}
+\end{flushright}
+
+\section{Estymacja}
+\section{Metoda największej wiarogodności}
+
+Metodę największej wiarogodności wprowadził R. A. Fisher w 1922 r. \cite{fisher2}, dla której po raz pierwszy procedurę numeryczną zaproponował już w 1912 r. \cite{fisher1}. O burzliwym procesie powstawania metody, o zmianach w jej uzasadnieniu, o koncepcjach, które powstały w obrębie tej metody takich jak parametr, statystyka, wiarogodność, dostateczność czy efektywność oraz o podejściach, które Fisher odrzucił tworząc podstawy pod nową teorię można przeczytać w~obszernej pracy dokumentalnej \cite{aldrich1}. 
+
+Metoda ta, jako alternatywa dla metody najmniejszych kwadratów \cite{legendre1}, \cite{gauss1}, była rozwijana i szeroko stosowana później przez wielu statystyków i wciąż znajduje obszerne zastosowania w wielu obszarach estymacji statystycznej, np. \cite{hutch1}, \cite{kenward1}, \cite{millar1}.
+
+Aby zdefiniować estymator oparty o metodę największej wiarogodności, należy najpierw wprowadzić pojęcie funkcji wiarogodności.
+
+\begin{definition}
+\textbf{Funkcją wiarogodności} nazywamy funkcję $L : \Theta \rightarrow \mathbb{R}$ daną wzorem $$ L(\Theta|x_1, \dots , x_n) = f(\Theta; x_1, \dots , x_n),$$
+którą rozważamy jako funkcję parametru $\theta$ przy ustalonych wartościach obserwacji $x_1, \dots , x_n$, gdzie $$ f(\Theta; x_1, \dots , x_n) = \left\lbrace \begin{align*}
+\ & \mathbb{P}_{\Theta}( X_1 = x_1, \dots , X_n = x_n), & \text{dla rozkładów dyskretnych}, & \ \\
+\ & f_{\Theta}(x_1, \dots , x_n), & \text{dla rozkładów absolutnie ciągłych.} & \
+\end{align*}$$
+
+\end{definition}
+
+Oznacza to, że wiarogodność jest właściwie tym samym, co gęstość prawdopodobieństwa,
+ale rozważana jako funkcja parametru $\theta$, przy ustalonych wartościach obserwacji
+$x = X(\omega)$.
+
+
+\begin{definition}
+\textbf{Estymatorem największej wiarogodności} parametru $\theta$, oznaczanym ENW($\theta$), nazywamy wartość parametru, w której funkcja
+wiarogodności przyjmuje supremum $$L(\hat{\theta}) = \sup_{\theta \in \Theta} L(\theta).$$
+
+\end{definition}
+
+Niektóre pozycje w literaturze, w definicji estymatora największej wiarogodności, supremum zastępują wartością największą \cite{rydl1}, str 14.
+
+\section{Asymptotyczne własności estymatorów największej wiarogodności}
+
+W tym podrozdziale zostanie wykazane, że estymator największej wiarygodności jest
+\begin{enumerate}
+\item asymptotycznie nieobciążony,
+\item zgodny,
+\item asymptotycznie normalny.
+\end{enumerate}
+
+\subsection{Zgodność estymatorów największej wiarogodności}
+\subsection{Asymptotyczna normalność estymatorów największej wiarygodności}
