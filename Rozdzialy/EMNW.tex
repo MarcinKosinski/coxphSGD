@@ -103,7 +103,7 @@ Niektóre pozycje w literaturze, w definicji estymatora największej wiarogodno�
 
 W tym podrozdziale zostanie wykazane, że estymator największej wiarygodności jest
 \begin{enumerate}
-\item asymptotycznie nieobciążony, (\textcolor{red}{na pewno?})
+\item asymptotycznie nieobciążony, (\textcolor{red}{na pewno? - ostatecznie tego nie wykazuję a może warto?})
 \item zgodny,
 \item asymptotycznie normalny.
 \end{enumerate}
@@ -161,3 +161,94 @@ $$ENW(\theta) \rightarrow \theta \ \ \text{dla } \ \ n \rightarrow \infty.$$
 
 \newpage
 \subsection{Asymptotyczna normalność estymatora największej wiarygodności}
+
+
+Fisher w swojej karierze wprowadził wiele pożytecznych pojęć stosowanych do dziś. Jednym z nich jest Informacja Fishera, która zostanie wykorzystana w dowodzie asymptotycznej normalności estymatora największej wiarogodności.
+
+\begin{definition}
+Niech $X$ będzie zmienną losową o gęstości $f_{\theta}$, zależnej od jednowymiarowego parametru $\theta \in \Theta \subset \mathbb{R}$. \textbf{Informacją Fishera} zawartą w obserwacji $X$ nazywa się funkcję
+\begin{equation}\label{wzor:fish}
+I(\theta) = \mathbb{E}_{\theta}(l'(\theta;X))^2 = \mathbb{E}_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big)^2,
+\end{equation}
+gdzie odpowiednio
+\begin{align*}
+I(\theta) = & \int \Big(\frac{\partial}{\partial\theta}\log f_{\theta}(x) \Big)^2 f_{\theta}(x)dx \ \text{dla zmiennej ciągłej;} \\
+I(\theta) = & \sum\limits_{x}^{ } \Big(\frac{\partial}{\partial\theta}\log f_{\theta}(x) \Big)^2 f_{\theta}(x) \ \text{dla zmiennej dyskretnej}.
+\end{align*}
+\end{definition}
+
+W dowodzie asymptotycznej normalności estymatora największej wiarogodności kluczowymi założeniami są poniższe warunki regularności. Rodzina gęstości musi być dostatecznie regularna aby pewne kroki rachunkowe w dalszych rozumowaniach były
+poprawne.
+
+\begin{definition}\label{def:regur}
+\textbf{Warunki regularności.}
+\end{definition}
+\begin{itemize}
+\item[(i)] Informacja Fishera jest dobrze określona. Zakłada się, że $\Theta$ jest przedziałem
+otwartym, istnieje pochodna $\partial/\partial\theta \log f_{\theta}$, całka/suma we wzorze
+(\ref{wzor:fish}) jest bezwzględnie zbieżna i $0 < I(\theta) < \infty$.
+\item[(ii)] Wszystkie gęstości $f_\theta$ mają ten sam nośnik, to znaczy zbiór ${x \in X : f_\theta(x) > 0}$ nie zależy od $\theta$.
+\item[(iii)] Można przenosić pochodną przed znak całki, czyli zamienić kolejność
+operacji różniczkowania ($\partial/\partial\theta]$) i całkowania $\int \dots dx$.
+\end{itemize}
+
+Dzięki wprowadzeniu takich założeń otrzymano bardzo przydatne właściwości Informacji Fishera.
+
+\begin{proposition}\label{prop:warunki}
+Jeśli spełnione są warunki regularności (\ref{def:regur}) to:
+\begin{align*}
+(i) \ & \ \mathbb{E}_\theta\frac{\partial}{\partial\theta}\log f_{\theta}(x) = 0, \\
+(ii) \ & \ I(\theta) = \mathbb{V}ar_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big), \\
+(iii) \ & \ I(\theta) = -\mathbb{E}_{\theta}\Big(\frac{\partial^2}{\partial\theta^2}\log f_\theta(X) \Big).
+\end{align*}
+\end{proposition}
+
+Dowód tego stwierdzenia można znaleźć w \cite{niemiro}.
+
+\newpage
+Patrząc na postać pochodnej funkcji log-wiarogodności
+$$l'(\theta_0;X) = (log f(\theta_0;X))' = \dfrac{f'(\theta_0;X)}{f(\theta_0;X)},$$
+można wywnioskować, że nieformalnie interpretacja Informacji Fishera jest miarą tego jak szybko zmieni się funkcja gęstości jeśli delikatnie zmieni się parametr $\theta$ w okolicach $\theta_0$. Biorąc kwadrat i wartość oczekiwaną, innymi słowy uśredniając po $X$, otrzymuje się uśrednioną wersję tej miary. Jeżeli Informacja Fishera jest duża, oznacza to, że gęstość zmieni się szybko gdyby poruszyć parametr $\theta_0$, co innymi słowy oznacza, że gęstość z parametrem $\theta_0$ jest `znacząco inna` i `może zostać łatwo odróżniona` od gęstości z parametrami nie tak bliskimi $\theta_0$. Oznacza to, że możliwa estymacja $\theta_0$ oparta o takie dane jest dobra. Z drugiej strony, jeżeli Informacja Fishera jest mała, oznacza to, że gęstość dla $\theta_0$ jest bardzo podobna do gęstości z parametrami nie tak bliski do $\theta_0$, a co za tym idzie, dużo ciężej będzie odróżnić tę gęstość, czyli estymacja będzie słabsza.
+
+Dzięki pojęciu Informacji Fishera i warunkom regularności, możliwe jest udowodnienie poniższego Twierdzenia.
+
+\begin{theorem}
+Pod pewnymi \textbf{warunkami regularności} nałożonymi na rodzinę rozkładów prawdopodobieństwa, estymator największej wiarogodności jest asymptotycznie normalny, 
+$$ \sqrt{n}(ENW(\theta) - \theta_0) \rightarrow \mathcal{N}\Big(0, \dfrac{1}{I(\theta_0)}\Big).$$
+\end{theorem}
+
+Z Twierdzenia widać, że im większa Informacja Fishera tym mniejsza asymptotyczna wariancja estymatora prawdziwego parametru $\theta_0$.
+
+\begin{proof}
+Ponieważ $ENW(\theta)$ maksymalizuje $l_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X)$, to $l'_n(\theta)=0$. \\ Dalej, korzystając z Twierdzenia o Wartości Średniej:
+$$\dfrac{g(a)-g(b)}{a-b} = g'(c) \ \text{albo} \ g(a)=g(b)+g'(c)(a-b), \ \text{dla} \ c \in [a,b],$$
+gdzie $g(\theta) = l'_n(\theta), a = ENW(\theta), b = \theta_0$, można zapisać równość
+$$ 0 = l'_n(ENW(\theta)) = l'_n(\theta_0) + l''_n(\theta_1)(ENW(\theta)-\theta_0), \ \text{dla} \ \theta_1 \in [ENW(\theta),\theta_0],$$ 
+a z niej przejść do postaci 
+\begin{equation}\label{dowod1}
+\sqrt{n}(ENW(\theta)-\theta_0) = - \dfrac{\sqrt{n}l'_n(\theta_0)}{l''_n(\theta_1)}.
+\end{equation}
+Z Lematu (\ref{l:pierwszy}) wynika, że $\theta_0$ maksymalizuje $\mathbb{E}_{\theta_0}l(\theta_0)$ czyli
+\begin{equation}\label{row:maksymalizator}
+\mathbb{E}_{\theta_0}l'(\theta_0) = 0,
+\end{equation}
+a to można wstawić do licznika w równaniu (\ref{dowod1})
+\begin{equation}\label{dowod2}
+\begin{split}
+\sqrt{n}l'_n(\theta_0) & = \sqrt{n}\Big(\frac{1}{n}\sum\limits_{i=1}^{n}l'(\theta_0) - 0\Big) \\
+& = \sqrt{n}\Big(\frac{1}{n}\sum\limits_{i=1}^{n}l'(\theta_0) - \mathbb{E}_{\theta_0}l'(\theta_0)\Big) \rightarrow \mathcal{N}\Big(0, \mathbb{V}ar_{\theta_0}(l'(\theta_0))\Big),
+\end{split}
+\end{equation}
+gdzie zbieżność wynika z Centralnego Twierdzenia Granicznego. 
+\newpage
+Następnie można rozważyć mianownik w równaniu (\ref{dowod1}). Dla wszystkich $\theta$ wynika
+$$l''(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}l''(\theta) \rightarrow \mathbb{E}_{\theta_0}l''(\theta)$$
+z Prawa Wielkich Liczb. \\ \ \\ Dodatkowo, ponieważ $\theta_1 \in [ENW(\theta),\theta_0]$ a $ENW(\theta)$ jest zgodny (poprzedni podrozdział), to ponieważ $ENW(\theta) \rightarrow \theta_0$, to też $\theta_1 \rightarrow \theta_0$, a wtedy
+$$l''_n(\theta_1) \rightarrow \mathbb{E}_{\theta_0}l''(\theta_0) = -I(\theta_0)$$
+z punktu $(iii)$ ze Stwierdzenia (\ref{prop:warunki}).\\ \ \\ Wtedy prawa strona równania (\ref{dowod1}), dzięki (\ref{dowod2})
+$$- \dfrac{\sqrt{n}l'_n(\theta_0)}{l''_n(\theta_1)} \underset{D}{\rightarrow} \mathcal{N}\Big(0,\dfrac{\mathbb{V}ar_{\theta_0}(l'(\theta_0))}{(I(\theta_0))^2} \Big).$$
+Ostatecznie wariancja
+$$\mathbb{V}ar_{\theta_0}(l'(\theta_0)) \overset{z def}{=} \mathbb{E}_{\theta_0}(l'(\theta_0))^2 - (\mathbb{E}_{\theta_0}l'(\theta_0))^2 = I(\theta_0) - 0,$$
+co wynika z definicji Informacji Fishera i (\ref{row:maksymalizator}).
+
+\end{proof}
