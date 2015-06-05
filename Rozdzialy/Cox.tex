@@ -1,6 +1,121 @@
 \chapter{Model Coxa}
-\section{Estymacja analityczna w oparciu o metodę największej wiarogodności dla funkcji pseudo/sub-wiarogodności}
-\section{Estymacja numeryczna w oparciu o metodę stochastycznego spadku gradientu rzędu I dla funkcji pseudo/sub-wiarogodności}
+\begin{flushright}
+\textit{The proportion of my life that I spent working on the \\ 
+proportional hazards model is, in fact, very small. I had an \\
+ idea of how to solve it but I could not complete the \\
+  argument and so it took me about four years on and off... \\
+Sir David Cox, An interview with Sir David Cox, 2014.
+}
+\end{flushright}
+
+
+W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. Głównym celem tej pracy jest wykorzystanie, nietypowej w tym modelu, numerycznej metody estymacji współczynników metodą stochastycznego spadku gradientu. Więcej o estymacji metodą stochastycznego spadku gradientu napisane jest w rozdziale \ref{SGD}. Definicje i twierdzenia w tym rozdziale oparte są o \cite{cox}, \cite{ther} i \cite{assel}.
+
+%\section{Nomenklatura i podstawy analizy przeżycia}
+
+%Analiza przeżycia to zbiór metod statystycznych badających procesy, w których interesujący jest czas, jaki upłynie do (pierwszego) wystąpienia pewnego zdarzenia.
+
+\section{Wprowadzenie do modelu Coxa i nomenklatura}
+
+Model proporcjonalnych hazardów Coxa \cite{cox} jest obecnie najczęściej stosowaną procedurą do modelowania relacji pomiędzy zmiennymi objaśniającymi a przeżyciem lub innym cenzurowanym rezultatem. Model ten umożliwia analizę wpływu czynników prognostycznych na przeżycie. Sir David Cox opracował tego typu model dla tabeli przeżyć i zilustrował zastosowanie modelu dla przypadku
+leukemii, ale model może być stosowany do obliczania
+przeżyć w odniesieniu do wszystkich innych chorób, jak
+w przypadku przeżyć w chorobach nowotworowych lub
+kardiologicznych po transplantacji serca lub zawałach
+serca \cite{norwe}. 
+
+\begin{definition}
+\textbf{Model Coxa} określa funkcję hazardu dla i-tej obserwacji $X_i$ jako
+\begin{equation}
+\lambda_i(t) = \lambda_0(t)e^{X_i(t)\beta},
+\end{equation}
+gdzie $\lambda_0$ to niesprecyzowana nieujemna funkcja nazywana \textit{bazowym hazardem}, a $\beta$ to wektor współczynników o rozmiarze $p$, co odpowiada liczbie zmiennych objaśniających w modelu.
+\end{definition}
+
+Wspomnianą funkcję hazardu definiuje się jak następuje:
+\begin{definition}
+\textbf{Funkcja hazardu} to funkcja, która wyraża się wzorem
+\begin{equation}
+\begin{align*}
+\lambda_j(t) & =  \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h | T^* \geq t)}{h} & \ \\
+ \ & = \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h )}{h}\cdot\frac{1}{  \mathbb{P}(T^* \geq t)} & \ \\ \ & = \lim\limits_{h\rightarrow 0} \frac{F_j(t+h) - F_j(t) }{h}\cdot\frac{1}{S_j(t)} & =  \frac{f_j(t)}{S_j(t)}.
+ \end{align*}
+\end{equation}
+\end{definition}
+
+W powyższej definicji $T^*$ oznacza czas do wystąpienia zdarzenia. Zakłada się, że wewnątrz każdej grupy $j=1,2,\dots, k, k \in \mathbb{N}$ czasy $T_i^*$ to niezależne zmienne losowe z tego samego rozkładu o zadanej gęstości $f_j(t)$, zaś $S_j(t)$ to \textit{funkcja przeżycia} w grupie $j$, która spełnia 
+\begin{equation}
+S_j(t) = \mathbb{P}(T^* \geq t )  = 1 - F_j(t), 
+\end{equation}
+gdzie $F_j(t)$ to dystrybuanta rozkładu zadanego gęstością $f_j(t)$.
+
+
+Wartość funkcji hazardu w momencie $t$ traktuje się jako chwilowy potencjał pojawiającego się zdarzenia (np. śmierci lub choroby), pod warunkiem że osoba dożyła czasu $t$. Funkcja hazardu nazywana jest również funkcją ryzyka,
+intensywnością umieralności (\textit{force of mortality}), umieralnością
+chwilową (\textit{instantaneous death rate}) lub chwilową
+częstością niepowodzeń (awarii) (\textit{failure rate}). Ostatniego
+określenia używa się w teorii odnowy \cite{cox0}, w której analizuje
+się awaryjność elementów przemysłowych. 
+
+
+Model Coxa nazywany jest modelem proporcjonalnych hazardów, gdyż stosunek (proporcja) hazardów dla dwóch obserwacji $X_i$ oraz $X_j$, które mają współczynniki stałe w czasie, jest stały w czasie:  
+$$\dfrac{\lambda_i(t)}{\lambda_j(t)} = \dfrac{\lambda_0(t)e^{X_i\beta}}{\lambda_0(t)e^{X_j\beta}} = \dfrac{e^{X_i\beta}}{e^{X_j\beta}}$$
+
+\textbf{Założenia modelu proporcjonalnego ryzyka Coxa.}
+
+\section{Estymacja w modelu Coxa}
+Estimation of ß is based on the partiallikelihood function introduced by
+Cox [36]. For untied failure time data it has the form
+P L(ß) = fI rr { Yi(t)ri(ß, t) }dNi(tl ,
+i=l t~O Lj Yj(t}rj(ß, t) (3.2)
+where ri(ß, t) is the risk score for subject i, ri(ß, t) = exp[Xi(t)ß] == ri(t).
+The log partial likelihood can be written as a sum
+I(ß) ~ t, f [Y;( t)X;( t)ß -log ( ~ Y, (t)r, (t») 1 dN; (t), (3.3)
+from which we can already fore see the counting process structure.
+Although the partiallikelihood is not, in general, a likelihood in the sense
+of being proportional to the probability of an observed dataset, nonetheless
+it can be treated as a likelihood for purposes of asymptotic inference.
+Differentiating the log partial likelihood with respect to ß gives the p x 1
+score vector, U(ß):
+(3.4)
+where x(ß, s) is simply a weighted mean of X, over those observations still
+at risk at time s,
+-(ß ) = L Yi(s)ri(s)Xi(s) x ,s L Yi(s)ri(s) , (3.5)
+with Yi (s )ri (s) as the weights.
+The negative second derivative is the p x p information matrix
+I(ß) = t 100 V(ß, s)dNi(s),
+i=l 0
+(3.6)
+where V (ß, s) is the weighted variance of X at time s:
+V(ß, s) = Li Yi(sh(s)[Xi(s) - x(ß, s)]'[Xi(s) - x(ß, s)]. (3.7)
+Li Yi(sh(s)
+The maximum partiallikelihood estimator is found by solving the partial
+likelihood equation:
+U(ß) = O.
+The solution 13 is consistent and asymptotically normally distributed with
+mean ß, the true parameter vector, and variance {EI(ß)} ~I, the inverse 
+3.1 Introduction and notation 41
+of the expected information matrix. The expectation requires knowledge of
+the censoring distribution even for those observations with observed failures;
+that information is typically nonexistent. The inverse of the observed
+information matrix I-I (13) is available, has better finite sampIe properties
+than the inverse of the expected information, and is used as the variance
+of ß.
+Eoth SAS and S-Plus use the Newton-Raphson algorithm to solve the
+partiallikelihood equation. Starting with an initial guess 13(01, the algorithm
+iteratively computes
+(3.8)
+until convergence, as assessed by stability in the log partial likelihood,
+I(ß(nH1) ~ l(ß(n1). This algorithm is incredibly robust for the Cox partial
+likelihood. Convergence problems are very rare using the default initial
+value of 13(01 = 0 and easily addressed by simple methods such as stephalving.
+As a result many packages (e.g., SAS) do not even have an option
+to choose alternate starting values. 
+\section{Płynne przejście do kolejnej sekcji}
+
+%\section{Estymacja analityczna w oparciu o metodę największej wiarogodności dla funkcji pseudo/sub-wiarogodności}
+%\section{Estymacja numeryczna w oparciu o metodę stochastycznego spadku gradientu rzędu I dla funkcji pseudo/sub-wiarogodności}
+\newpage
 Poszukujemy rozwiazan równosci
 $$ \delta ln Ln  / \delta \theta =  0.$$
 Tym razem w ogólnym przypadku zwykle nie znajdziemy analitycznego rozwiazania. W
