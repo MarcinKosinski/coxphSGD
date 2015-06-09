@@ -9,7 +9,7 @@ Sir David Cox, An interview with Sir David Cox, 2014.
 \end{flushright}
 
 
-W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. Głównym celem tej pracy jest wykorzystanie, nietypowej w tym modelu, numerycznej metody estymacji współczynników metodą stochastycznego spadku gradientu. Więcej o estymacji metodą stochastycznego spadku gradientu napisane jest w rozdziale \ref{SGD}. Definicje i twierdzenia w tym rozdziale oparte są o \cite{cox}, \cite{ther} i \cite{assel}.
+W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. Głównym celem tej pracy jest wykorzystanie, nietypowej w tym modelu, numerycznej metody estymacji współczynników metodą stochastycznego spadku gradientu. Więcej o estymacji metodą stochastycznego spadku gradientu napisane jest w rozdziale \ref{SGD}. Definicje i twierdzenia w tym rozdziale oparte są o \cite{cox}, \cite{ther}, \cite{assel} i \cite{burzyk1}.
 
 %\section{Nomenklatura i podstawy analizy przeżycia}
 
@@ -32,14 +32,14 @@ serca \cite{norwe}.
 gdzie $\lambda_0$ to niesprecyzowana nieujemna funkcja nazywana \textit{bazowym hazardem}, a $\beta$ to wektor współczynników o rozmiarze $p$, co odpowiada liczbie zmiennych objaśniających w modelu.
 \end{definition}
 
-Wspomnianą funkcję hazardu definiuje się jak następuje:
+Takie sformułowanie modelu gwarantuje, że funkcja hazardu jest nieujemna. Wspomnianą funkcję hazardu definiuje się jak następuje:
 \begin{definition}
 \textbf{Funkcja hazardu} to funkcja, która wyraża się wzorem
 \begin{equation}
 \begin{align*}
 \lambda_j(t) & =  \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h | T^* \geq t)}{h} & \ \\
  \ & = \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h )}{h}\cdot\frac{1}{  \mathbb{P}(T^* \geq t)} & \ \\ \ & = \lim\limits_{h\rightarrow 0} \frac{F_j(t+h) - F_j(t) }{h}\cdot\frac{1}{S_j(t)} & =  \frac{f_j(t)}{S_j(t)}.
- \end{align*}
+\end{align*}
 \end{equation}
 \end{definition}
 
@@ -59,9 +59,52 @@ się awaryjność elementów przemysłowych.
 
 
 Model Coxa nazywany jest modelem proporcjonalnych hazardów, gdyż stosunek (proporcja) hazardów dla dwóch obserwacji $X_i$ oraz $X_j$, które mają współczynniki stałe w czasie, jest stały w czasie:  
-$$\dfrac{\lambda_i(t)}{\lambda_j(t)} = \dfrac{\lambda_0(t)e^{X_i\beta}}{\lambda_0(t)e^{X_j\beta}} = \dfrac{e^{X_i\beta}}{e^{X_j\beta}}$$
+$$\dfrac{\lambda_i(t)}{\lambda_j(t)} = \dfrac{\lambda_0(t)e^{X_i\beta}}{\lambda_0(t)e^{X_j\beta}} = \dfrac{e^{X_i\beta}}{e^{X_j\beta}}.$$
 
-\textbf{Założenia modelu proporcjonalnego ryzyka Coxa.}
+Oznacza to, że hazard dla jednej obserwacji można uzyskać poprzez przemnożenie hazardu dla innej obserwacji przez pewną stałą $c$:
+$$\lambda_i(t) = \dfrac{e^{X_i\beta}}{e^{X_j\beta}} \cdot \lambda_j(t) = c \cdot \lambda_j(t).$$
+
+W modelu proporcjonalnych hazardów istotnym elementem jest estymacja stałej $c$.
+
+\section{Założenia modelu proporcjonalnego ryzyka Coxa.}
+
+Model Coxa oparty jest o założenia, że
+\begin{enumerate}
+\item Współczynniki modelu $\beta_k, k = 1,\cdots,p$ są stałe w czasie.
+\item Stosunek hazardów dla dwóch obserwacji, z racji na stałość współczynników w czasie, jest stały w czasie.
+\item Obserwacje są niezelażne.
+\item Cenzurowanie czasów jest nie-iformatywne.
+\item Cenzurowanie czasów jest niezależne.
+\end{enumerate}
+
+Model Coxa znalazł szerokie zastosowanie z racji na nietypowy rodzaj danych, które jest w stanie wykorzystać do estymacji współczynników w modelu, przekładających się na proporcje hazardów. Z uwagi na aspekt praktyczny podyktowany warunkami technicznymi prób klinicznych i badań biologicznych, zbiory danych klinicznych zawierają cenzurowane czasy zdarzeń. Oznacza to, że w wielu przypadkach niemożliwe jest obserwowanie czasu zdarzeń dla wszystkich obserwacji w zbiorze. Niekiedy jest to uwarunkowane zbyt długim czasem do wystąpienia zdarzenia, czasem jest to związane z zaplanowanym okresem próby klinicznej, który jest krótszy niż czas do zdarzenia dla pacjentów, którzy mogli zostać włączeni do próby klinicznej pod koniec jej trwania i nie udało się dla nich zaobserwować czasów zdarzeń. W wielu przypadkach pacjenci, traktowani jako obserwacje w zbiorze, znikają z pola widzenia w momencie, gdy np. przestają pojawiać się na wizytach kontrolnych. Może być to spowodowane negatywnymi relacjami z lekarzem prowadzącym lub przeprowadzką. W takich sytuacjach wykorzystuje się daną obserwację do momentu jej ostatniej kontroli. Nie rezygnuje się z tej obserwacji w analizie i wykorzystuje się o niej informacje w pełni dla czasu, w którym przebywała pod obserwacją. Jest to ogromna zaleta modelu Coxa.
+
+Z tej przyczyny potrzebne są założenia modelu dotyczące cenzurowania czasów.
+
+\begin{definition}
+\textbf{Cenzuorwanie prawostronne} polega na zaobserwowaniu czasu 
+$$T= \min(T^*, C),$$
+gdzie $T^*$ to prawdziwy czas zdarzenia, zaś $C$ jest nieujemną zmienną losową.
+\end{definition}
+
+
+\begin{definition}
+\textbf{Cenzurowanie jest niezależne} jeśli zachodzi
+$$ \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h | T^* \geq t)}{h} =  \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h | T^* \geq t, Y(t) = 1)}{h},$$
+gdzie $Y(t) = 1$ jeśli do chwili $t$ nie wystąpiło zdarzenie ani cenzurowanie, czyli jednostka pozostaje narażona na ryzyko zdarzenia.
+\end{definition}
+
+Interpretacja tej definicji jest następująca: jednostka cenzurowana w chwili $t$ jest reprezentatywna dla wszystkich innych narażonych na ryzyko zdarzenia w chwili $c$.
+
+\begin{definition}
+\textbf{Cenzurowanie jest nie-informatywne} jeśli zachodzi
+$$g(t;\theta, \phi) \equiv g(t;\phi),$$
+gdzie $g(t;\theta, \phi)$ jest funkcją gęstości dla cenzurowań $C_i$ wyrażonych jako niezależne zmienne losowe o jednakowym rozkładzie, zaś prawdzie czasy $T^*_i$ są interpretowane jako niezależne zmienne losowe o jednakowym rozkładzie i funkcji gęstości $f(t;\theta)$.
+\end{definition}
+
+Oznacza to, że cenzurowanie nie daje informacji o parametrach rozkładu czasów zdarzeń.
+
+Terminu cenzurowanie po raz pierwszy w literaturze użył Hald w 1949 r. \cite{hald}.
 
 \section{Estymacja w modelu Coxa}
 Estimation of ß is based on the partiallikelihood function introduced by
@@ -115,12 +158,4 @@ to choose alternate starting values.
 
 %\section{Estymacja analityczna w oparciu o metodę największej wiarogodności dla funkcji pseudo/sub-wiarogodności}
 %\section{Estymacja numeryczna w oparciu o metodę stochastycznego spadku gradientu rzędu I dla funkcji pseudo/sub-wiarogodności}
-\newpage
-Poszukujemy rozwiazan równosci
-$$ \delta ln Ln  / \delta \theta =  0.$$
-Tym razem w ogólnym przypadku zwykle nie znajdziemy analitycznego rozwiazania. W
-zwiazku z tym jestesmy zdani na metody iteracyjne. Poza tym, byc moze rozwiazanie problemu
-nie istnieje albo istnieje ich wiele. Zwykle uzywa sie do tego celu, tj. znalezienia
-rozwiazania, metody Newtona, zwykle w literaturze statystycznej w zastosowaniu do tego
-problemu, nazywanej metoda Newtona-Raphsona. W efekcie w zasadzie dla kazdego modelu
-z osobna nalezy badac własnosci asymptotyczne estymatora najwiekszej wiarygodnosci.
+
