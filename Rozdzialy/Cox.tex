@@ -27,7 +27,7 @@ serca \cite{norwe}.
 \begin{definition}
 \textbf{Model Coxa} określa funkcję hazardu dla i-tej obserwacji $X_i$ jako
 \begin{equation}
-\lambda_i(t) = \lambda_0(t)e^{X_i(t)\beta},
+\lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta},
 \end{equation}
 gdzie $\lambda_0$ to niesprecyzowana nieujemna funkcja nazywana \textit{bazowym hazardem}, a $\beta$ to wektor współczynników o rozmiarze $p$, co odpowiada liczbie zmiennych objaśniających w modelu.
 \end{definition}
@@ -62,7 +62,7 @@ Model Coxa nazywany jest modelem proporcjonalnych hazardów, gdyż stosunek (pro
 $$\dfrac{\lambda_i(t)}{\lambda_j(t)} = \dfrac{\lambda_0(t)e^{X_i\beta}}{\lambda_0(t)e^{X_j\beta}} = \dfrac{e^{X_i\beta}}{e^{X_j\beta}}.$$
 
 Oznacza to, że hazard dla jednej obserwacji można uzyskać poprzez przemnożenie hazardu dla innej obserwacji przez pewną stałą $c$:
-$$\lambda_i(t) = \dfrac{e^{X_i\beta}}{e^{X_j\beta}} \cdot \lambda_j(t) = c \cdot \lambda_j(t).$$
+$$\lambda_i(t) = \dfrac{e^{X_i'\beta}}{e^{X_j'\beta}} \cdot \lambda_j(t) = c \cdot \lambda_j(t).$$
 
 W modelu proporcjonalnych hazardów istotnym elementem jest estymacja stałej $c$.
 
@@ -72,8 +72,8 @@ Model Coxa oparty jest o założenia, że
 \begin{enumerate}
 \item Współczynniki modelu $\beta_k, k = 1,\cdots,p$ są stałe w czasie.
 \item Stosunek hazardów dla dwóch obserwacji, z racji na stałość współczynników w czasie, jest stały w czasie.
-\item Obserwacje są niezelażne.
-\item Cenzurowanie czasów jest nie-iformatywne.
+\item Obserwacje są niezależne.
+\item Cenzurowanie czasów jest nie-informatywne.
 \item Cenzurowanie czasów jest niezależne.
 \end{enumerate}
 
@@ -94,7 +94,7 @@ $$ \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h | T^* \geq
 gdzie $Y(t) = 1$ jeśli do chwili $t$ nie wystąpiło zdarzenie ani cenzurowanie, czyli jednostka pozostaje narażona na ryzyko zdarzenia.
 \end{definition}
 
-Interpretacja tej definicji jest następująca: jednostka cenzurowana w chwili $t$ jest reprezentatywna dla wszystkich innych narażonych na ryzyko zdarzenia w chwili $c$.
+Interpretacja tej definicji jest następująca: jednostka cenzurowana w chwili $t$ jest reprezentatywna dla wszystkich innych narażonych na ryzyko zdarzenia w chwili $t$.
 
 \begin{definition}
 \textbf{Cenzurowanie jest nie-informatywne} jeśli zachodzi
@@ -108,57 +108,26 @@ Terminu cenzurowanie po raz pierwszy w literaturze użył Hald w 1949 r. \cite{h
 
 \section{Estymacja w modelu Coxa}
 
-\textbf{W oparciu o ten tekst wypada dopisac jak wyglada funkcja wiarogodonosci, czym jest funkcja pseudo-wiarogodnosci i jak zazwyczaj sie ja esstymuje metoda Newtona_Raphsona}
+Funkcja hazardu jest wykładniczą funkcją zmiennych objaśniających, nieznana jest natomiast
+postać bazowej funkcji hazardu, co bez dalszych założeń uniemożliwia estymację standardową
+metodą największej wiarygodności. Rozwiązaniem Cox’a jest maksymalizacja tylko tego fragmentu funkcji wiarygodności, który zależy od estymowanych parametrów. W modelu proporcjonalnych hazardów Coxa estymacja współczynników $\beta$ oparta jest o częściową funkcję wiarogodności, którą wprowadził Cox w 1972 r. \cite{cox}. 
 
-Estimation of ß is based on the partiallikelihood function introduced by
-Cox [36]. For untied failure time data it has the form
-P L(ß) = fI rr { Yi(t)ri(ß, t) }dNi(tl ,
-i=l t~O Lj Yj(t}rj(ß, t) (3.2)
-where ri(ß, t) is the risk score for subject i, ri(ß, t) = exp[Xi(t)ß] == ri(t).
-The log partial likelihood can be written as a sum
-I(ß) ~ t, f [Y;( t)X;( t)ß -log ( ~ Y, (t)r, (t») 1 dN; (t), (3.3)
-from which we can already fore see the counting process structure.
-Although the partiallikelihood is not, in general, a likelihood in the sense
-of being proportional to the probability of an observed dataset, nonetheless
-it can be treated as a likelihood for purposes of asymptotic inference.
-Differentiating the log partial likelihood with respect to ß gives the p x 1
-score vector, U(ß):
-(3.4)
-where x(ß, s) is simply a weighted mean of X, over those observations still
-at risk at time s,
--(ß ) = L Yi(s)ri(s)Xi(s) x ,s L Yi(s)ri(s) , (3.5)
-with Yi (s )ri (s) as the weights.
-The negative second derivative is the p x p information matrix
-I(ß) = t 100 V(ß, s)dNi(s),
-i=l 0
-(3.6)
-where V (ß, s) is the weighted variance of X at time s:
-V(ß, s) = Li Yi(sh(s)[Xi(s) - x(ß, s)]'[Xi(s) - x(ß, s)]. (3.7)
-Li Yi(sh(s)
-The maximum partiallikelihood estimator is found by solving the partial
-likelihood equation:
-U(ß) = O.
-The solution 13 is consistent and asymptotically normally distributed with
-mean ß, the true parameter vector, and variance {EI(ß)} ~I, the inverse 
-3.1 Introduction and notation 41
-of the expected information matrix. The expectation requires knowledge of
-the censoring distribution even for those observations with observed failures;
-that information is typically nonexistent. The inverse of the observed
-information matrix I-I (13) is available, has better finite sampIe properties
-than the inverse of the expected information, and is used as the variance
-of ß.
-Eoth SAS and S-Plus use the Newton-Raphson algorithm to solve the
-partiallikelihood equation. Starting with an initial guess 13(01, the algorithm
-iteratively computes
-(3.8)
-until convergence, as assessed by stability in the log partial likelihood,
-I(ß(nH1) ~ l(ß(n1). This algorithm is incredibly robust for the Cox partial
-likelihood. Convergence problems are very rare using the default initial
-value of 13(01 = 0 and easily addressed by simple methods such as stephalving.
-As a result many packages (e.g., SAS) do not even have an option
-to choose alternate starting values. 
+Dla konkretnego czasu zdarzenia $t_i$, gdzie w zbiorze obserwowanych jest K czasów zdarzeń, prawdopodobieństwo warunkowe ze względu na liczność zbioru ryzyka w czasie $t_i$, że czas zdarzenia dotyczy $i$-tej jednostki spośród wciąż obserwowanych jest równe
+\begin{equation}
+\dfrac{e^{X_i'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{}e^{X_l'\beta}},
+\end{equation}
+gdzie \textit{zbiór ryzyka} $\mathscr{R}(t_i)$, w chwili $t_i$, rozumiany jest jako zbiór indeksów obserwacji, które są w danym czasie $t_i$ pod obserwacją.
+
+Wtedy dla niezależnego cenzurowania i dla czasów zdarzeń, które nie zaszły jednocześnie \textbf{częściowa funkcja wiarogodności} ma postać:
+\begin{equation}
+L(\beta) = \prod\limits_{i=1}^{K}\dfrac{e^{X_i'\beta}}{\sum\limits_{l=1}^{n}Y_l(t_i)e^{X_l'\beta}},
+\end{equation}
+gdzie $Y_l(t_i)$ = 1, gdy obserwacja $X_l$ jest w zbiorze ryzyka w czasie $t_i$, i $Y_l(t_i)$ = 0 w przeciwnym przypadku, a $n$ to liczba obserwacji w zbiorze. Zaletą takiej postaci funkcji częściowej wiarogodności jest to, że w jej wzorze nie występuje funkcja bazowego hazardu, zatem estymacja współczynników może odbywać się bez znajomości jej postaci. Pomimo, że częściowa funkcja wiarogodności, nie jest funkcją wiarogodności w sensie bycia proporcjonalną do prawdopodobieństwa obserwowanego zbioru, można ją traktować jako funkcję wiarogodności dla celów asymptotycznego wnioskowania o współczynnikach modelu.
+
+W takich przypadkach standardowo w celu znalezienia maximum, aby ułatwić obliczenia, można funkcję obłożyć monotoniczną transformacją jaką jest logarytm, by otrzymać \textbf{częściową~funkcję~log-wiarogodności}
+\begin{equation}
+\ell(\beta) = \sum\limits_{i=1}^{K}X_i'\beta - \sum\limits_{i=1}^{K}\log\Big(\sum\limits_{l\in \mathscr{R}(t_i)}^{}e^{X_l'\beta}\Big).
+\end{equation}
 
 
-%\section{Estymacja analityczna w oparciu o metodę największej wiarogodności dla funkcji pseudo/sub-wiarogodności}
-%\section{Estymacja numeryczna w oparciu o metodę stochastycznego spadku gradientu rzędu I dla funkcji pseudo/sub-wiarogodności}
 
