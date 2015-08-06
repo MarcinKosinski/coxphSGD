@@ -9,3 +9,25 @@ Najbardziej charakterystyczną cechą typowych danych, jakimi posługuje się w 
 
 
 ++++++++
+
+
+\chapter*{Podstawy modelu statystycznego}
+
+W pracy zakłada się znajomość podstaw statystyki matematycznej. Aby ujednolicić oznaczenia w niniejszym rozdziale wprowadzona została klasyczna nomenklatura oparta~o~\cite{niemiro}.
+
+\begin{definition} 
+\textbf{Model statystyczny} określamy przez podanie rodziny $\{ \mathbb P_{\theta}:\theta\in\Theta\} $ rozkładów prawdopodobieństwa na przestrzeni próbkowej $\Omega$ oraz zmiennej losowej $X : \Omega \rightarrow \mathcal{X}$, którą traktujemy jako obserwację. Zbiór $\mathcal{X}$ nazywamy przestrzenią obserwacji, zaś $\Theta$ nazywamy przestrzenią parametrów. \\
+\end{definition}
+Symbol $\theta$ jest nieznanym parametrem opisującym rozkład badanego zjawiska. Może być jednowymiarowy lub wielowymiarowy. Determinując opis zjawiska poprzez podanie parametru $\theta$, jednoznacznie wyznaczany jest rozkład rozważanego zjawiska spośród całej rodziny rozkładów prawdopodobieństwa $\{ \mathbb P_{\theta}:\theta\in\Theta\}$, co umożliwia określenie prawdziwości tezy.
+\par
+Zakłada się, że przestrzeń próbkowa $\Omega$ jest wyposażona w $\sigma$-ciało $\mathcal{F}$. Wtedy:
+\begin{definition}
+\textbf{Przestrzenią statystyczną} nazywa się trójkę $(\mathcal{X},\mathcal{F},\{\mathbb P_{\theta}:\theta\in\Theta\})$.
+\end{definition}
+Wprowadzenie $\sigma$-ciała $\mathcal{F}$ sprawia, że przestrzeń statystyczna staje się przestrzenią mierzalną, a więc można na niej określić rodzinę miar $\{ \mathbb P_{\theta}:\theta\in\Theta\} $, dzięki której da się ustalić prawdopodobieństwa$  $ zajścia wszystkich zjawisk w rozważanej teorii.
+
+W celu budowania niezbędnych pojęć potrzebna jest również definicja losowej próby statystycznej, zazwyczaj nazywanej \textit{próbką}.
+
+\begin{definition}
+ \textbf{Losową próba statystyczną} nazywamy zbiór obserwacji statystycznych wylosowanych z populacji, które są realizacjami ciągu zmiennych losowych o rozkładzie takim jak rozkład populacji.
+ \end{definition}

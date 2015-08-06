@@ -3,7 +3,7 @@
 \textit{The making of maximum likelihood was one of \\
 the most important developments in 20th century statistics. \\
 It was the work of one man but it was no simple process (...). \\
-John Aldrich o R. A. Fisher'ze, 1997 \cite{aldrich1}
+John Aldrich o R. A. Fisher'ze
 }
 \end{flushright}
 
@@ -11,16 +11,20 @@ John Aldrich o R. A. Fisher'ze, 1997 \cite{aldrich1}
 
 Estymacja to dział wnioskowania statystycznego będący zbiorem metod pozwalających na uogólnianie wyników badania próby losowej na nieznaną postać i parametry rozkładu zmiennej losowej całej populacji oraz szacowanie błędów wynikających z tego uogólnienia \cite{wiki1}.
 
-W statystyce matematycznej zakłada się, że rozkład prawdopodobieństwa
+W statystyce parametrycznej zakłada się, że rozkład prawdopodobieństwa
 opisujący doświadczenie należy do rodziny $\{\mathbb{P}_{\theta} : \theta \in \Theta\}$, ale nie zna się
-parametru $\theta$. 
+parametru $\theta$. Można go jednak szacować dzięki estymatorom opartym na statystykach.
 
 \begin{definition}
-\textbf{Estymatorem} parametru $\theta$ nazywamy dowolna statystykę
-$T = T(X)$ o wartościach w zbiorze $\Theta$. 
+\textbf{Statystyka}, dla $X=(X_1,\dots,X_n)$, to odwzorowanie mierzalne $T: \mathcal{X} \rightarrow \mathcal{R}.$
 \end{definition}
 
-Interpretuje się $T$ jako przybliżenie $\theta$ i często estymator $\theta$ oznacza symbolem $\hat{\theta}$.
+\begin{definition}
+\textbf{Estymatorem} parametru $\theta$ nazywamy dowolną statystykę
+$T = T(X)$, gdzie $X$ to próba z badanego rozkładu, o wartościach w zbiorze $\Theta$. 
+\end{definition}
+
+Interpretuje się $T$ jako przybliżenie $\theta$ i często estymator $\theta$ oznacza symbolem $\hat{\theta}$. Niekiedy w kręgu zainteresowań jest również estymacja $g(\theta)$, gdzie $g$ to ustalona funkcja.
 
 Pewne estymatory mające odpowiednie własności są preferowane nad inne ze względu na większą precyzję bądź ufność oszacowania danego estymatora. Poniżej przedstawione są 2 ważne definicje związane z jakością estymatorów \cite{niemiro}, gdy rozmiar próbki $X_1, \dots , X_n$ jest duży. Mówi się wtedy o własnościach asymptotycznych estymatorów, które z matematycznego punktu widzenia, są twierdzeniami
 granicznymi, w których $n$ dąży do nieskończoności. Dzięki tym twierdzeniom możliwe jest opisane w przybliżeniu zachowania estymatorów dla dostatecznie dużych próbek. Niestety, teoria asymptotyczna nie dostarcza informacji o tym, jak duża powinna być próbka, żeby przybliżenie było dostatecznie dobre.
@@ -54,13 +58,18 @@ Jednak zgodność (nawet w mocnym sensie) nie jest specjalnie satysfakcjonując�
 a zaledwie minimalnym żądaniem, które powinien spełniać każdy przyzwoity estymator. Dlatego od niektórych estymatorów żąda się silniejszych właściwości, takich jak asymptotyczna normalność.
 
 \begin{definition}
-Estymator $\hat{g}(X_1, \dots , X_n)$ wielkości $g(\theta)$ jest \textbf{asymptotycznie normalny}, jeśli dla każdego $\theta \in \Theta$ istnieje funkcja $\sigma^2$, zwana asymptotyczną wariancją, taka że
-$$\sqrt{n}(\hat{g}(X_1,\dots,X_n) -g(\theta))  \underset{D}{\rightarrow} \mathcal{N}(0, \sigma^2(\theta)), \ \ \ (n \rightarrow) \infty.$$
+\marginnote{\small{$\overset{d}{\rightarrow}$ oznacza zbieżność wg rozkładu.}}[1cm]
+Estymator $\hat{g}(X_1, \dots , X_n)$ wielkości $g(\theta)$ jest \textbf{asymptotycznie normalny}, jeśli dla każdego $\theta \in \Theta$ istnieje funkcja $\sigma^2(\theta)$, zwana asymptotyczną wariancją, taka że
+$$\sqrt{n}(\hat{g}(X_1,\dots,X_n) -g(\theta))  \overset{d}{\rightarrow} \mathcal{N}(0, \sigma^2(\theta)), \ \ \ (n \rightarrow \infty).$$
 \end{definition}
 
+
 Oznacza to, że rozkład prawdopodobieństwa statystyki $\hat{g}(X_1,\dots,X_n)$ jest dla dużych $n$ zbliżony do rozkładu $$\mathcal{N}\Big(g(\theta), \dfrac{\sigma^2(\theta)}{n}\Big).$$ Inaczej mówiąc, estymator jest asymptotycznie normalny, gdy: 
-$$\lim\limits_{n \rightarrow \infty} \mathbb{P}_{\theta} \Big(\dfrac{\sqrt{n}}{\sigma(\theta)}(\hat{g}(X_1,\dots,X_n) -g(\theta) \leq a \Big) = \Phi(a).$$
-Asymptotyczna normalność mówi, że estymator nie tylko zbiega do nieznanego parametru, ale również że zbiega wystarczająco szybko, jak $\dfrac{1}{\sqrt{n}}$. 
+$$\lim\limits_{n \rightarrow \infty} \mathbb{P}_{\theta} \Big(\dfrac{\sqrt{n}}{\sigma(\theta)}(\hat{g}(X_1,\dots,X_n) -g(\theta) \leq a \Big) = \Phi(a),$$
+gdzie $\Phi(x)$ to dystrybuanta standardowego rozkładu normalnego $\mathcal{N}(0,1)$.
+
+Asymptotyczna normalność mówi, że estymator nie tylko zbiega do nieznanego parametru, ale również że zbiega wystarczająco szybko, jak $\frac{1}{\sqrt{n}}$, czyli, że 
+$$\mathbb{P}_{\theta} \Big(\dfrac{\sqrt{n}}{\sigma(\theta)}(\hat{g}(X_1,\dots,X_n) -g(\theta) \leq a \Big) - \Phi(a) = f(n) \in \eth(\frac{1}{\sqrt{n}}) . $$ 
 
 Jeśli estymator jest asymptotycznie normalny, to jest zgodny, choć nie musi
 być \textit{\text{mocno zgodny}}.
@@ -78,7 +87,7 @@ Metoda ta, jako alternatywa dla metody najmniejszych kwadratów \cite{legendre1}
 Aby zdefiniować estymator oparty o metodę największej wiarogodności, należy najpierw wprowadzić pojęcie funkcji wiarogodności.
 
 \begin{definition}
-\textbf{Funkcją wiarogodności} nazywamy funkcję $L : \Theta \rightarrow \mathbb{R}$ daną wzorem $$ L(\theta;x_1, \dots , x_n) = f(\theta; x_1, \dots , x_n),$$
+\textbf{Funkcją wiarogodności} nazywamy funkcję $L : \Theta \rightarrow \mathbb{R}$ daną wzorem $$ L(\theta) =L(\theta;x_1, \dots , x_n) = f(\theta; x_1, \dots , x_n),$$
 którą rozważamy jako funkcję parametru $\theta$ przy ustalonych wartościach obserwacji $x_1, \dots , x_n$, gdzie $$ f(\theta; x_1, \dots , x_n) = \begin{dcases*}
  \mathbb{P}_{\theta}( X_1 = x_1, \dots , X_n = x_n), & dla rozkładów dyskretnych,  \\
  f_{\theta}(x_1, \dots , x_n), & dla rozkładów absolutnie ciągłych.
@@ -97,44 +106,47 @@ wiarogodności przyjmuje supremum $$L(\hat{\theta}) = \sup_{\theta \in \Theta} L
 
 \end{definition}
 
-Niektóre pozycje w literaturze, w definicji estymatora największej wiarogodności, supremum zastępują wartością największą \cite{rydl1} str 14, \cite{sfu1} str 1 bądź \cite{mit0} str 11.
+Ponieważ takie supremum może nie istnieć, niektóre pozycje w literaturze, w definicji estymatora największej wiarogodności, supremum zastępują wartością największą \cite{rydl1},~\cite{sfu1},~\cite{mit0}.
 
 \section{Asymptotyczne własności estymatora największej wiarogodności}
 
 W tym podrozdziale zostanie wykazane, że estymator największej wiarygodności jest
 \begin{enumerate}
-\item asymptotycznie nieobciążony, (\textcolor{red}{na pewno? - ostatecznie tego nie wykazuję a może warto?})
-\item zgodny,
-\item asymptotycznie normalny.
+\item[i)] zgodny,
+\item[ii)] asymptotycznie normalny,
+\item[iii)] asymptotycznie nieobciążony.
 \end{enumerate}
 
+Asymptotyczna nieobciążoność wynika z asymptotycznej normalności. \newline
 Dowody w tym rozdziale są znane w literaturze i opierają się o \cite{mit1} i \cite{sfu1}.
 
 
 
 \subsection{Zgodność estymatora największej wiarogodności}
 
-Chcąc wykazać zgodność estymatora największej wiarogodności (\textcolor{red}{przy pewnych warunkach regularności?})
+Chcąc wykazać zgodność estymatora największej wiarogodności \textit{przy pewnych warunkach regularności}
 przydatna będzie poniższa definicja i następujący Lemat.
 \begin{definition}
 \textbf{Funkcja log-wiarogodności} to funkcja spełniająca równanie
-$$l(\theta) = \log(L(\theta)).$$
+$$\ell(\theta) = \log(L(\theta)),$$
+gdzie przyjmuje się $\ell(\theta) = -\infty$ jeśli $L(\theta) = 0$.
 \end{definition}
 
 \begin{lemma}\label{l:pierwszy}
 Gdy $\theta_0$ to prawdziwe maksimum funkcji wiarogodności, to dla każdego \text{$\theta \in \Theta$}
-$$\mathbb{E}_{\theta_0}l(\theta) \leq \mathbb{E}_{\theta_0}l(\theta_0).$$
+$$\mathbb{E}_{\theta_0}\ell(\theta) \leq \mathbb{E}_{\theta_0}\ell(\theta_0).$$
 \end{lemma}
 
 \begin{proof}
-Rozważając różnicę:
+Rozważając różnicę, przy założeniu ciągłości rozkładu:
 \begin{equation*}
 \begin{split}
-\mathbb{E}_{\theta_0}l(\theta) - \mathbb{E}_{\theta_0}l(\theta_0) & = \mathbb{E}_{\theta_0}(l(\theta) - l(\theta_0) ) = \mathbb{E}_{\theta_0}(\log f(\theta; X) - \log f(\theta_0; X)) \\
- & = \mathbb{E}_{\theta_0}\log\dfrac{f(\theta, X)}{f(\theta_0, X)},
+\mathbb{E}_{\theta_0}\ell(\theta) - \mathbb{E}_{\theta_0}\ell(\theta_0) & = \mathbb{E}_{\theta_0}(\ell(\theta) - \ell(\theta_0) ) = \mathbb{E}_{\theta_0}(\log f(\theta; X) - \log f(\theta_0; X)) \\
+ & = \mathbb{E}_{\theta_0}\log\dfrac{f(\theta; X)}{f(\theta_0; X)},
 \end{split}
 \end{equation*}
 i pamiętając o tym, że $\log t \leq t - 1$, można dojść do
+\marginnote{\tiny{$\mathbb{E}_{\theta_0}$ oznacza wartość oczekiwaną względem rozkładu parametryzowanego przez $\theta_0$.}}[0.5cm]
 \begin{equation*}
 \begin{split}
 \mathbb{E}_{\theta_0}\log\dfrac{f(\theta; X)}{f(\theta_0; X)} & \leq \mathbb{E}_{\theta_0}\Big(\dfrac{f(\theta; X)}{f(\theta_0; X)} - 1 \Big) = \int \Big(\dfrac{f(\theta; x)}{f(\theta_0; x)} - 1 \Big) f(\theta_0;x) dx \\ 
@@ -152,11 +164,11 @@ $$ENW(\theta) \rightarrow \theta \ \ \text{dla } \ \ n \rightarrow \infty.$$
 \end{theorem}
 \begin{proof}
 \ \\
-1) Z definicji w $ENW(\theta)$ przyjmowana jest wartość największa funkcji $L(\theta)$, a więc tym bardziej funkcji $ l(\theta) = \log L(\theta)$ oraz funkcji $ l_n(\theta) = \frac{1}{n}l(\theta) = \frac{1}{n}\log L(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X_i)$, gdyż ekstremum jest niezmiennicze ze względu na monotoniczną transformację i liniowe przekształcenie jakim jest podzielenie przez $n$.
+1) Z definicji w $ENW(\theta)$ przyjmowana jest wartość największa funkcji $L(\theta)$, a więc tym bardziej funkcji $ \ell(\theta) = \log L(\theta)$ oraz funkcji $$ \ell_n(\theta) = \frac{1}{n}\ell(\theta) = \frac{1}{n}\log L(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X_i)$$ (zakładając ciągłość rozkładu i niezależność $X_1,\dots,X_n$), gdyż ekstremum jest niezmiennicze ze względu na monotoniczną transformację i liniowe przekształcenie jakim jest dzielenie.
 
-2) Z Lematu \ref{l:pierwszy} wynika, że $\theta_0$ maksymalizuje $\mathbb{E}_{\theta_0}l(\theta)$.
+2) Z Lematu \ref{l:pierwszy} wynika, że $\theta_0$ maksymalizuje $\mathbb{E}_{\theta_0}\ell(\theta)$.
 
-3) Z Prawa Wielkich Liczb wynika, że $ l_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X_i) \rightarrow \mathbb{E}_{\theta_0}l(\theta)$, co ostatecznie oznacza, że $ENW(\theta)$ jest zgodny.
+3) Z Prawa Wielkich Liczb, które jest spełnione gdy założy się, że $X_i$ to realizacje ciągu zmiennych losowych o skończonych wartościach oczekiwanych, wynika, że $$ \ell_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X_i) \rightarrow \mathbb{E}_{\theta_0}\ell(\theta),$$ co ostatecznie oznacza, że $ENW(\theta)$ jest zgodny.
 \end{proof}
 
 \newpage
@@ -168,12 +180,12 @@ Fisher w swojej karierze wprowadził wiele pożytecznych pojęć stosowanych do 
 \begin{definition}
 Niech $X$ będzie zmienną losową o gęstości $f_{\theta}$, zależnej od jednowymiarowego parametru $\theta \in \Theta \subset \mathbb{R}$. \textbf{Informacją Fishera} zawartą w obserwacji $X$ nazywa się funkcję
 \begin{equation}\label{wzor:fish}
-I(\theta) = \mathbb{E}_{\theta}(l'(\theta;X))^2 = \mathbb{E}_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big)^2,
+\mathcal{I}(\theta) = \mathbb{E}_{\theta}(\ell'(\theta;X))^2 = \mathbb{E}_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big)^2,
 \end{equation}
 gdzie odpowiednio
 \begin{align*}
-I(\theta) = & \int \Big(\frac{\partial}{\partial\theta}\log f_{\theta}(x) \Big)^2 f_{\theta}(x)dx \ \text{dla zmiennej ciągłej;} \\
-I(\theta) = & \sum\limits_{x}^{ } \Big(\frac{\partial}{\partial\theta}\log f_{\theta}(x) \Big)^2 f_{\theta}(x) \ \text{dla zmiennej dyskretnej}.
+\mathcal{I}(\theta) = & \int \Big(\frac{\partial}{\partial\theta}\log f_{\theta}(x) \Big)^2 f_{\theta}(x)dx \ \text{\ \ \ \ \ dla zmiennej ciągłej;} \\
+\mathcal{I}(\theta) = & \sum\limits_{x}^{ } \Big(\frac{\partial}{\partial\theta}\log f_{\theta}(x) \Big)^2 \mathbb{P}_{\theta}(X=x) \ \text{dla zmiennej dyskretnej}.
 \end{align*}
 \end{definition}
 
@@ -185,21 +197,21 @@ poprawne.
 \end{definition}
 \begin{itemize}
 \item[(i)] Informacja Fishera jest dobrze określona. Zakłada się, że $\Theta$ jest przedziałem
-otwartym, istnieje pochodna $\partial/\partial\theta \log f_{\theta}$, całka/suma we wzorze
-(\ref{wzor:fish}) jest bezwzględnie zbieżna i $0 < I(\theta) < \infty$.
-\item[(ii)] Wszystkie gęstości $f_\theta$ mają ten sam nośnik, to znaczy zbiór ${x \in X : f_\theta(x) > 0}$ nie zależy od $\theta$.
+otwartym, istnieje pochodna $\frac{\partial}{\partial\theta}\log f_{\theta}$, całka/suma we wzorze
+(\ref{wzor:fish}) jest bezwzględnie zbieżna (po obłożeniu funkcji podcałkowej modułem całka istnieje i jest skończona) i $0 < \mathcal{I}(\theta) < \infty$.
+\item[(ii)] Wszystkie gęstości $f_\theta$ mają jeden nośnik, tzn. zbiór $\{x \in X : f_\theta(x) > 0\}$ nie zależy~od~$\theta$.
 \item[(iii)] Można przenosić pochodną przed znak całki, czyli zamienić kolejność
-operacji różniczkowania ($\partial/\partial\theta]$) i całkowania $\int \dots dx$.
+operacji różniczkowania $\frac{\partial}{\partial\theta}$ i całkowania $\int \dots dx$.
 \end{itemize}
 
-Dzięki wprowadzeniu takich założeń otrzymano bardzo przydatne właściwości Informacji Fishera.
+Wprowadzając takie założenia, otrzymano przydatne właściwości~Informacji~Fishera.
 
 \begin{proposition}\label{prop:warunki}
 Jeśli spełnione są warunki regularności (\ref{def:regur}) to:
 \begin{align*}
 (i) \ & \ \mathbb{E}_\theta\frac{\partial}{\partial\theta}\log f_{\theta}(x) = 0, \\
-(ii) \ & \ I(\theta) = \mathbb{V}ar_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big), \\
-(iii) \ & \ I(\theta) = -\mathbb{E}_{\theta}\Big(\frac{\partial^2}{\partial\theta^2}\log f_\theta(X) \Big).
+(ii) \ & \ \mathcal{I}(\theta) = \mathbb{V}ar_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big), \\
+(iii) \ & \ \mathcal{I}(\theta) = -\mathbb{E}_{\theta}\Big(\frac{\partial^2}{\partial\theta^2}\log f_\theta(X) \Big).
 \end{align*}
 \end{proposition}
 
@@ -207,48 +219,48 @@ Dowód tego stwierdzenia można znaleźć w \cite{niemiro}.
 
 \newpage
 Patrząc na postać pochodnej funkcji log-wiarogodności
-$$l'(\theta_0;X) = (log f(\theta_0;X))' = \dfrac{f'(\theta_0;X)}{f(\theta_0;X)},$$
-można wywnioskować, że nieformalnie interpretacja Informacji Fishera jest miarą tego jak szybko zmieni się funkcja gęstości jeśli delikatnie zmieni się parametr $\theta$ w okolicach $\theta_0$. Biorąc kwadrat i wartość oczekiwaną, innymi słowy uśredniając po $X$, otrzymuje się uśrednioną wersję tej miary. Jeżeli Informacja Fishera jest duża, oznacza to, że gęstość zmieni się szybko gdyby poruszyć parametr $\theta_0$, co innymi słowy oznacza, że gęstość z parametrem $\theta_0$ jest `znacząco inna` i `może zostać łatwo odróżniona` od gęstości z parametrami nie tak bliskimi $\theta_0$. Oznacza to, że możliwa estymacja $\theta_0$ oparta o takie dane jest dobra. Z drugiej strony, jeżeli Informacja Fishera jest mała, oznacza to, że gęstość dla $\theta_0$ jest bardzo podobna do gęstości z parametrami nie tak bliski do $\theta_0$, a co za tym idzie, dużo ciężej będzie odróżnić tę gęstość, czyli estymacja będzie słabsza.
+$$\ell'(\theta_0;X) = (\log f(\theta_0;X))' = \dfrac{f'(\theta_0;X)}{f(\theta_0;X)},$$
+można wywnioskować, że nieformalnie interpretacja Informacji Fishera jest miarą tego jak szybko zmieni się funkcja gęstości jeśli delikatnie zmieni się parametr $\theta$ w okolicach $\theta_0$. Biorąc kwadrat i wartość oczekiwaną, innymi słowy uśredniając po $X$, otrzymuje się uśrednioną wersję tej miary. Jeżeli Informacja Fishera jest duża, oznacza to, że gęstość zmieni się szybko gdyby poruszyć parametr $\theta_0$, co innymi słowy oznacza, że gęstość z parametrem $\theta_0$ jest \textit{znacząco inna} i \textit{może zostać łatwo odróżniona} od gęstości z parametrami nie tak bliskimi $\theta_0$. Oznacza to, że możliwa estymacja $\theta_0$ oparta o takie dane jest dobra. Z drugiej strony, jeżeli Informacja Fishera jest mała, oznacza to, że gęstość dla $\theta_0$ jest bardzo podobna do gęstości z parametrami nie tak bliski do $\theta_0$, a co za tym idzie, dużo ciężej będzie odróżnić tę gęstość, czyli estymacja będzie słabsza.
 
 Dzięki pojęciu Informacji Fishera i warunkom regularności, możliwe jest udowodnienie poniższego Twierdzenia.
 
 \begin{theorem}
 Pod pewnymi \textbf{warunkami regularności} nałożonymi na rodzinę rozkładów prawdopodobieństwa, estymator największej wiarogodności jest asymptotycznie normalny, 
-$$ \sqrt{n}(ENW(\theta) - \theta_0) \rightarrow \mathcal{N}\Big(0, \dfrac{1}{I(\theta_0)}\Big).$$
+$$ \sqrt{n}(ENW(\theta) - \theta_0) \rightarrow \mathcal{N}\Big(0, \dfrac{1}{\mathcal{I}(\theta_0)}\Big).$$
 \end{theorem}
 
 Z Twierdzenia widać, że im większa Informacja Fishera tym mniejsza asymptotyczna wariancja estymatora prawdziwego parametru $\theta_0$.
 
 \begin{proof}
-Ponieważ $ENW(\theta)$ maksymalizuje $l_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X)$, to $l'_n(\theta)=0$. \\ Dalej, korzystając z Twierdzenia o Wartości Średniej:
+Ponieważ $ENW(\theta)$ maksymalizuje $\ell_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X)$, to $\ell'_n(\theta)=0$. \\ Dalej, korzystając z Twierdzenia o Wartości Średniej:
 $$\dfrac{g(a)-g(b)}{a-b} = g'(c) \ \text{albo} \ g(a)=g(b)+g'(c)(a-b), \ \text{dla} \ c \in [a,b],$$
-gdzie $g(\theta) = l'_n(\theta), a = ENW(\theta), b = \theta_0$, można zapisać równość
-$$ 0 = l'_n(ENW(\theta)) = l'_n(\theta_0) + l''_n(\theta_1)(ENW(\theta)-\theta_0), \ \text{dla} \ \theta_1 \in [ENW(\theta),\theta_0],$$ 
+gdzie $g(\theta) = \ell'_n(\theta), a = ENW(\theta), b = \theta_0$, można zapisać równość
+$$ 0 = \ell'_n(ENW(\theta)) = \ell'_n(\theta_0) + \ell''_n(\theta_1)(ENW(\theta)-\theta_0), \ \text{dla} \ \theta_1 \in [ENW(\theta),\theta_0],$$ 
 a z niej przejść do postaci 
 \begin{equation}\label{dowod1}
-\sqrt{n}(ENW(\theta)-\theta_0) = - \dfrac{\sqrt{n}l'_n(\theta_0)}{l''_n(\theta_1)}.
+\sqrt{n}(ENW(\theta)-\theta_0) = - \dfrac{\sqrt{n}\ell'_n(\theta_0)}{\ell''_n(\theta_1)}.
 \end{equation}
-Z Lematu (\ref{l:pierwszy}) wynika, że $\theta_0$ maksymalizuje $\mathbb{E}_{\theta_0}l(\theta_0)$ czyli
+Z Lematu (\ref{l:pierwszy}) wynika, że $\theta_0$ maksymalizuje $\mathbb{E}_{\theta_0}\ell(\theta_0)$ czyli
 \begin{equation}\label{row:maksymalizator}
-\mathbb{E}_{\theta_0}l'(\theta_0) = 0,
+\mathbb{E}_{\theta_0}\ell'(\theta_0) = 0,
 \end{equation}
 a to można wstawić do licznika w równaniu (\ref{dowod1})
 \begin{equation}\label{dowod2}
 \begin{split}
-\sqrt{n}l'_n(\theta_0) & = \sqrt{n}\Big(\frac{1}{n}\sum\limits_{i=1}^{n}l'(\theta_0) - 0\Big) \\
-& = \sqrt{n}\Big(\frac{1}{n}\sum\limits_{i=1}^{n}l'(\theta_0) - \mathbb{E}_{\theta_0}l'(\theta_0)\Big) \rightarrow \mathcal{N}\Big(0, \mathbb{V}ar_{\theta_0}(l'(\theta_0))\Big),
+\sqrt{n}\ell'_n(\theta_0) & = \sqrt{n}\Big(\frac{1}{n}\sum\limits_{i=1}^{n}\ell'(\theta_0) - 0\Big) \\
+& = \sqrt{n}\Big(\frac{1}{n}\sum\limits_{i=1}^{n}\ell'(\theta_0) - \mathbb{E}_{\theta_0}\ell'(\theta_0)\Big) \rightarrow \mathcal{N}\Big(0, \mathbb{V}ar_{\theta_0}(\ell'(\theta_0))\Big),
 \end{split}
 \end{equation}
 gdzie zbieżność wynika z Centralnego Twierdzenia Granicznego. 
 \newpage
 Następnie można rozważyć mianownik w równaniu (\ref{dowod1}). Dla wszystkich $\theta$ wynika
-$$l''(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}l''(\theta) \rightarrow \mathbb{E}_{\theta_0}l''(\theta)$$
+$$\ell''(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\ell''(\theta) \rightarrow \mathbb{E}_{\theta_0}\ell''(\theta)$$
 z Prawa Wielkich Liczb. \\ \ \\ Dodatkowo, ponieważ $\theta_1 \in [ENW(\theta),\theta_0]$ a $ENW(\theta)$ jest zgodny (poprzedni podrozdział), to ponieważ $ENW(\theta) \rightarrow \theta_0$, to też $\theta_1 \rightarrow \theta_0$, a wtedy
-$$l''_n(\theta_1) \rightarrow \mathbb{E}_{\theta_0}l''(\theta_0) = -I(\theta_0)$$
+$$\ell''_n(\theta_1) \rightarrow \mathbb{E}_{\theta_0}\ell''(\theta_0) = -\mathcal{I}(\theta_0)$$
 z punktu $(iii)$ ze Stwierdzenia (\ref{prop:warunki}).\\ \ \\ Wtedy prawa strona równania (\ref{dowod1}), dzięki (\ref{dowod2})
-$$- \dfrac{\sqrt{n}l'_n(\theta_0)}{l''_n(\theta_1)} \underset{D}{\rightarrow} \mathcal{N}\Big(0,\dfrac{\mathbb{V}ar_{\theta_0}(l'(\theta_0))}{(I(\theta_0))^2} \Big).$$
+$$- \dfrac{\sqrt{n}\ell'_n(\theta_0)}{\ell''_n(\theta_1)} \overset{d}{\rightarrow} \mathcal{N}\Big(0,\dfrac{\mathbb{V}ar_{\theta_0}(\ell'(\theta_0))}{(\mathcal{I}(\theta_0))^2} \Big).$$
 Ostatecznie wariancja
-$$\mathbb{V}ar_{\theta_0}(l'(\theta_0)) \overset{z def}{=} \mathbb{E}_{\theta_0}(l'(\theta_0))^2 - (\mathbb{E}_{\theta_0}l'(\theta_0))^2 = I(\theta_0) - 0,$$
+$$\mathbb{V}ar_{\theta_0}(\ell'(\theta_0)) \overset{z \ def}{=} \mathbb{E}_{\theta_0}(\ell'(\theta_0))^2 - (\mathbb{E}_{\theta_0}\ell'(\theta_0))^2 = \mathcal{I}(\theta_0) - 0,$$
 co wynika z definicji Informacji Fishera i (\ref{row:maksymalizator}).
 
 \end{proof}
