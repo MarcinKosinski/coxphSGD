@@ -26,7 +26,7 @@ $T = T(X)$, gdzie $X$ to próba z badanego rozkładu, o wartościach w zbiorze $
 
 Interpretuje się $T$ jako przybliżenie $\theta$ i często estymator $\theta$ oznacza symbolem $\hat{\theta}$. Niekiedy w kręgu zainteresowań jest również estymacja $g(\theta)$, gdzie $g$ to ustalona funkcja.
 
-Pewne estymatory mające odpowiednie własności są preferowane nad inne ze względu na większą precyzję bądź ufność oszacowania danego estymatora. Poniżej przedstawione są 2 ważne definicje związane z jakością estymatorów \cite{niemiro}, gdy rozmiar próbki $X_1, \dots , X_n$ jest duży. Mówi się wtedy o własnościach asymptotycznych estymatorów, które z matematycznego punktu widzenia, są twierdzeniami
+Pewne estymatory mające odpowiednie własności są preferowane nad inne ze względu na większą precyzję bądź ufność oszacowania danego estymatora. Poniżej przedstawione są 2 ważne definicje związane z jakością estymatorów \cite{niemiro}, gdy rozmiar próbki $X_1, \dots , X_n$ jest duży. Mówi się wtedy o własnościach asymptotycznych estymatorów, które z matematycznego punktu widzenia są twierdzeniami
 granicznymi, w których $n$ dąży do nieskończoności. Dzięki tym twierdzeniom możliwe jest opisane w przybliżeniu zachowania estymatorów dla dostatecznie dużych próbek. Niestety, teoria asymptotyczna nie dostarcza informacji o tym, jak duża powinna być próbka, żeby przybliżenie było dostatecznie dobre.
 
 \begin{definition}
@@ -82,7 +82,7 @@ W dalszej części tego rozdziału zostanie wprowadzone pojęcie estymatora najw
 
 Metodę największej wiarogodności wprowadził R. A. Fisher w 1922 r. \cite{fisher2}, dla której po raz pierwszy procedurę numeryczną zaproponował już w 1912 r. \cite{fisher1}. O burzliwym procesie powstawania metody, o zmianach w jej uzasadnieniu, o koncepcjach, które powstały w obrębie tej metody takich jak parametr, statystyka, wiarogodność, dostateczność czy efektywność oraz o podejściach, które Fisher odrzucił tworząc podstawy pod nową teorię można przeczytać w~obszernej pracy dokumentalnej \cite{aldrich1}. 
 
-Metoda ta, jako alternatywa dla metody najmniejszych kwadratów \cite{legendre1}, \cite{gauss1}, była rozwijana i szeroko stosowana później przez wielu statystyków i wciąż znajduje obszerne zastosowania w wielu obszarach estymacji statystycznej, np. \cite{hutch1}, \cite{kenward1}, \cite{millar1}.
+Metoda ta, jako alternatywa dla metody najmniejszych kwadratów \cite{legendre1}, \cite{gauss1}, była rozwijana i szeroko stosowana później przez wielu statystyków, i wciąż znajduje obszerne zastosowania w wielu obszarach estymacji statystycznej, np. \cite{hutch1}, \cite{kenward1}, \cite{millar1}.
 
 Aby zdefiniować estymator oparty o metodę największej wiarogodności, należy najpierw wprowadzić pojęcie funkcji wiarogodności.
 
@@ -106,7 +106,7 @@ wiarogodności przyjmuje supremum $$L(\hat{\theta}) = \sup_{\theta \in \Theta} L
 
 \end{definition}
 
-Ponieważ takie supremum może nie istnieć, niektóre pozycje w literaturze, w definicji estymatora największej wiarogodności, supremum zastępują wartością największą \cite{rydl1},~\cite{sfu1},~\cite{mit0}.
+Takie supremum może nie istnieć, dlatego niektóre pozycje w literaturze, w definicji estymatora największej wiarogodności, supremum zastępują wartością największą \cite{rydl1},~\cite{sfu1},~\cite{mit0}.
 
 \section{Asymptotyczne własności estymatora największej wiarogodności}
 
@@ -220,7 +220,11 @@ Dowód tego stwierdzenia można znaleźć w \cite{niemiro}.
 \newpage
 Patrząc na postać pochodnej funkcji log-wiarogodności
 $$\ell'(\theta_0;X) = (\log f(\theta_0;X))' = \dfrac{f'(\theta_0;X)}{f(\theta_0;X)},$$
-można wywnioskować, że nieformalnie interpretacja Informacji Fishera jest miarą tego jak szybko zmieni się funkcja gęstości jeśli delikatnie zmieni się parametr $\theta$ w okolicach $\theta_0$. Biorąc kwadrat i wartość oczekiwaną, innymi słowy uśredniając po $X$, otrzymuje się uśrednioną wersję tej miary. Jeżeli Informacja Fishera jest duża, oznacza to, że gęstość zmieni się szybko gdyby poruszyć parametr $\theta_0$, co innymi słowy oznacza, że gęstość z parametrem $\theta_0$ jest \textit{znacząco inna} i \textit{może zostać łatwo odróżniona} od gęstości z parametrami nie tak bliskimi $\theta_0$. Oznacza to, że możliwa estymacja $\theta_0$ oparta o takie dane jest dobra. Z drugiej strony, jeżeli Informacja Fishera jest mała, oznacza to, że gęstość dla $\theta_0$ jest bardzo podobna do gęstości z parametrami nie tak bliski do $\theta_0$, a co za tym idzie, dużo ciężej będzie odróżnić tę gęstość, czyli estymacja będzie słabsza.
+można wywnioskować, że nieformalnie interpretacja Informacji Fishera jest miarą tego jak szybko zmieni się funkcja gęstości jeśli delikatnie zmieni się parametr $\theta$ w okolicach $\theta_0$. Biorąc kwadrat i wartość oczekiwaną, innymi słowy uśredniając po $X$, otrzymuje się uśrednioną wersję tej miary. Jeżeli Informacja Fishera jest duża, oznacza to, że gęstość zmieni się szybko
+gdyby poruszyć parametr $\theta_0$, innymi słowy - gęstość z parametrem $\theta_0$ jest
+znacząco inna i może zostać łatwo odróżniona od gęstości z parametrami nie tak bliskimi $\theta_0$.
+Stąd wiemy, że możliwa estymacja $\theta_0$ oparta o takie dane jest dobra. Z drugiej strony, jeżeli
+Informacja Fishera jest mała, oznacza to, że gęstość dla $\theta_0$ jest bardzo podobna do gęstości z parametrami nie tak bliski do $\theta_0$, a co za tym idzie, dużo ciężej będzie odróżnić tę gęstość, czyli estymacja będzie słabsza.
 
 Dzięki pojęciu Informacji Fishera i warunkom regularności, możliwe jest udowodnienie poniższego Twierdzenia.
 

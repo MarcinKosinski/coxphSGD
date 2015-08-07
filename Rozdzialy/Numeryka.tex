@@ -1,18 +1,108 @@
 \chapter{Numeryczne metody estymacji}
-Poszukujemy rozwiazan równosci
-$$ \delta ln Ln  / \delta \theta =  0.$$
-Tym razem w ogólnym przypadku zwykle nie znajdziemy analitycznego rozwiazania. W
-zwiazku z tym jestesmy zdani na metody iteracyjne. Poza tym, byc moze rozwiazanie problemu
-nie istnieje albo istnieje ich wiele. Zwykle uzywa sie do tego celu, tj. znalezienia
-rozwiazania, metody Newtona, zwykle w literaturze statystycznej w zastosowaniu do tego
-problemu, nazywanej metoda Newtona-Raphsona. W efekcie w zasadzie dla kazdego modelu
-z osobna nalezy badac własnosci asymptotyczne estymatora najwiekszej wiarygodnosci.
-\subsection{Ogólne pojęcia związane ze zbieżnością algorytmu}
-\subsubsection{Warunki stopu itp}
+
+Przez \textbf{numerykę} rozumie się dziedzinę matematyki
+zajmującą się rozwiązywaniem przybliżonych zagadnień algebraicznych. Odkąd zjawiska przyrodnicze zaczęto opisywać przy użyciu formalizmu matematycznego,
+pojawiła się potrzeba rozwiązywania zadań analizy matematycznej czy algebry. Dopóki były
+one nieskomplikowane, dawały się rozwiązywać analitycznie, tzn. z użyciem pewnych
+przekształceń algebraicznych prowadzących do otrzymywania rozwiązań ścisłych danych
+problemów. Z czasem jednak, przy powstawaniu coraz to bardziej skomplikowanych teorii
+opisujących zjawiska, problemy te stawały się na tyle złożone, iż ich rozwiązywanie ścisłe
+było albo bardzo czasochłonne albo też zgoła niemożliwe. Numeryka pozwalała znajdywać
+przybliżone rozwiązania z żądaną dokładnością. Ich podstawową zaletą była ogólność tak
+formułowanych algorytmów, tzn. w ramach danego zagadnienia nie miało znaczenia czy było
+ono proste czy też bardzo skomplikowane (najwyżej wiązało się z większym nakładem pracy
+obliczeniowej). Natomiast wadą była czasochłonność. Stąd prawdziwy renesans metod
+numerycznych nastąpił wraz z powszechnym użyciem w pracy naukowej maszyn cyfrowych,
+a w szczególności mikrokomputerów \cite{milewski}. Dziś dziesiątki żmudnych dla człowieka operacji
+arytmetycznych wykonuje komputer, jednak złożoność obliczeniowa algorytmów uczących i modeli statystycznych stała się krytycznym czynnikiem ograniczającym w sytuacjach, gdy rozważane są duże zbiory danych. Te ograniczenia spowodowały, że w uczeniu maszynowym i modelowaniu statystycznym wielkiej skali zaczęto wykorzystywać algorytmy \textbf{stochastycznego spadku gradientu}. W poniższym rozdziale przedstawione są klasyczne algorytmy spadku wzdłuż gradientu Cauchy'ego oraz Raphsona-Newtona. Następnie omówiony jest algorytm stochastycznego spadku wzdłuż gradientu, którego wykorzystanie do estymacji współczynników w modelu Coxa jest kluczowym celem tej pracy. Algorytm stochastycznego spadku gradientu to metoda optymalizacji wzdłuż spadku gradientu wykorzystywana w sytuacjach, gdy rozważaną funkcję można zapisać jako sumę różniczkowalnych składników. Ponadto przedstawiono również zalety algorytmów stochastycznego spadku gradientu, które przemawiają za atrakcyjnością i popularnością tego typu rozwiązania. Ostatecznie przedyskutowano asymptotyczną efektywność estymatorów uzyskanych dzięki jednemu przejściu po zbiorze, zwanym \textit{epoką}. Definicje i pojęcia w tym rozdziale pochodzą z~\cite{bott1},~\cite{bott2},~\cite{kotlowski}.
+
+\newpage
 \section{Algorytmy spadku wzdłuż gradientu}
-\subsection{Algorytm Cauchy'ego}
-\subsection{Algorytm Raphsona-Newtona}\label{R-N}
-\section{Algorytmy stochastycznego spadku wzdłuż gradientu}\label{SGD}
-\subsection{Metoda estymacji stochastycznego spadku gradientu I}
-\subsubsection{Algorytm SGD}
-\subsection{Metoda estymacji stochastycznego spadku gradientu II}
+
+t tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst ekst tekst tekst tekst tekst t tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst ekst tekst tekst tekst tekst t tekst tekst tekst tekst tekst tekst tekst t tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst ekst tekst tekst tekst tekst t tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst tekst ekst tekst tekst tekst tekst t tekst tekst tekst tekst tekst tekst tekst
+
+\begin{center}
+\textbf{Metoda spadku wzdłuż gradientu I (Cauchy’ego)}
+\end{center}
+Minimalizacja funkcji $L(w)$:
+\begin{itemize}
+\item Zaczynamy od wybranego rozwiązania startowego, np. $w_{0} = 0$.
+\item Dla $k = 1, 2, \dots$ aż do zbieżności
+	\begin{itemize}
+	\item Wyznaczamy gradient w punkcie $w_{k-1}, \nabla_{L}(w_{k-1})$.
+	\item Robimy krok wzdłuż negatywnego gradientu: $$w_{k} = w_{k-1} - \alpha_{k}\nabla_{L}(w_{k-1}). $$
+	\end{itemize}
+\end{itemize}
+
+\begin{center}
+\textbf{Metoda spadku wzdłuż gradientu II (Newtona-Raphsona)}
+\end{center}
+Minimalizacja funkcji $L(w)$:
+\begin{itemize}
+\item Zaczynamy od wybranego rozwiązania startowego, np. $w_{0} = 0$.
+\item Dla $k = 1, 2, \dots$ aż do zbieżności
+	\begin{itemize}
+	\item Wyznaczamy gradient w punkcie $w_{k-1}, \nabla_{L}(w_{k-1})$ \\ i odwrotność Hesjanu $(D_{L}^{2}(w_{k-1}))^{-1}$.
+	\item Robimy krok wzdłuż negatywnego gradientu z zadanym krokiem przez Hesjan: $$w_{k} = w_{k-1} - (D_{L}^{2}(w_{k-1}))^{-1}\nabla_{L}(w_{k-1}). $$
+	\end{itemize}
+\end{itemize}
+\section{Algorytm stochastycznego spadku wzdłuż gradientu I}\label{SGD}
+\begin{center}
+\textbf{Metoda stochastycznego spadku wzdłuż gradientu I}
+\end{center}
+Minimalizacja funkcji $L(w)$:
+\begin{itemize}
+\item Zaczynamy od wybranego rozwiązania startowego, np. $w_{0} = 0$.
+\item Dla $k = 1, 2, \dots$ aż do zbieżności
+	\begin{itemize}
+	\item Wylosuj $i \in \{1,\dots,n\}$
+	\item Wyznaczamy gradient funkcji $\ell_{i}$ w punkcie $w_{k-1}, \nabla_{\ell_{i}}(w_{k-1})$.
+	\item Robimy krok wzdłuż negatywnego gradientu: $$w_{k} = w_{k-1} - \alpha_{k}\nabla_{\ell_{i}}(w_{k-1}).$$
+	\end{itemize}
+\end{itemize}
+
+
+Stochastyczny spadek gradientu to popularny algorytm wykorzystywany do estymacji współczynników w szerokiej gamie modeli uczenia maszynowego takich jak maszyny wektorów podpierających (\textit{ang. Support Vector Machines}), regresja logistyczna czy modele graficzne~\cite{finkel}. W~połączeniu z algorytmem propagacji wstecznej jest standardowym algorytmem w~trenowaniu sztucznych sieci neuronowych. Algorytm stochastycznego spadku gradientu był używany już od 1960 przy estymacji współczynników w modelu regresji liniowej, oryginalnie znany pod nazwą \textit{ADALINE} \cite{ADALINE}. Kolejnym znanym popularnym algorytmem wykorzystującym stochastyczny spadek gradientu jest filtr adaptacyjny najmniejszych średnich kwadratów \cite{widrow2} (\textit{ang.~least mean squares (LMS) adaptive filter}), który również został wynaleziony w 1960 przez Bernard Widrowa, który jest także twórcą \textit{ADALINE}.
+
+Idea algorytmu stochastycznego spadku gradientu jest następująca: zamiast obliczać gradient na całej funkcji $L$, w danym kroku oblicz
+gradient tylko na pojedynczym elemencie $\ell_{i}$. Nazwa \textit{stochastyczny} bierze się stąd, iż oryginalnie wybiera
+się element $\ell_{i}$ losowo. W praktyce zwykle przechodzi się po całym zbiorze danych w losowej kolejności lub, o ile to możliwe, w~kolejności chronologicznej obserwacji.
+
+
+
+\subsection{Właściwości stochastycznego spadku wzdłuż gradientu}
+
+\subsubsection{Zalety}
+\begin{itemize}
+\item \textcolor{orange}{Szybkość}: obliczenie gradientu wymaga wzięcia tylko jednej
+obserwacji.
+\item \textcolor{orange}{Skalowalność}: cały zbiór danych nie musi nawet znajdować się
+w pamięci operacyjnej.
+\item \textcolor{orange}{Prostota}: gradient funkcji  $\ell_{i}$ daje bardzo prosty wzór na
+modyfikacje wag.
+\end{itemize}
+
+\subsubsection{Wady}
+\begin{itemize}
+\item \textcolor{orange}{Wolna zbieżność}: czasem gradient stochastyczny zbiega wolno
+i wymaga wielu iteracji po zbiorze uczącym.
+\item \textcolor{orange}{Problem z ustaleniem długości kroku $k$}: wyznaczenie $k$
+przez przeszukiwanie liniowe nie przynosi dobrych rezultatów,
+ponieważ optymalizujemy oryginalnej funkcji $L$ tylko jej jeden
+składnik $\ell_{i}$.
+\end{itemize}
+
+\subsubsection{Stochastyczny gradient w praktyce}
+
+\begin{itemize}
+\item Zwykle nie losuje się obserwacji, ale przechodzi się po zbiorze
+danych w losowej kolejności.
+\item Zbieżność wymaga często przejścia parokrotnie po całym
+zbiorze danych (jednokrotne przejście nazywa się epoka).
+\item Metody ustalania współczynników długości kroku $k$:
+\begin{itemize}
+\item Ustalamy \textcolor{orange}{stała wartość} $\alpha_{k} = \alpha$ \\ Zwykle tak się robi w praktyce, działa dobrze ale wymaga ustalenia $\alpha_{k}$ metodą prób i błędów.
+\item Bierzemy wartość kroku malejącą jak \textcolor{orange}{$\sim \frac{1}{\sqrt{k}}: \alpha_{k} = \frac{\alpha}{\sqrt{k}}$} \\
+ Zapewniona zbieżność, ale czasem może zbiegać zbyt wolno.
+\end{itemize}
+\end{itemize}
