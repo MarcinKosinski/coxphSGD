@@ -17,7 +17,7 @@ W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. G�
 
 \section{Wprowadzenie do modelu Coxa i nomenklatura}
 
-W analizie przeżycia, w której najczęściej wykorzystywany jest model Coxa, ogromnie popularna jest funkcja hazardu.
+W analizie przeżycia, w której model Coxa znalazł największe zastosowania, ogromnie popularna jest funkcja hazardu.
 \begin{definition}
 \textbf{Funkcja hazardu} to funkcja, która wyraża się wzorem
 \begin{equation}
@@ -70,7 +70,7 @@ W modelu proporcjonalnych hazardów istotnym elementem jest estymacja stałych $
 
 \section{Założenia modelu proporcjonalnego ryzyka Coxa}
 
-Model Coxa znalazł szerokie zastosowanie z racji na nietypowy bo cenzurowany rodzaj danych, które jest w stanie wykorzystać do estymacji współczynników w modelu, przekładających się na proporcje hazardów. Z uwagi na aspekt praktyczny podyktowany warunkami technicznymi prób klinicznych i badań biologicznych, zbiory danych klinicznych zawierają cenzurowane czasy zdarzeń. Oznacza to, że w wielu przypadkach niemożliwe jest obserwowanie czasu zdarzeń dla wszystkich obserwacji w zbiorze. Niekiedy jest to uwarunkowane zbyt długim czasem do wystąpienia zdarzenia. Czasem jest to związane z zaplanowanym okresem próby klinicznej, który jest krótszy niż czas do zdarzenia dla pacjentów, którzy mogli zostać włączeni do próby klinicznej pod koniec jej trwania i nie udało się dla nich zaobserwować czasów zdarzeń. W wielu przypadkach pacjenci, traktowani jako obserwacje w zbiorze, znikają z pola widzenia w momencie, gdy np. przestają pojawiać się na wizytach kontrolnych. Może być to spowodowane negatywnymi relacjami z lekarzem prowadzącym lub przeprowadzką. W takich sytuacjach wykorzystuje się daną obserwację do momentu jej ostatniej kontroli. Nie rezygnuje się z tej obserwacji w analizie i wykorzystuje się o niej informacje w pełni dla czasu, w którym przebywała pod obserwacją. Jest to ogromna zaleta modelu Coxa.
+Model Coxa znalazł szerokie zastosowanie z racji na nietypowy bo cenzurowany rodzaj danych, które jest w stanie wykorzystać do estymacji współczynników w modelu, przekładających się na proporcje hazardów. Z uwagi na aspekt praktyczny podyktowany warunkami technicznymi prób klinicznych i badań biologicznych, zbiory danych klinicznych zawierają cenzurowane czasy zdarzeń. Oznacza to, że w wielu przypadkach niemożliwe jest obserwowanie czasu zdarzeń dla wszystkich obserwacji w zbiorze. Niekiedy jest to uwarunkowane zbyt długim czasem do wystąpienia zdarzenia. Czasem jest to związane z zaplanowanym okresem próby klinicznej, który jest krótszy niż czas do zdarzenia dla pacjentów, którzy mogli zostać włączeni do próby klinicznej pod koniec jej trwania i nie udało się dla nich zaobserwować czasów zdarzeń. W wielu przypadkach pacjenci, traktowani jako obserwacje w zbiorze, znikają z pola widzenia w momencie, gdy np. przestają pojawiać się na wizytach kontrolnych. Może być to spowodowane negatywnymi relacjami z lekarzem prowadzącym lub przeprowadzką. W~takich sytuacjach wykorzystuje się daną obserwację do momentu jej ostatniej kontroli. Nie rezygnuje się z tej obserwacji w analizie i wykorzystuje się o niej informacje w pełni dla czasu, w którym przebywała pod obserwacją. Jest to ogromna zaleta modelu Coxa.
 
 Z przyczyny cenzurowanych danych potrzebne są założenia modelu dotyczące cenzurowania czasów, które opierają się o następujące definicje.
 
@@ -136,7 +136,7 @@ Wtedy dla niezależnego cenzurowania i dla czasów zdarzeń, które nie zaszły 
 \begin{equation}
 L_p(\beta) = \prod\limits_{i=1}^{K}\dfrac{e^{X_i'\beta}}{\sum\limits_{l=1}^{n}Y_l(t_i)e^{X_l'\beta}},
 \end{equation}
-gdzie $Y_l(t_i)$ = 1, gdy obserwacja $X_l$ jest w zbiorze ryzyka w czasie $t_i$, i $Y_l(t_i)$ = 0 w przeciwnym przypadku, $n$ to liczba obserwacji w zbiorze a $K$ to wspomniana wyżej liczba zaobserwowanych czasów zdarzeń. Zaletą takiej postaci funkcji częściowej wiarogodności jest to, że w jej wzorze nie występuje funkcja bazowego hazardu, zatem estymacja współczynników może odbywać się bez znajomości jej postaci.
+gdzie $Y_l(t_i)$ = 1, gdy obserwacja $X_l$ jest w zbiorze ryzyka w czasie $t_i$, i $Y_l(t_i)$ = 0 w przeciwnym przypadku, $n$ to liczba obserwacji w zbiorze a $K$ to wspomniana wyżej liczba zaobserwowanych czasów zdarzeń. Zaletą takiej postaci funkcji częściowej wiarogodności jest to, że w~jej wzorze nie występuje funkcja bazowego hazardu, zatem estymacja współczynników może odbywać się bez znajomości jej postaci.
 
 Jeśli dodatkowo cenzurowanie jest nie-informatywne, to $L_p(\theta)$ jest \textbf{pełną} funkcją wiarogodności, bowiem wówczas $$L^{*}(\theta,\varphi)\equiv L^{*}(\varphi)$$ co bierze się z definicji cenzurowania nie-informatywnego (\ref{nieinf}) $$g(t;\theta, \phi) \equiv g(t;\phi).$$
 
@@ -150,6 +150,29 @@ Standardowo w celu znalezienia maximum, aby ułatwić obliczenia, można rozważ
 \begin{equation}
 \ell_p(\beta) = \sum\limits_{i=1}^{K}X_i'\beta - \sum\limits_{i=1}^{K}\log\Big(\sum\limits_{l\in \mathscr{R}(t_i)}^{}e^{X_l'\beta}\Big).
 \end{equation}
+Bezpośrednie kalkulacje dają $p$-wymiarowy wektor pochodnych, dla $k=1,\dots,p$
+\marginnote{\tiny{$X_{ik}$~to~$i$~ta \\ obserwacja \\ i $k$ ta zmienna.}}[1cm]
+\begin{equation}\label{score}
+U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-\dfrac{\sum X_{ik} e^{X_l'\beta}}{\sum e^{X_l'\beta}}\Big),
+\end{equation}
+gdzie sumowanie jest po $l\in \mathscr{R}(t_i)$. Czynnik
+\begin{equation}
+A_{ik} = \dfrac{\sum X_{ik} e^{X_l'\beta}}{\sum e^{X_l'\beta}}
+\end{equation}
+to średnia z $X_{.k}$ ($k$-tych zmiennych) po skończonej populacji $\mathscr{R}(t_i)$, z wykorzystaniem \textit{ważonej eksponencjalnie} formy próbkowania.
 
+Z kolei drugie pochodne cząstkowe, jak podaje \cite{cox}, mają postać dla $k_1,k_2=1,\dots,p$
+\begin{equation}\label{grad}
+\mathscr{I}_{k_1k_2}(\beta) = - \dfrac{\partial^2L_p(\beta)}{\partial\beta_{k_1}\partial\beta_{k_2}}=\sum\limits_{i=1}^{K}C_{ik_1k_2}(\beta),
+\end{equation}
+gdzie
+\begin{equation}
+C_{ik_1k_2}(\beta)=\dfrac{\sum X_{lk_1}X_{l_k2}e^{X_l'\beta}}{\sum e^{X_l'\beta}} - A_{ik_1}(\beta)A_{i_k2}(\beta)
+\end{equation}
+to kowariancja pomiędzy $X_{.k_1}$ ($k_1$-tymi zmiennymi) a $X_{.k_2}$ ($k_2$-tymi zmiennymi) przy tej formie ważonego próbkowania.
+
+\textcolor{red}{Czy wplatać tę informację: \cite{cox} "To calculate the expected value of \ref{grad} it would be necessary to know the times at which individuals who failed would have been censored had the not failed. This information would often not be available and in any case might well be thought irrelevenat; this point is connected with difficulties of conditionality at the basis of a sampling theory approach to statistics(Pratt,1962). here we shall use asymptotic arguments in which \ref{grad} can be used directly for the estimation of variances, $\beta$ being replaced bu a suitable estimate.}
+
+Estymator największej wiarogodności $\beta$ można uzyskać poprzez przyrównanie (\ref{score}) do $0$ a numerycznie poprzez iteracyjne wykorzystanie (\ref{score}) oraz (\ref{grad}) w algorytmie spadku gradientu rzędu II nazywanego również Algorytmem Raphsona-Newtona, który jest opisany w podrozdziale \ref{R-N}. Jest to tradycyjne i szeroko stosowane podejście do estymacji współczynników w modelu proporcjonalnych hazardów Coxa. Niniejsza praca skupia się na wykorzystaniu metody estymacji współczynników jaką jest metoda stochastycznego spadku wzdłuż gradientu, która jest szerzej opisana w następnym rozdziale w podrozdziale \ref{SGD}.
 
 
