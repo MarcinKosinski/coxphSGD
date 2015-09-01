@@ -74,13 +74,13 @@ się element $\ell_{i}$ losowo. W praktyce zwykle przechodzi się po całym zbio
 Zbieżność algorytmu stochastycznego spadku gradientu była badana szeroko badana w literaturze aproksymacji stochastycznych. Aby uzyskać zbieżność zazwyczaj wymaga się aby ciąg kroków algorytmu $\alpha_k$ był malejący i spełniał poniższe warunki $\sum\nolimits_k \alpha_k = \infty$ oraz $\sum\nolimits_k \alpha_k^2 < \infty$ \cite{bott1}.
 Twierdzenie Robbinsa-Siegmunda \cite{robbins} przy łagodnych warunkach zapewnia zbieżność prawie na pewno \cite{bottDOD}, nawet w sytuacjach gdy optymalizowana funkcja nie jest wszędzie różniczkowalna.
 
-Prędkość zbieżności sotchastycznego spadku gradientu jest w rzeczywistości ograniczana przez \textcolor{red}{zaszumioną (\textit{ang. noisy})} aproksymacje prawdziwego gradientu. Gdy kroki algorytmu
+Prędkość zbieżności sotchastycznego spadku gradientu jest w rzeczywistości ograniczana przez zgrubną (\textit{ang. noisy}) aproksymacje prawdziwego gradientu. Gdy dłuości kroków algorytmu
 maleją zbyt wolno, wariancja estymatorów parametrów $w_k$ maleje równie wolno. Gdy kroki algorytmu maleją
 zbyt szybko, oczekiwane estymatory parametrów $w_k$ potrzebują więcej czasu by osiągnąć optimum \cite{bott1}. Pod pewnymi warunkami regularności \cite{murata}, najlepsza prędkość zbieżności jest uzyskana dla kroków algorytmu $\alpha_k\sim k^{-1}$.
 
 Jak wykazano w \cite{dennis} pod pewnymi odpowiednimi warunkami regularności, gdy zainicjowany współczynnik początkowy $w_0$ jest wystarczająco blisko optimum i krok algorytmu jest odpowiednio mały, algorytm stochastycznego spadku gradientu osiąga liniową zbieżność. Oznacza to, iż przy spełnieniu założeń metody, odległości pomiędzy kolejnymi przybliżeniami a minimum funkcji $\mathbf{w^{\ast}}$ maleją liniowo: $\parallel \mathbf{w^{\ast}} - \mathbf{w_{k+1}} \parallel \leqslant c \parallel \mathbf{w^{\ast}} - \mathbf{w_k} \parallel$. Zbieżność wymaga często przejścia parokrotnie po całym
 zbiorze danych. Zwykle nie losuje się obserwacji, ale przechodzi się po zbiorze
-danych w losowej kolejności. Dodatkowo wady i zalety algorytmu wylistowane są poniżej. Zalety~zdecydowanie przewyższają~wady.
+danych w losowej kolejności. Dodatkowo wady i zalety algorytmu wymienione są poniżej. Zalety~zdecydowanie przewyższają~wady.
 
 \subsubsection{Zalety}
 \begin{itemize}

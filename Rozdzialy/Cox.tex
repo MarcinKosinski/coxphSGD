@@ -1,15 +1,13 @@
 \chapter{Model Coxa}
-\begin{flushright}
-\textit{The proportion of my life that I spent working on the \\ 
-proportional hazards model is, in fact, very small. I had an \\
- idea of how to solve it but I could not complete the \\
-  argument and so it took me about four years on and off... \\
-Sir David Cox, An interview with Sir David Cox, 2014.
-}
-\end{flushright}
-
-
-W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. Głównym celem tej pracy jest wykorzystanie, nietypowej w tym modelu, numerycznej metody estymacji współczynników metodą stochastycznego spadku gradientu. Więcej o estymacji metodą stochastycznego spadku gradientu napisane jest w rozdziale \ref{SGD}. Definicje i twierdzenia w tym rozdziale oparte są o \cite{cox}, \cite{ther}, \cite{assel} i \cite{burzyk1}.
+%\begin{flushright}
+%\textit{The proportion of my life that I spent working on the \\ 
+%proportional hazards model is, in fact, very small. I had an \\
+% idea of how to solve it but I could not complete the \\
+%  argument and so it took me about four years on and off... \\
+%Sir David Cox, An interview with Sir David Cox, 2014.
+%}
+%\end{flushright}
+W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. Głównym celem tej pracy jest wykorzystanie numerycznej metody estymacji współczynników metodą stochastycznego spadku gradientu w omawianym modelu. Więcej o estymacji metodą stochastycznego spadku gradientu napisane jest w rozdziale \ref{SGD}. Definicje i twierdzenia w tym rozdziale oparte są o \cite{cox}, \cite{ther}, \cite{assel} i \cite{burzyk1}.
 
 %\section{Nomenklatura i podstawy analizy przeżycia}
 
@@ -17,7 +15,15 @@ W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. G�
 
 \section{Wprowadzenie do modelu Coxa i nomenklatura}
 
-W analizie przeżycia, w której model Coxa znalazł największe zastosowania, ogromnie popularna jest funkcja hazardu.
+Analiza przeżycia, w której model Coxa znalazł największe zastosowania, polega na modelowaniu wpływu czynników na czas
+do wystąpienia pewnego zdarzenia. Zdarzeniem może być np. śmierć pacjenta, awaria urządzenia, zerwanie umowy przez klienta, odejście z pracy pracownika lub deaktywacja pewnej usługi. Analizując czasy do wystąpienia zdarzenia wykorzystuje się funkcję przeżycia bądź niosącą równoważną informację funkcję hazardu.
+\begin{definition}
+\textbf{Funkcja przeżycia} w grupie $j$, to funkcja, która spełnia
+\begin{equation}
+S_j(t) = \mathbb{P}(T^*_{j,i} \geq t )  = 1 - F_j(t), t \in \mathbb{R}
+\end{equation}
+gdzie $F_j(t)$ to dystrybuanta rozkładu zadanego gęstością $f_j(t)$.
+\end{definition}
 \begin{definition}
 \textbf{Funkcja hazardu} to funkcja, która wyraża się wzorem
 \begin{equation}
@@ -28,12 +34,8 @@ W analizie przeżycia, w której model Coxa znalazł największe zastosowania, o
 \end{equation}
 \end{definition}
 
-W powyższej definicji $T^*$ oznacza czas do wystąpienia zdarzenia. Zakłada się, że wewnątrz każdej grupy $j=1,2,\dots, m$ wyznaczonej przez poziomy zmiennych objaśniających, czasy $T_{j,i}^*$ dla $i=1,\dots,n_j$ to niezależne zmienne losowe z tego samego rozkładu o zadanej gęstości~$f_j(t)$, zaś $S_j(t)$ to \textit{funkcja przeżycia} w grupie $j$, która spełnia 
-\begin{equation}
-S_j(t) = \mathbb{P}(T^*_{j,i} \geq t )  = 1 - F_j(t), 
-\end{equation}
-gdzie $F_j(t)$ to dystrybuanta rozkładu zadanego gęstością $f_j(t)$.
-
+W tych definicjach $T^*$ oznacza czas do wystąpienia zdarzenia. Zakłada się, że wewnątrz każdej grupy $j=1,2,\dots, m$ wyznaczonej przez poziomy zmiennych objaśniających, czasy~$T_{j,i}^*$ dla \ $i=1,\dots,n_j$~to~niezależne~zmienne~losowe~z~tego~samego~rozkładu~o~gęstości~$f_j(t)$.
+\newpage
 Wartość funkcji hazardu w momencie $t$ traktuje się jako chwilowy potencjał pojawiającego się zdarzenia (np. śmierci lub choroby), pod warunkiem że osoba dożyła czasu $t$. Funkcja hazardu nazywana jest również funkcją ryzyka,
 intensywnością umieralności (\textit{force of mortality}), umieralnością
 chwilową (\textit{instantaneous death rate}) lub chwilową
@@ -50,7 +52,7 @@ kardiologicznych po transplantacji serca lub zawałach
 serca \cite{norwe}. 
 
 \begin{definition}
-\textbf{Model Coxa} określa funkcję hazardu dla i-tej obserwacji $X_i$ jako
+\textbf{Model Coxa} zakłada postać funkcji hazardu dla i-tej obserwacji $X_i$ jako
 \begin{equation}
 \lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta},
 \end{equation}
@@ -63,14 +65,14 @@ Takie sformułowanie modelu gwarantuje, że funkcja hazardu jest nieujemna.
 Model Coxa, dla wersji kiedy współczynniki są stałe w czasie, nazywany jest \textbf{modelem proporcjonalnych hazardów}, gdyż stosunek (proporcja) hazardów dla dwóch obserwacji $X_i$ oraz $X_j$ jest stały w czasie:  
 $$\dfrac{\lambda_i(t)}{\lambda_j(t)} = \dfrac{\lambda_0(t)e^{X_i\beta}}{\lambda_0(t)e^{X_j\beta}} = \dfrac{e^{X_i\beta}}{e^{X_j\beta}} = e^{(X_i-X_j)\beta}.$$
 
-Oznacza to, że hazard dla jednej obserwacji można uzyskać poprzez przemnożenie hazardu dla innej obserwacji przez pewną stałą $c$:
+Oznacza to, że hazard dla jednej obserwacji można uzyskać poprzez przemnożenie hazardu dla innej obserwacji przez pewną stałą $c_{ij}$:
 $$\lambda_i(t) = \dfrac{e^{X_i'\beta}}{e^{X_j'\beta}} \cdot \lambda_j(t) = c_{ij} \cdot \lambda_j(t).$$
 
 W modelu proporcjonalnych hazardów istotnym elementem jest estymacja stałych $c_{ij}$.
 
 \section{Założenia modelu proporcjonalnego ryzyka Coxa}
 
-Model Coxa znalazł szerokie zastosowanie z racji na nietypowy, bo cenzurowany, rodzaj danych, które jest w stanie wykorzystać do estymacji współczynników w modelu, przekładających się na proporcje hazardów. Z uwagi na aspekt praktyczny podyktowany warunkami technicznymi prób klinicznych i badań biologicznych, zbiory danych klinicznych zawierają cenzurowane czasy zdarzeń. Oznacza to, że w wielu przypadkach niemożliwe jest obserwowanie czasu zdarzeń dla wszystkich obserwacji w zbiorze. Niekiedy jest to uwarunkowane zbyt długim czasem do wystąpienia zdarzenia. Czasem jest to związane z zaplanowanym okresem próby klinicznej, który jest krótszy niż czas do zdarzenia dla pacjentów, którzy mogli zostać włączeni do próby klinicznej pod koniec jej trwania i nie udało się dla nich zaobserwować czasów zdarzeń. W wielu przypadkach pacjenci, traktowani jako obserwacje w zbiorze, znikają z pola widzenia w momencie, gdy np. przestają pojawiać się na wizytach kontrolnych. Może być to spowodowane negatywnymi relacjami z lekarzem prowadzącym lub przeprowadzką. W~takich sytuacjach wykorzystuje się daną obserwację do momentu jej ostatniej kontroli. Nie rezygnuje się z tej obserwacji w analizie i wykorzystuje się o niej informacje w pełni dla czasu, w którym przebywała pod obserwacją. Jest to ogromna zaleta modelu Coxa.
+Model Coxa znalazł szerokie zastosowanie w sytuacjach, gdy analiza wymaga wykorzystania cenzurowanych danych. Model Coxa jest w stanie wykorzystać je do estymacji współczynników w modelu, przekładających się na proporcje hazardów. Z uwagi na aspekt praktyczny podyktowany warunkami technicznymi prób klinicznych i badań biologicznych, zbiory danych klinicznych zawierają cenzurowane czasy zdarzeń. Oznacza to, że w wielu przypadkach niemożliwe jest obserwowanie czasu zdarzeń dla wszystkich obserwacji w zbiorze. Niekiedy jest to uwarunkowane zbyt długim czasem do wystąpienia zdarzenia. Czasem jest to związane z zaplanowanym okresem próby klinicznej, który jest krótszy niż czas do zdarzenia dla pacjentów, którzy mogli zostać włączeni do próby klinicznej pod koniec jej trwania i nie udało się dla nich zaobserwować czasów zdarzeń. W wielu przypadkach pacjenci, traktowani jako obserwacje w zbiorze, znikają z pola widzenia w momencie, gdy np. przestają pojawiać się na wizytach kontrolnych. Może być to spowodowane negatywnymi relacjami z lekarzem prowadzącym lub przeprowadzką. W~takich sytuacjach wykorzystuje się daną obserwację do momentu jej ostatniej kontroli. Nie rezygnuje się z tej obserwacji w analizie i wykorzystuje się o niej informacje w pełni dla czasu, w którym przebywała pod obserwacją. Jest to ogromna zaleta modelu Coxa.
 
 Z przyczyny cenzurowanych danych potrzebne są założenia modelu dotyczące cenzurowania czasów, które opierają się o następujące definicje.
 
@@ -97,11 +99,9 @@ g(t;\theta, \phi) \equiv g(t;\phi),
 gdzie $g(t;\theta, \phi)$ jest funkcją gęstości dla cenzurowań $C_i$ wyrażonych jako niezależne zmienne losowe o jednakowym rozkładzie, zaś prawdzie czasy $T^*_i$ są interpretowane jako niezależne zmienne losowe o jednakowym rozkładzie i funkcji gęstości $f(t;\theta)$, czyli $\theta$ parametryzuje jedynie rozkład czasów zdarzeń.
 \end{definition}
 
-Oznacza to, że cenzurowanie nie daje informacji o parametrach rozkładu czasów zdarzeń.
+Oznacza to, że cenzurowanie nie daje informacji o parametrach rozkładu czasów zdarzeń, ponieaż nie zależy od parametrów od których zależny jest hazard.
 
-Terminu cenzurowanie po raz pierwszy w literaturze użył Hald w 1949 r. \cite{hald}.
-
-\textbf{Model proporcjonalnych hazardów Coxa oparty jest o założenia, że:}
+\textbf{Model proporcjonalnych hazardów Coxa oparty jest na założeniach:}
 \begin{enumerate}
 \item[$i$)] Współczynniki modelu $\beta_k, k = 1,\cdots,p$ są stałe w czasie, co przekłada się na to, że stosunek hazardów dla dwóch obserwacji jest stały w~czasie.
 \item[$ii$)] Postać funkcjonalna efektu zmiennej niezależnej, czyli postać modelu $\lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta}$.
@@ -124,13 +124,13 @@ gdzie \textit{zbiór ryzyka} $\mathscr{R}(t_i)$, w chwili $t_i$, rozumiany jest 
 
 Chcąc estymować współczynniki metodą największej wiarogodności należy rozważyć funkcję wiarogodności, która dla niezależnego cenzurowania prawostronnego ma postać:
 \begin{equation}
-L(\theta,\varphi) = L_p(\theta)\cdot L^{*}(\theta,\varphi),
+L(\beta,\varphi) = L_p(\beta)\cdot L^{*}(\beta,\varphi),
 \end{equation}
 gdzie
 \begin{equation}
-L_p(\theta) = \prod\limits_{i=1}^{n}f(t_j;\theta)^{\delta_j}S(t_j;\theta)^{1-\delta_j}=\prod\limits_{i=1}^{n}\lambda(t_j;\theta)^{\delta_j}S(t_j;\theta)
+L_p(\beta) = \prod\limits_{i=1}^{n}f(t_j;\beta)^{\delta_j}S(t_j;\beta)^{1-\delta_j}=\prod\limits_{i=1}^{n}\lambda(t_j;\beta)^{\delta_j}S(t_j;\beta)
 \end{equation}
-to częściowa funkcja wiarogodności, a $L^{*}(\theta,\varphi)$ zależy od cenzurowania (parametr $\varphi$).
+to częściowa funkcja wiarogodności, a $L^{*}(\beta,\varphi)$ zależy od cenzurowania (parametr $\varphi$).
 
 Wtedy dla niezależnego cenzurowania i dla czasów zdarzeń, które nie zaszły jednocześnie \textbf{częściowa funkcja wiarogodności w modelu Coxa} ma postać:
 \begin{equation}
@@ -138,7 +138,7 @@ L_p(\beta) = \prod\limits_{i=1}^{K}\dfrac{e^{X_i'\beta}}{\sum\limits_{l=1}^{n}Y_
 \end{equation}
 gdzie $Y_l(t_i)$ = 1, gdy obserwacja $X_l$ jest w zbiorze ryzyka w czasie $t_i$, i $Y_l(t_i)$ = 0 w przeciwnym przypadku, $n$ to liczba obserwacji w zbiorze, a $K$ to wspomniana wyżej liczba zaobserwowanych czasów zdarzeń. Zaletą takiej postaci funkcji częściowej wiarogodności jest to, że w~jej wzorze nie występuje funkcja bazowego hazardu, zatem estymacja współczynników może odbywać się bez znajomości jej postaci.
 
-Jeśli dodatkowo cenzurowanie jest nie-informatywne, to $L_p(\theta)$ jest \textbf{pełną} funkcją wiarogodności, bowiem wówczas $$L^{*}(\theta,\varphi)\equiv L^{*}(\varphi)$$ co bierze się z definicji cenzurowania nie-informatywnego (\ref{nieinf}) $$g(t;\theta, \phi) \equiv g(t;\phi).$$
+Jeśli dodatkowo cenzurowanie jest nie-informatywne, to $L_p(\beta)$ jest \textbf{pełną} funkcją wiarogodności, bowiem wówczas $$L^{*}(\beta,\varphi)\propto L^{*}(\varphi)$$ co bierze się z definicji cenzurowania nie-informatywnego (\ref{nieinf}) $$g(t;\theta, \phi) \equiv g(t;\phi).$$
 
 Ponieważ model proporcjonalnych hazardów Coxa zakłada niezależność i nie-informatywność cenzurowania zatem można uważać, że częściowa funkcja wiarogodności daje pełną informację o współczynnikach i wnioskowanie w oparciu o nią jest uzasadnione i poprawne.
 
@@ -153,9 +153,9 @@ Standardowo w celu znalezienia maximum, aby ułatwić obliczenia, można rozważ
 Bezpośrednie kalkulacje dają $p$-wymiarowy wektor pochodnych, dla $k=1,\dots,p$
 \marginnote{\tiny{$X_{ik}$~to~$i$~ta \\ obserwacja \\ i $k$ ta zmienna.}}[1cm]
 \begin{equation}\label{score}
-U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-\dfrac{\sum X_{ik} e^{X_l'\beta}}{\sum e^{X_l'\beta}}\Big),
+U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-A_{ik}\Big),
 \end{equation}
-gdzie sumowanie jest po $l\in \mathscr{R}(t_i)$. Czynnik
+gdzie sumowanie jest po $l\in \mathscr{R}(t_i)$, zaś czynnik
 \begin{equation}
 A_{ik} = \dfrac{\sum X_{ik} e^{X_l'\beta}}{\sum e^{X_l'\beta}}
 \end{equation}
@@ -170,8 +170,6 @@ gdzie
 C_{ik_1k_2}(\beta)=\dfrac{\sum X_{lk_1}X_{l_k2}e^{X_l'\beta}}{\sum e^{X_l'\beta}} - A_{ik_1}(\beta)A_{i_k2}(\beta)
 \end{equation}
 to kowariancja pomiędzy $X_{.k_1}$ ($k_1$-tymi zmiennymi) a $X_{.k_2}$ ($k_2$-tymi zmiennymi) przy tej formie ważonego próbkowania.
-
-\textcolor{red}{Czy wplatać tę informację: \cite{cox} "To calculate the expected value of \ref{grad} it would be necessary to know the times at which individuals who failed would have been censored had the not failed. This information would often not be available and in any case might well be thought irrelevenat; this point is connected with difficulties of conditionality at the basis of a sampling theory approach to statistics(Pratt,1962). here we shall use asymptotic arguments in which \ref{grad} can be used directly for the estimation of variances, $\beta$ being replaced bu a suitable estimate.}
 
 Estymator największej wiarogodności $\beta$ można uzyskać poprzez przyrównanie (\ref{score}) do $0$, a numerycznie poprzez iteracyjne wykorzystanie (\ref{score}) oraz (\ref{grad}) w algorytmie spadku gradientu rzędu II nazywanego również Algorytmem Raphsona-Newtona, który jest opisany w podrozdziale \ref{R-N}. Jest to tradycyjne i szeroko stosowane podejście do estymacji współczynników w modelu proporcjonalnych hazardów Coxa. Niniejsza praca skupia się na wykorzystaniu metody estymacji współczynników jaką jest metoda stochastycznego spadku wzdłuż gradientu, która jest szerzej opisana w następnym rozdziale w podrozdziale \ref{SGD}.
 
