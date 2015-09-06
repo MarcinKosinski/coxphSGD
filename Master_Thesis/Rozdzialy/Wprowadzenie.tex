@@ -1,0 +1,35 @@
+\chapter*{Wprowadzenie}
+
+
++++
+Analiza przeżycia.
++++
+
+Najbardziej charakterystyczną cechą typowych danych, jakimi posługuje się w analizie przeżycia, jest obecność obiektów, w których końcowe zdarzenie nastąpiło (wówczas ma się do czynienia z obserwacjami \textit{kompletnymi}), oraz obiektów, w których to zdarzenie (jeszcze) nie nastąpiło (obserwacja \textit{ucięta}). Ta specyficzna postać danych statystycznych doprowadziła do powstania specjalnych metod stosowanych tylko w analizie czasu trwania zjawisk. Jednym z takich modeli jest model proporcjonalnych hazardów Coxa. Jak podaje \cite{assel}, model proporcjonalnych hazardów Coxa jest jednym z najszerzej stosowanych modeli w onkologicznych publikacjach naukowych, ale także jedną z najmniej rozumianych metod statystycznych. Wynika to z łatwego dostępu do pakietów statystycznych zawierających programy do analizy przeżyć, modeli regresji i analiz wielowariantowych, ale prawie nigdy nie zawierających dobrego opisu podstawowych zasad działania modelu Coxa. Dostarczają one wyłącznie instrukcje, jak wprowadzić dane i uruchomić odpowiednie procedury w celu uzyskania wyniku. Poniższy praca zawiera pełny opis metodologii modelu proporcjonalnych hazardów Coxa, w tym wyjaśnienie najważniejszych pojęć. 
+
+
+++++
+Stochastyczny Spadek Gradientu
+++++
+W przeciągu ostatniej dekady, rozmiary danych rosły szybciej niż prędkość procesorów. W tej sytuacji możliwości statystycznych metod uczenia maszynowego stały się ograniczone bardziej przez czas obliczeń niż przez rozmiary zbiorów danych. Jak podaje \cite{bott1}, bardziej szczegółowa analiza wykazuje jakościowo różne kompromisy w przypadkach problemów uczenia maszynowego na małą i na dużą skalę. Rozwiązania kompromisowe w przypadku dużej skali danych związane są ze złożonością obliczeniową zasadniczych algorytmów optymalizacyjnych, których należy dokonywać w nietrywialny sposób. Jednym z takich rozwiązań są algorytmy optymalizacyjne oparte o stochastyczny spadek gradientu, które wykazują niesamowitą wydajność dla problemów wielkiej skali.
+
+\chapter*{Podstawy modelu statystycznego}
+
+W pracy zakłada się znajomość podstaw statystyki matematycznej. Aby ujednolicić oznaczenia w niniejszym rozdziale wprowadzona została klasyczna nomenklatura oparta~o~\cite{niemiro}.
+
+\begin{definition} 
+\textbf{Model statystyczny} określamy przez podanie rodziny $\{ \mathbb P_{\theta}:\theta\in\Theta\} $ rozkładów prawdopodobieństwa na przestrzeni próbkowej $\Omega$ oraz zmiennej losowej $X : \Omega \rightarrow \mathcal{X}$, którą traktujemy jako obserwację. Zbiór $\mathcal{X}$ nazywamy przestrzenią obserwacji, zaś $\Theta$ nazywamy przestrzenią parametrów. \\
+\end{definition}
+Symbol $\theta$ jest nieznanym parametrem opisującym rozkład badanego zjawiska. Może być jednowymiarowy lub wielowymiarowy. Determinując opis zjawiska poprzez podanie parametru $\theta$, jednoznacznie wyznaczany jest rozkład rozważanego zjawiska spośród całej rodziny rozkładów prawdopodobieństwa $\{ \mathbb P_{\theta}:\theta\in\Theta\}$, co umożliwia określenie prawdziwości tezy.
+\par
+Zakłada się, że przestrzeń próbkowa $\Omega$ jest wyposażona w $\sigma$-ciało $\mathcal{F}$. Wtedy:
+\begin{definition}
+\textbf{Przestrzenią statystyczną} nazywa się trójkę $(\mathcal{X},\mathcal{F},\{\mathbb P_{\theta}:\theta\in\Theta\})$.
+\end{definition}
+Wprowadzenie $\sigma$-ciała $\mathcal{F}$ sprawia, że przestrzeń statystyczna staje się przestrzenią mierzalną, a więc można na niej określić rodzinę miar $\{ \mathbb P_{\theta}:\theta\in\Theta\} $, dzięki której da się ustalić prawdopodobieństwa$  $ zajścia wszystkich zjawisk w rozważanej teorii.
+
+W celu budowania niezbędnych pojęć potrzebna jest również definicja losowej próby statystycznej, zazwyczaj nazywanej \textit{próbką}.
+
+\begin{definition}
+ \textbf{Losową próba statystyczną} nazywamy zbiór obserwacji statystycznych wylosowanych z populacji, które są realizacjami ciągu zmiennych losowych o rozkładzie takim jak rozkład populacji.
+ \end{definition}

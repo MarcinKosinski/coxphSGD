@@ -1,0 +1,103 @@
+\chapter{Estymacja w modelu Coxa metodą stochastycznego spadku gradientu}
+
+Poniższy rozdział przedstawia implementację oraz zastosowanie metody stochastycznego spadku gradientu do estymacji współczynników w modelu proporcjonalnych hazardów Coxa. Jest to główny cel pracy. Poniższe rozważania odnośnie podejścia do stosowania tej metody w tym konkretnym modelu nie są oparte na żadnej literaturze ze względu na jej brak.
+
+W czasie powstawania pracy nawiązano jedynie nieznaczną wymianę informacji z pracownikami \textit{Harvard Laboratory for Applied Statistical Methodology \& Data Science}, dzięki której dowiedziano się że podjęte zostały kroki w kierunku stworzenia podwalin pod teorię do omawianego zagadnienia, jednak ewentualne publikacje nie zostały jeszcze dokończone. Przedsmak niedokończonej implementacji algorytmu przez pracowników wyżej wymienionego laboratorium można znaleźć w \cite{sgdpkg}.
+
+W procesie estymacji współczynników w omawianym modelu wykorzystano pochodne cząstkowe częściowej funkcji log-wiarogodności (\ref{score})
+\begin{equation*}
+U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\Big)=\sum\limits_{i=1}^{n}Y_i\Big(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\Big)=\sum\limits_{i=1}^{n}U_{k_{i}}(\beta),
+\end{equation*}
+(dla $Y_i = 1$, gdy obserwacja nie była cenzurowana i $Y_i = 0$, gdy obserwacja była cenzurowana; $K$ to liczba zdarzeń; $n$ to liczba obserwacji) oraz wzór (\ref{sgdrownanie}), którego wersja z adekwatnymi oznaczeniami dla powyższej funkcji wygląda następująco
+\begin{equation}
+\beta_{k_{j}} = \beta_{k_{j-1}} - \alpha_{j}U_{k_{i}}(\beta_{k_{j-1}}),
+\end{equation}
+gdzie $j$ oznacza krok algorytmu, $i$ iteruje składniki $U_{k}$, $\alpha_j$ to długość $j$-tego kroku algorytmu, zaś $U_{k}$ to $k$-ta pochodna cząstkowa gradientu $U$ oraz $\beta_{k}$ to $k$-ta współrzędna estymowanego wektora współczynników $\beta$ o rozmiarze $p$, czyli $k=1,\dots,p$. 
+
+Bez straty ogólności, w celu uproszczenia oznaczeń, można założyć, że obserwacje są uporządkowane rosnąco względem czasu zdarzeń.
+
+\section{Porównanie z innymi modelami}
+
+Matematycy i informatycy często uważają, że idea stochastycznego spadku gradientu polega na losowaniu składnika optymalizowanej funkcji. Jednak ze statystycznego punktu widzenia, metoda stochastycznego spadku gradientu opiera się o losowanie indeksu obserwacji ze zbioru, z którego uczony jest algorytm, zanim postanowi się w jakikolwiek sposób przedstawić konkretną funkcję wiarogodności. Zatem w celu estymacji w oparciu o stochastyczny spadek gradientu w modelu Coxa konstruując metodę należy najpierw losować obserwacje a następnie dopiero wyznaczać formę optymalizowanej funkcji częściowej log-wiarogodności.
+
+Dla wielu modeli opierających się o funkcje wiarogodności te dwa punkty widzenia są równoważne, jednak dla modelu Coxa nie. W przypadku modelu ADALINE sformułowanego dla regresji probitowej \cite{ADALINE2}, opartego na minimalizowaniu funkcji kosztu w postaci błędu najmniejszych kwadratów, w \cite{bott2} podano postać funkcji straty oraz równanie algorytmu stochastycznego spadku gradientu jak poniżej
+$$Q_{adaline} = \frac{1}{2}(y-w'\varPhi(x))^2,$$ 
+$$w \leftarrow w + \alpha_k(y_k-w'\varPhi(x_t))\varPhi(x_t),$$
+$$\varPhi(x) \in \mathbb{R}^d, y \in \{-1,1\},$$
+
+dla których widać, że w kolejnych krokach algorytmu $t$ wystarczy tylko jedna obserwacja $z_t=(x_t,y_t)$ aby poprawić oszacowanie parametru $w$.
+
+W modelu proporcjonalnych hazardów Coxa jest to bardziej skomplikowane.
+
+\section{Implementacja}
+
+Dla zadanej z góry funkcji hazardu, częściowa funkcja wiarogodności odpowiada prawdopodobieństwu tego, że obserwowane zdarzenia zdarzyłyby się dokładnie w tej kolejności w jakiej się pojawiły. To prawdopodobieństwo zależy od wszystkich obserwacji w zbiorze. Niemożliwe jest wyliczenie tego poprzez obliczenie wartości funkcji częściowej wiarogodności oddzielnie dla obserwacji o numerach od 1 do 5 i oddzielnie dla obserwacji od numerach 6 do 10, a następnie przemnożeniu wyników przez siebie. Z tej przyczyny niemożliwe jest losowanie czynników optymalizowanej funkcji przy użyciu metody stochastycznego spadku gradientu do estymacji współczynników w tym modelu. Jednak możliwe jest losowanie obserwacji a następnie konstruowanie funkcji wiarogodności dla zaobserwowanego zredukowanego zbioru.
+
+Taki sposób wprowadzania obserwacji do estymacji można wykorzystać w sytuacjach, gdy mamy do czynienia z nieskończonym napływem nowych obserwacji a interesują nas oszacowania estymowanych parametrów modelu $\beta_k, k=1,\dots,p$ dla obecnie zaobserwowanych i wykorzystanych obserwacji. Proces ten ma dwie zalety: nie dość, że dla nowych obserwacji model jest w stanie na bazie obecnych oszacować parametrów dokonać predykcji proporcji hazardów, to dodatkowo po każdej obserwacji aktualizuje parametry modelu.
+
+Omówiona w tym rozdziale metoda estymacji metodą stochastycznego spadku gradientu dla modelu proporcjonalnych hazardów Coxa została zaimplementowana w języku $\mathcal{R}$ \cite{programikr}. Kod wraz z opisem poszczególnych kroków zawarty jest poniżej.
+
+\newpage
+Algorytm jest dostępny w specjalnie przygotowanym pakiecie o nazwie
+\texttt{coxphSGD} napisanym w języku \(\mathcal{R}\), który można pobrać
+z internetu i zainstalować poleceniem
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{if (}\KeywordTok{packageVersion}\NormalTok{(}\StringTok{"devtools"}\NormalTok{) <}\StringTok{ }\FloatTok{1.6}\NormalTok{) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"devtools"}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{devtools::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"MarcinKosinski/Cox-SGD"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Poniżej przedstawione są argumenty, które przyjmuje funkcja
+\texttt{coxphSGD()}, która estymuje współczynniki w modelu
+proporcjonalnych hazardów Coxa metodą stochastycznego spadku gradientu.
+Starano zachować jednorodność kolejności i nazewnictwa parametrów z
+funkcją \texttt{coxph} z pakietu \texttt{survival} \cite{ther},
+\cite{survival}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#' Estymacja w modelu Coxa metoda stochastycznego spadku gradientu}
+\CommentTok{#' }
+\CommentTok{#' Funkcja \textbackslash{}code\{coxphSGD\} estymuje współczynniki w modelu proporcjonalnych}
+\CommentTok{#' hazardów Coxa metodą stochastycznego spadku gradientu.}
+\CommentTok{#' }
+\CommentTok{#' @param formula a formula object, with the response on the left of a ~ operator,}
+\CommentTok{#' and the terms on the right. The response must be a survival object as returned by}
+\CommentTok{#' the Surv function.}
+\CommentTok{#' @param data a data.frame in which to interpret the variables named in the \textbackslash{}code\{formula\}}
+\CommentTok{#' @param order a numeric vector with suggested order of observations or \textbackslash{}code\{NULL\}}
+\CommentTok{#' when order of observations in estimation should be randomly generated}
+\CommentTok{#' @param learningRates a function specifing how to define learning rates in }
+\CommentTok{#' steps of the algorithm. By default the \textbackslash{}code\{f(t)=1/t\} is used, where \textbackslash{}code\{t\} is}
+\CommentTok{#' the number of algorithm's step .}
+\CommentTok{#' @param epsilon a numeric value with the stop condition of the estimation algorithm. }
+\CommentTok{#' When \textbackslash{}code\{epoch\} parameter is specified, \textbackslash{}code\{epsilon\} is ignored.}
+\CommentTok{#' @param epoch a numeric value declaring the number of epoches to run for the}
+\CommentTok{#' estimation algorithm in the stochastic gradient descent. By defaul set to }
+\CommentTok{#' \textbackslash{}code\{NULL\} - then the \textbackslash{}code\{epsilon\} is used to access the convergence.}
+\CommentTok{#'}
+\CommentTok{#' @export}
+\CommentTok{#' @importFrom survival Surv}
+\CommentTok{#' @importFrom assertthat assert_that}
+\CommentTok{#' @examples}
+\CommentTok{#' library(survival)}
+\CommentTok{#' coxphSGD(Surv(time, status) ~ ph.ecog + tt(age), data=lung)}
+\CommentTok{#' }
+\NormalTok{coxphSGD =}\StringTok{ }\NormalTok{function(formula, data, order, learningRates, epsilon, epoch) \{}
+  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.formula}\NormalTok{(formula))}
+  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.data.frame}\NormalTok{(data))}
+  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.null}\NormalTok{(order) |}\StringTok{ }\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(order) &}\StringTok{ }\KeywordTok{length}\NormalTok{(order) ==}\StringTok{ }\KeywordTok{nrow}\NormalTok{(data)))}
+  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.null}\NormalTok{(learningRates) |}\StringTok{ }\KeywordTok{is.numeric}\NormalTok{(learningRates))}
+  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.null}\NormalTok{(epsilon) |}\StringTok{ }\KeywordTok{is.numeric}\NormalTok{(epsilon))}
+  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.null}\NormalTok{(epoch) |}\StringTok{ }\KeywordTok{is.numeric}\NormalTok{(epoch))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Dwuwymiarowy przykład}
+
+\section{Porównanie z innymi algorytmami spadku gradientu}
