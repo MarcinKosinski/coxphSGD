@@ -1,16 +1,15 @@
 ---
-author: "Marcin Kosinski"
+title: "tytul"
+author: "autor"
+date: "data"
 output:
   pdf_document:
     keep_tex: true
     highlight: haddock
     include: 
       in_header: header.tex
-vignette: >
-  %\VignetteIndexEntry{Estymacja w modelu Coxa metodą stochastycznego spadku gradientu}
-  %\VignetteEngine{knitr::rmarkdown_notangle}
-  %\VignetteEncoding{UTF-8}
 ---
+
 ```{r setup, purl=FALSE, echo=FALSE}
 knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
 ```
@@ -166,8 +165,8 @@ gdzie $b$ oznacza wielkość podzbioru $\mathcal{B}$, zaś $\mathscr{R}_\mathcal
   for ( k in 2:ncol(mf)) { # 1st dimension is Y
     for (i in 1:nrow(batchSample_variables)){
       l <- which(batchSample_response[, 1] <= batchSample_response[i, 1])
-      U_ik[i,k] <- -batchSample_variables[i, k] +
-        sum(batchSample_variables[l, k]*exp(batchSample_variables[l, ]%*%beta_j))/
+      U_ik[i,k] <- -batchSample_variables[i, k] + sum(batchSample_variables[l, k]*
+                                           exp(batchSample_variables[l, ]%*%beta_j)/
             sum(exp(batchSample_variables[l, ]%*%beta_j)) 
             
     }

@@ -1,43 +1,108 @@
-\chapter{Estymacja w modelu Coxa metodą stochastycznego spadku gradientu}
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.00,1.00}{{#1}}}
+\newcommand{\DataTypeTok}[1]{{#1}}
+\newcommand{\DecValTok}[1]{{#1}}
+\newcommand{\BaseNTok}[1]{{#1}}
+\newcommand{\FloatTok}[1]{{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.00,0.50,0.50}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.00,0.50,0.50}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{1.00,0.25,0.00}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{{#1}}}
+\newcommand{\FunctionTok}[1]{{#1}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textbf{{#1}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={autor},
+            pdftitle={tytul},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
 
-Poniższy rozdział przedstawia implementację oraz zastosowanie metody stochastycznego spadku gradientu do estymacji współczynników w modelu proporcjonalnych hazardów Coxa. Jest to główny cel pracy. Poniższe rozważania odnośnie podejścia do stosowania tej metody w tym konkretnym modelu nie są oparte na żadnej literaturze ze względu na jej brak.
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
 
-W czasie powstawania pracy nawiązano jedynie nieznaczną wymianę informacji z pracownikami \textit{Harvard Laboratory for Applied Statistical Methodology \& Data Science}, dzięki której dowiedziano się że podjęte zostały kroki w kierunku stworzenia podwalin pod teorię do omawianego zagadnienia, jednak ewentualne publikacje nie zostały jeszcze dokończone. Przedsmak niedokończonej implementacji algorytmu przez pracowników wyżej wymienionego laboratorium można znaleźć w \cite{sgdpkg}.
+%%% Change title format to be more compact
+\usepackage{titling}
 
-W procesie estymacji współczynników w omawianym modelu wykorzystano pochodne cząstkowe częściowej funkcji log-wiarogodności (\ref{score})
-\begin{equation*}
-U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\Big)=\sum\limits_{i=1}^{n}Y_i\Big(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\Big)=\sum\limits_{i=1}^{n}U_{k_{i}}(\beta),
-\end{equation*}
-(dla $Y_i = 1$, gdy obserwacja nie była cenzurowana i $Y_i = 0$, gdy obserwacja była cenzurowana; $K$ to liczba zdarzeń; $n$ to liczba obserwacji) oraz wzór (\ref{sgdrownanie}), którego wersja z adekwatnymi oznaczeniami dla powyższej funkcji wygląda następująco
-\begin{equation}
-\beta_{k_{j+1}} = \beta_{k_{j}} - \alpha_{j}U_{k_{i}}(\beta_{k_{j}}),
-\end{equation}
-gdzie $j$ oznacza krok algorytmu, $i$ iteruje składniki $U_{k}$, $\alpha_j$ to długość $j$-tego kroku algorytmu, zaś $U_{k}$ to $k$-ta pochodna cząstkowa gradientu $U$ oraz $\beta_{k}$ to $k$-ta współrzędna estymowanego wektora współczynników $\beta$ o rozmiarze $p$, czyli $k=1,\dots,p$. 
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
 
-Bez straty ogólności, w celu uproszczenia oznaczeń, można założyć, że obserwacje są uporządkowane rosnąco względem czasu zdarzeń. \textcolor{red}{Ostatecznie z tego nie korzystam.}
+\setlength{\droptitle}{-2em}
+  \title{tytul}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{autor}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{data}
 
-\section{Porównanie z innymi modelami}
+%
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage{amssymb,amsmath}
 
-Matematycy i informatycy często uważają, że idea stochastycznego spadku gradientu polega na losowaniu składnika optymalizowanej funkcji. Jednak ze statystycznego punktu widzenia, metoda stochastycznego spadku gradientu opiera się o losowanie indeksu obserwacji ze zbioru, z którego uczony jest algorytm, zanim postanowi się w jakikolwiek sposób przedstawić konkretną funkcję wiarogodności. Zatem w celu estymacji w oparciu o stochastyczny spadek gradientu w modelu Coxa konstruując metodę należy najpierw losować obserwacje a następnie dopiero wyznaczać formę optymalizowanej funkcji częściowej log-wiarogodności.
 
-Dla wielu modeli opierających się o funkcje wiarogodności te dwa punkty widzenia są równoważne, jednak dla modelu Coxa nie. W przypadku modelu ADALINE sformułowanego jak w \cite{ADALINE2}, opartego na minimalizowaniu funkcji kosztu w postaci błędu najmniejszych kwadratów, w \cite{bott2} podano postać funkcji straty oraz równanie algorytmu stochastycznego spadku gradientu jak poniżej
-$$Q_{adaline} = \frac{1}{2}(y-w'\varPhi(x))^2,$$ 
-$$w \leftarrow w + \alpha_k(y_k-w'\varPhi(x_t))\varPhi(x_t),$$
-$$\varPhi(x) \in \mathbb{R}^d, y \in \{-1,1\},$$
+\begin{document}
 
-dla których widać, że w kolejnych krokach algorytmu $t$ wystarczy tylko jedna obserwacja $z_t=(x_t,y_t)$ aby poprawić oszacowanie parametru $w$.
+\maketitle
 
-W modelu proporcjonalnych hazardów Coxa jest to bardziej skomplikowane.
 
-\section{Implementacja}
-
-Dla zadanej z góry funkcji hazardu, częściowa funkcja wiarogodności odpowiada prawdopodobieństwu tego, że obserwowane zdarzenia zdarzyłyby się dokładnie w tej kolejności w jakiej się pojawiły. To prawdopodobieństwo zależy od wszystkich obserwacji w zbiorze. Niemożliwe jest wyliczenie tego poprzez obliczenie wartości funkcji częściowej wiarogodności oddzielnie dla obserwacji o numerach od 1 do 5 i oddzielnie dla obserwacji od numerach 6 do 10, a następnie przemnożeniu wyników przez siebie. Z tej przyczyny niemożliwe jest losowanie czynników optymalizowanej funkcji przy użyciu metody stochastycznego spadku gradientu do estymacji współczynników w tym modelu. Jednak możliwe jest losowanie podzbioru obserwacji a następnie konstruowanie funkcji wiarogodności dla zaobserwowanego zredukowanego zbioru.
-
-Taki sposób wprowadzania obserwacji do estymacji można wykorzystać w sytuacjach, gdy mamy do czynienia z nieskończonym napływem nowych obserwacji a interesują nas oszacowania estymowanych parametrów modelu $\beta_k, k=1,\dots,p$ dla obecnie zaobserwowanych i wykorzystanych obserwacji. Proces ten ma dwie zalety: nie dość, że dla nowych obserwacji model jest w stanie na bazie obecnych oszacowań parametrów dokonać predykcji proporcji hazardów, to dodatkowo po każdej porcji obserwacji aktualizuje parametry modelu.
-
-Omówiona w tym rozdziale metoda estymacji metodą stochastycznego spadku gradientu dla modelu proporcjonalnych hazardów Coxa została zaimplementowana w języku $\mathcal{R}$ \cite{programikr}. Kod wraz z dokumentacją stworzonej funkcji w języku angielskim oraz opisem poszczególnych kroków algorytmu zawarty jest poniżej.
-
-\newpage
 Algorytm jest dostępny w specjalnie przygotowanym pakiecie o nazwie
 \texttt{coxphSGD} napisanym w języku \(\mathcal{R}\), który można pobrać
 z internetu i zainstalować poleceniem
@@ -286,6 +351,4 @@ Zwrócenie parametrów funkcji, gdy spełniony chociaż jeden warunek stopu.
 \end{Highlighting}
 \end{Shaded}
 
-\section{Dwuwymiarowy przykład}
-
-\section{Porównanie z innymi algorytmami spadku gradientu}
+\end{document}
