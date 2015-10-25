@@ -1,0 +1,60 @@
+---
+title: "tytul"
+author: "autor"
+date: "data"
+output:
+  pdf_document:
+    keep_tex: true
+---
+
+```{r setup, purl=FALSE, echo=FALSE}
+knitr::opts_chunk$set(eval = FALSE, tidy = FALSE)
+```
+
+Algorytm jest dostępny w specjalnie przygotowanym pakiecie o nazwie `coxphSGD` napisanym w języku $\mathcal{R}$, który można pobrać z internetu i zainstalować poleceniem
+```{r installation, purl=FALSE}
+if (packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+devtools::install_github("MarcinKosinski/Cox-SGD")
+```
+
+Poniżej przedstawione są argumenty, które przyjmuje funkcja `coxphSGD()`, która estymuje współczynniki w modelu proporcjonalnych hazardów Coxa metodą stochastycznego spadku gradientu. Starano zachować jednorodność kolejności i nazewnictwa parametrów z funkcją `coxph` z pakietu `survival` \cite{ther}, \cite{survival}.
+
+```{r}
+#' Estymacja w modelu Coxa metoda stochastycznego spadku gradientu
+#' 
+#' Funkcja \code{coxphSGD} estymuje współczynniki w modelu proporcjonalnych
+#' hazardów Coxa metodą stochastycznego spadku gradientu.
+#' 
+#' @param formula a formula object, with the response on the left of a ~ operator,
+#' and the terms on the right. The response must be a survival object as returned by
+#' the Surv function.
+#' @param data a data.frame in which to interpret the variables named in the \code{formula}
+#' @param order a numeric vector with suggested order of observations or \code{NULL}
+#' when order of observations in estimation should be randomly generated
+#' @param learningRates a function specifing how to define learning rates in 
+#' steps of the algorithm. By default the \code{f(t)=1/t} is used, where \code{t} is
+#' the number of algorithm's step .
+#' @param epsilon a numeric value with the stop condition of the estimation algorithm. 
+#' When \code{epoch} parameter is specified, \code{epsilon} is ignored.
+#' @param epoch a numeric value declaring the number of epoches to run for the
+#' estimation algorithm in the stochastic gradient descent. By defaul set to 
+#' \code{NULL} - then the \code{epsilon} is used to access the convergence.
+#'
+#' @export
+#' @importFrom survival Surv
+#' @importFrom assertthat assert_that
+#' @examples
+#' library(survival)
+#' coxphSGD(Surv(time, status) ~ ph.ecog + tt(age), data=lung)
+#' 
+coxphSGD = function(formula, data, order, learningRates, epsilon, epoch) {
+  assert_that(is.formula(formula))
+  assert_that(is.data.frame(data))
+  assert_that(is.null(order) | (is.numeric(order) & length(order) == nrow(data)))
+  assert_that(is.null(learningRates) | is.numeric(learningRates))
+  assert_that(is.null(epsilon) | is.numeric(epsilon))
+  assert_that(is.null(epoch) | is.numeric(epoch))
+}
+```

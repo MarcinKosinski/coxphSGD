@@ -64,28 +64,25 @@ Minimalizacja funkcji $Q(w)$:
 \end{itemize}
 
 \section{Algorytm stochastycznego spadku wzdłuż gradientu I}\label{SGD}
-Stochastyczny spadek gradientu to popularny algorytm wykorzystywany do estymacji współczynników w szerokiej gamie modeli uczenia maszynowego takich jak maszyny wektorów podpierających (\textit{ang. Support Vector Machines}), regresja logistyczna czy modele graficzne~\cite{finkel}. W~połączeniu z algorytmem propagacji wstecznej jest standardowym algorytmem w~trenowaniu sztucznych sieci neuronowych. Algorytm stochastycznego spadku gradientu był używany już od 1960 przy estymacji współczynników w modelu regresji liniowej, oryginalnie znanym pod nazwą \textit{ADALINE} \cite{ADALINE}. Kolejnym znanym popularnym algorytmem wykorzystującym stochastyczny spadek gradientu jest filtr adaptacyjny najmniejszych średnich kwadratów \cite{widrow2} (\textit{ang.~least mean squares (LMS) adaptive filter}), który również został wynaleziony w 1960 przez Bernarda Widrowa, który jest także twórcą \textit{ADALINE}.
+Stochastyczny spadek gradientu to popularny algorytm wykorzystywany do estymacji współczynników w szerokiej gamie modeli uczenia maszynowego takich jak maszyny wektorów podpierających (\textit{ang. Support Vector Machines}), regresja logistyczna czy modele graficzne~\cite{finkel}. W~połączeniu z algorytmem propagacji wstecznej jest standardowym algorytmem w~trenowaniu sztucznych sieci neuronowych. Algorytm stochastycznego spadku gradientu był używany już od 1960 przy estymacji współczynników w modelu regresji liniowej, oryginalnie znanym jako \textit{ADALINE} \cite{ADALINE}. Kolejnym algorytmem wykorzystującym stochastyczny spadek gradientu jest filtr adaptacyjny najmniejszych średnich kwadratów \cite{widrow2} (\textit{ang.~least mean squares (LMS) adaptive filter}), który został wynaleziony przez Bernarda Widrowa, twórcę \textit{ADALINE}.
 
 Idea algorytmu stochastycznego spadku gradientu jest następująca: zamiast obliczać gradient na całej funkcji $L$, w danym kroku oblicz
 gradient tylko na pojedynczym elemencie $\ell_{i}$. Nazwa \textit{stochastyczny} bierze się stąd, iż oryginalnie wybiera
-się element $\ell_{i}$ losowo. W praktyce zwykle przechodzi się po całym zbiorze danych w losowej kolejności lub, o ile to możliwe, w~kolejności chronologicznej obserwacji.
+się element $\ell_{i}$ losowo. W praktyce zwykle przechodzi się po całym zbiorze danych w losowej kolejności.
 
+\subsubsection{Właściwości stochastycznego spadku wzdłuż gradientu}
 
+Zbieżność algorytmu stochastycznego spadku gradientu była szeroko badana w literaturze aproksymacji stochastycznych. Aby uzyskać zbieżność zazwyczaj wymaga się aby ciąg kroków algorytmu $\alpha_k$ był malejący i spełniał poniższe warunki $\sum\nolimits_k \alpha_k = \infty$ oraz $\sum\nolimits_k \alpha_k^2 < \infty$~\cite{bott1}.
+Twierdzenie Robbinsa-Siegmunda \cite{robbins} przy łagodnych warunkach zapewnia~zbieżność~prawie na pewno \cite{bottDOD}, nawet  gdy~optymalizowana~funkcja~nie~jest~wszędzie~różniczkowalna.
 
-\subsection{Właściwości stochastycznego spadku wzdłuż gradientu}
-
-Zbieżność algorytmu stochastycznego spadku gradientu była badana szeroko badana w literaturze aproksymacji stochastycznych. Aby uzyskać zbieżność zazwyczaj wymaga się aby ciąg kroków algorytmu $\alpha_k$ był malejący i spełniał poniższe warunki $\sum\nolimits_k \alpha_k = \infty$ oraz $\sum\nolimits_k \alpha_k^2 < \infty$ \cite{bott1}.
-Twierdzenie Robbinsa-Siegmunda \cite{robbins} przy łagodnych warunkach zapewnia zbieżność prawie na pewno \cite{bottDOD}, nawet w sytuacjach gdy optymalizowana funkcja nie jest wszędzie różniczkowalna.
-
-Prędkość zbieżności sotchastycznego spadku gradientu jest w rzeczywistości ograniczana przez zgrubną (\textit{ang. noisy}) aproksymacje prawdziwego gradientu. Gdy dłuości kroków algorytmu
+Prędkość zbieżności stochastycznego spadku gradientu jest w rzeczywistości ograniczana przez zgrubną (\textit{ang. noisy}) aproksymacje prawdziwego gradientu. Gdy długości kroków algorytmu
 maleją zbyt wolno, wariancja estymatorów parametrów $w_k$ maleje równie wolno. Gdy kroki algorytmu maleją
 zbyt szybko, oczekiwane estymatory parametrów $w_k$ potrzebują więcej czasu by osiągnąć optimum \cite{bott1}. Pod pewnymi warunkami regularności \cite{murata}, najlepsza prędkość zbieżności jest uzyskana dla kroków algorytmu $\alpha_k\sim k^{-1}$.
 
 Jak wykazano w \cite{dennis} pod pewnymi odpowiednimi warunkami regularności, gdy zainicjowany współczynnik początkowy $w_0$ jest wystarczająco blisko optimum i krok algorytmu jest odpowiednio mały, algorytm stochastycznego spadku gradientu osiąga liniową zbieżność. Oznacza to, iż przy spełnieniu założeń metody, odległości pomiędzy kolejnymi przybliżeniami a minimum funkcji $\mathbf{w^{\ast}}$ maleją liniowo: $\parallel \mathbf{w^{\ast}} - \mathbf{w_{k+1}} \parallel \leqslant c \parallel \mathbf{w^{\ast}} - \mathbf{w_k} \parallel$. Zbieżność wymaga często przejścia parokrotnie po całym
-zbiorze danych. Zwykle nie losuje się obserwacji, ale przechodzi się po zbiorze
-danych w losowej kolejności. Dodatkowo wady i zalety algorytmu wymienione są poniżej. Zalety~zdecydowanie przewyższają~wady.
+zbiorze danych. Wady i zalety algorytmu wymienione są poniżej. Zalety~zdecydowanie przewyższają~wady.
 
-\subsubsection{Zalety}
+\textbf{Zalety} \vspace{-5pt}
 \begin{itemize}
 \item \textcolor{orange}{Szybkość}: obliczenie gradientu wymaga wzięcia tylko jednej
 obserwacji.
@@ -95,22 +92,92 @@ w pamięci operacyjnej.
 modyfikacje wag.
 \end{itemize}
 
-\subsubsection{Wady}
+\textbf{Wady}  \vspace{-5pt}
 \begin{itemize}
 \item \textcolor{orange}{Wolna zbieżność}: czasem gradient stochastyczny zbiega wolno
 i wymaga wielu iteracji po zbiorze uczącym.
-\item \textcolor{orange}{Problem z ustaleniem długości kroku $k$}: wyznaczenie $k$
+\item \textcolor{orange}{Problem z ustaleniem długości kroku $k$}: wyznaczenie $k$
 przez przeszukiwanie liniowe nie przynosi dobrych rezultatów,
-ponieważ optymalizujemy oryginalnej funkcji $Q$ tylko jej jeden
+ponieważ nie optymalizujemy oryginalnej funkcji $Q$ tylko jej jeden
 składnik $Q_{i}$.
 \end{itemize}
+\newpage
+\section{Porównanie algorytmów spadku wzdłuż gradientu}
 
-\section{Ewentualne obrazki obrazujące/porównujące algorytmy}
+W niniejszym podrozdziale przedstawiono graficznie różnice w wyborze kolejnych punktów w trakcie optymalizacji między omawianymi w poprzedniej części pracy algorytmami spadku wzdłuż gradientu I (Cauchy'ego), spadku wzdłuż gradientu II (Newtona-Raphsona) oraz stochastycznego spadku wzdłuż gradientu I. W celu zobrazowania przykładu na dwuwymiarowym wykresie, postanowiono ograniczyć się do modelu z jedną zmienną objaśniającą i wyrazem wolnym. Do przykładu wybrano model regresji logistycznej, z racji na prostotę przedstawienia funkcji log-wiarogodności jako sumy różniczkowalnych składników.
 
-\textcolor{red}{Coś tego typu porównujące może algorytm Cauchy'ego, Raphsona-Newtona i SGD?}
+Funkcja log-wiarogodności dla modelu regresji logistycznej, za \cite{czepiel} i \cite{dobson}, ma postać
+
+\begin{equation}
+\marginnote{$\beta=(\beta_1,\beta_2)$}
+\ell(\beta) = \sum\limits_{i=1}^{N}\Big(y_i(\beta_1+\beta_2x_i) -\log(1+\exp(\beta_1+\beta_2x_i))\Big) = \sum\limits_{i=1}^{N} Q_i(\beta_1,\beta_2), 
+\end{equation}
+\begin{equation}
+Q_i(\beta_1,\beta_2) = y_i(\beta_1+\beta_2x_i) -\log(1+\exp(\beta_1+\beta_2x_i)).
+\end{equation}
+
+Dla tak skonstruowanej funkcji wiarogodności, współrzędne gradientu to odpowiednio
+
+\begin{equation*}
+\dfrac{\partial\ell(\beta)}{\partial\beta_1} = \sum\limits_{i=1}^{N}\Big(y_i-\pi_i(\beta)\Big), \ \ \ \ \
+\dfrac{\partial\ell(\beta)}{\partial\beta_2} = \sum\limits_{i=1}^{N}x_i\Big(y_i-\pi_i(\beta)\Big),
+\end{equation*}
+
+zaś macierz informacji wyraża się jak następuje
+\begin{equation}\label{iii}
+\mathscr{I}(\beta) = 
+\begin{bmatrix}
+    \sum\limits_{i=1}^{N}\pi_i(\beta)(1-\pi_i(\beta))       & \sum\limits_{i=1}^{N}x_i\pi_i(\beta)(1-\pi_i(\beta)) \\
+\sum\limits_{i=1}^{N}x_i\pi_i(\beta)(1-\pi_i(\beta)) & \sum\limits_{i=1}^{N}x_i^2\pi_i(\beta)(1-\pi_i(\beta)) 
+\end{bmatrix},
+\end{equation}
+gdzie $\pi_i(\beta) = \frac{\exp(\beta_1+\beta_2x_i)}{1+\exp(\beta_1+\beta_2x_i)}$, a $N$ to liczba obserwacji.
+
+Wtedy aktualizacja kandydata na miejsce zerowe w $k$-tym kroku algorytmu optymalizacyjnego dla kolejnych metod omówionych w rozdziale (\ref{R-N}) wyraża się poniższymi wzorami
+\\
+\begin{center}
+\textbf{Metoda spadku wzdłuż gradientu I (Cauchy’ego)}
+\end{center}
+\begin{equation*}
+\beta_{k} = \beta_{k-1} + \alpha_{k}\cdot\Big(\sum\limits_{i=1}^{N}(y_i-\pi_i(\beta_{k-1})), \sum\limits_{i=1}^{N}x_i(y_i-\pi_i(\beta_{k-1}))\Big).\marginnote{$\alpha_k \in \mathbb{R}$}
+\end{equation*}
+\begin{center}
+\textbf{Metoda spadku wzdłuż gradientu II (Newtona-Raphsona)}
+\end{center}
+\begin{equation*}
+\beta_{k} = \beta_{k-1} - \mathscr{I}(\beta_{k-1})^{-1}\cdot\Big(\sum\limits_{i=1}^{N}(y_i-\pi_i(\beta_{k-1})), \sum\limits_{i=1}^{N}x_i(y_i-\pi_i(\beta_{k-1}))\Big),
+\end{equation*}
+gdzie $\mathscr{I}(\beta_{k-1})$ zdefiniowane jest we wzorze \ref{iii}. 
+\begin{center}
+\textbf{Metoda stochastycznego spadku wzdłuż gradientu I}
+\end{center}
+\begin{equation*}
+\beta_{k} = \beta_{k-1} + \alpha_{k}\cdot\Big(y_i-\pi_i(\beta_{k-1}), x_i(y_i-\pi_i(\beta_{k-1}))\Big),
+\end{equation*}
+dla wylosowanego w danym kroku $i$.
+\\ \ \\
+Ponieważ algorytmy te znajdują minimum funkcji, a docelowo szukane jest maksimum, stąd wykorzystano przeciwieństwo funkcji log-wiarogodności, dlatego w wyżej wymienionych wzorach zmieniono znaki przed pochodnymi na przeciwne.
+
+\newpage
+Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można otrzymać wartości ekstremum w danym kroku kolejnych algorytmów. Kody funkcji \texttt{logitGD()} dostępne są w Dodatku~\ref{kody}.
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{logitGD}\NormalTok{(mtcars$vs, mtcars$mpg, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(-}\DecValTok{8}\NormalTok{,}\DecValTok{0}\NormalTok{),}
+        \DataTypeTok{alpha=}\NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/}\DecValTok{3}\NormalTok{\})$steps}
+\KeywordTok{logitGD}\NormalTok{(mtcars$vs, dd, }\DataTypeTok{optim.method =} \StringTok{"GDII"}\NormalTok{,}
+        \DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.43}\NormalTok{, -}\FloatTok{8.8}\NormalTok{))$steps}
+\KeywordTok{logitGD}\NormalTok{(mtcars$vs[}\KeywordTok{sample}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(mtcars))],}
+        \NormalTok{mtcars$mpg[}\KeywordTok{sample}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(mtcars))],}
+        \DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{, }\DataTypeTok{eps=}\FloatTok{1e-7}\NormalTok{, }\DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{),}
+        \DataTypeTok{alpha=}\NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/}\KeywordTok{nrow}\NormalTok{(mtcars)\})$steps}
+\end{Highlighting}
+\end{Shaded}
+
 
 \begin{figure}[h]
-\includegraphics[width=\textwidth, height=15cm]{Obrazki/gd}
+\begin{center}
+\includegraphics[width=0.5\textwidth, height=8cm]{Obrazki/gd}
 \caption{Porównanie algorytmów spadku gradientu.}
+\end{center}
 \end{figure}
 

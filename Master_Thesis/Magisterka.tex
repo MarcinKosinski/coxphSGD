@@ -9,7 +9,9 @@
 %\usepackage{mathmode}
 % % % % % % % % % % % % % % % % % % % % % % %
 \usepackage{lmodern}
-\usepackage{amssymb,amsmath}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
@@ -49,20 +51,20 @@
 \newcommand{\RegionMarkerTok}[1]{{#1}}
 \newcommand{\ErrorTok}[1]{\textbf{{#1}}}
 \newcommand{\NormalTok}[1]{{#1}}
-\ifxetex
-  \usepackage[setpagesize=false, % page size defined by xetex
-              unicode=false, % unicode breaks when used with xetex
-              xetex]{hyperref}
-\else
-  \usepackage[unicode=true]{hyperref}
-\fi
-\hypersetup{breaklinks=true,
-            bookmarks=true,
-            colorlinks=true,
-            citecolor=blue,
-            urlcolor=blue,
-            linkcolor=magenta,
-            pdfborder={0 0 0}}
+%\ifxetex
+%  \usepackage[setpagesize=false, % page size defined by xetex
+%              unicode=false, % unicode breaks when used with xetex
+%              xetex]{hyperref}
+%\else
+%  \usepackage[unicode=true]{hyperref}
+%\fi
+%\hypersetup{breaklinks=true,
+%            bookmarks=true,
+%            colorlinks=true,
+%            citecolor=blue,
+%            urlcolor=blue,
+%            linkcolor=magenta,
+%            pdfborder={0 0 0}}
 \urlstyle{same}  % don't use monospace font for urls
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
@@ -101,9 +103,10 @@
 \appendix
 
 \chapter{Wykorzystane narzędzia}
-\chapter{Kody w R}
+\input{Rozdzialy/Kody.tex}
+%\chapter{Kody w R}\label{kody}
 \chapter{Dokumentacja pakietu RTCGA}
-\includepdf[pages=-]{Rd2.pdf}
+\includepdf[pages=-]{RTCGA.pdf}
 
 \input{Rozdzialy/Biblio.tex}
 
