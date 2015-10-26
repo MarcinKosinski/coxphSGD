@@ -14,11 +14,11 @@ U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\
 \end{equation}
 gdzie $j$ oznacza krok algorytmu, $i$ iteruje składniki $U_{k}$, $\alpha_j$ to długość $j$-tego kroku algorytmu, zaś $U_{k}$ to $k$-ta pochodna cząstkowa gradientu $U$ oraz $\beta_{k}$ to $k$-ta współrzędna estymowanego wektora współczynników $\beta$ o rozmiarze $p$, czyli $k=1,\dots,p$. 
 
-Bez straty ogólności, w celu uproszczenia oznaczeń, można założyć, że obserwacje są uporządkowane rosnąco względem czasu zdarzeń. \textcolor{red}{Ostatecznie z tego nie korzystam.}
+Własna implementacja algorytmu w języku $\mathcal{R}$ znajduje się w Dodatku \ref{coxKody} albo podrozdziale \ref{?}.
 
 \section{Porównanie z innymi modelami}
 
-Matematycy i informatycy często uważają, że idea stochastycznego spadku gradientu polega na losowaniu składnika optymalizowanej funkcji. Jednak ze statystycznego punktu widzenia, metoda stochastycznego spadku gradientu opiera się o losowanie indeksu obserwacji ze zbioru, z którego uczony jest algorytm, zanim postanowi się w jakikolwiek sposób przedstawić konkretną funkcję wiarogodności. Zatem w celu estymacji w oparciu o stochastyczny spadek gradientu w modelu Coxa konstruując metodę należy najpierw losować obserwacje a następnie dopiero wyznaczać formę optymalizowanej funkcji częściowej log-wiarogodności.
+Skupiając się na informatycznym aspekcie algorytmu można stwierdzić, że idea stochastycznego spadku gradientu polega na losowaniu składnika optymalizowanej funkcji. Jednak ze statystycznego punktu widzenia, metoda stochastycznego spadku gradientu opiera się o losowanie indeksu obserwacji ze zbioru, z którego uczony jest algorytm, zanim postanowi się w jakikolwiek sposób przedstawić konkretną funkcję wiarogodności. Zatem w celu estymacji w oparciu o stochastyczny spadek gradientu w modelu Coxa, konstruując metodę, należy najpierw losować obserwacje a następnie dopiero wyznaczać formę optymalizowanej funkcji częściowej log-wiarogodności.
 
 Dla wielu modeli opierających się o funkcje wiarogodności te dwa punkty widzenia są równoważne, jednak dla modelu Coxa nie. W przypadku modelu ADALINE sformułowanego jak w \cite{ADALINE2}, opartego na minimalizowaniu funkcji kosztu w postaci błędu najmniejszych kwadratów, w \cite{bott2} podano postać funkcji straty oraz równanie algorytmu stochastycznego spadku gradientu jak poniżej
 $$Q_{adaline} = \frac{1}{2}(y-w'\varPhi(x))^2,$$ 
@@ -286,6 +286,3 @@ Zwrócenie parametrów funkcji, gdy spełniony chociaż jeden warunek stopu.
 \end{Highlighting}
 \end{Shaded}
 
-\section{Dwuwymiarowy przykład}
-
-\section{Porównanie z innymi algorytmami spadku gradientu}
