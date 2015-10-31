@@ -41,7 +41,7 @@ gradient descent algorithm in Cox proportional hazards model.
 If one of the conditions is fullfiled
 \itemize{
  \item \eqn{||\beta_{j+1}-\beta_{j}|| <}\code{epsilon} parameter for any \eqn{j}
- \item \eqn{#epochs >} \code{epochs} parameter
+ \item \eqn{\#epochs >} \code{epochs} parameter
 }
 the estimation process is stopped.
 }
