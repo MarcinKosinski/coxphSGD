@@ -164,4 +164,42 @@ dupa sraka \texttt{logitGD()} jasd
 \end{Highlighting}
 \end{Shaded}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+                    \CommentTok{# wstępna inicjalizacja parametrów}
+\NormalTok{eps =}\StringTok{ }\FloatTok{1e-5}                               \CommentTok{# warunek stopu.}
+
+\NormalTok{n =}\StringTok{ }\KeywordTok{length}\NormalTok{(data)                         }\CommentTok{# data jest listą ramek danych.}
+
+\NormalTok{diff =}\StringTok{ }\NormalTok{eps +}\StringTok{ }\DecValTok{1}                           \CommentTok{# różnice w oszacowaniach parametrów}
+                                         \CommentTok{# między kolejnymi krokami.}
+
+\NormalTok{learningRates =}\StringTok{ }\NormalTok{function(x) }\DecValTok{1}\NormalTok{/x          }\CommentTok{# długości kroku algorytmu.}
+
+\NormalTok{beta_old =}\StringTok{ }\KeywordTok{numeric}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{length =} \NormalTok{k)        }\CommentTok{# punkt startowy dlugosci k,}
+                                         \CommentTok{# gdzie k to liczba zmiennych}
+                                         \CommentTok{# objaśniających w modelu.}
+
+                              \CommentTok{# estymacja}
+\NormalTok{while(i <}\StringTok{ }\NormalTok{n |}\StringTok{ }\NormalTok{diff <}\StringTok{ }\NormalTok{eps) do             }\CommentTok{# do zbieżności lub wyczerpania zbiorów}
+  
+  \NormalTok{batch =}\StringTok{ }\NormalTok{data[[i]]}
+  
+  \NormalTok{beta_new =}\StringTok{ }\NormalTok{beta_old -}\StringTok{ }\KeywordTok{learningRates}\NormalTok{(i)*}\KeywordTok{U_Batch}\NormalTok{(batch) }
+                                         \CommentTok{# U_Batch to częściowa funkcja}
+                                         \CommentTok{# log-wiarogdności dla zaobserwowanego}
+                                         \CommentTok{# zbioru `batch`}
+  
+  \NormalTok{diff =}\StringTok{ }\KeywordTok{euclidean_dist}\NormalTok{(beta_new, beta_old) }\CommentTok{# odległość euklidesowa}
+  
+  \NormalTok{beta_old =}\StringTok{ }\NormalTok{beta_new }
+  
+  \NormalTok{i =}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}
+  
+\NormalTok{end while}
+
+\NormalTok{return beta_new}
+\end{Highlighting}
+\end{Shaded}
+
 \end{document}

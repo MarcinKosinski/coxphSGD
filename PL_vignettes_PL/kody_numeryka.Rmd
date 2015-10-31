@@ -5,6 +5,7 @@ date: "25.10.2015"
 output:
   pdf_document:
     keep_tex: true
+    highlight: tango
 ---
 
 ```{r setup, purl=FALSE, echo=FALSE}
@@ -70,5 +71,42 @@ inverseHessianGDII <- function(x, w_old){
     nrow =2 )
   )
 }
+```
+
+
+```{r, eval = FALSE}
+                    # wstępna inicjalizacja parametrów
+eps = 1e-5                               # warunek stopu.
+
+n = length(data)                         # data jest listą ramek danych.
+
+diff = eps + 1                           # różnice w oszacowaniach parametrów
+                                         # między kolejnymi krokami.
+
+learningRates = function(x) 1/x          # długości kroku algorytmu.
+
+beta_old = numeric(0, length = k)        # punkt startowy dlugosci k,
+                                         # gdzie k to liczba zmiennych
+                                         # objaśniających w modelu.
+
+                              # estymacja
+while(i < n | diff < eps) do             # do zbieżności lub wyczerpania zbiorów
+  
+  batch = data[[i]]
+  
+  beta_new = beta_old - learningRates(i)*U_Batch(batch) 
+                                         # U_Batch to częściowa funkcja
+                                         # log-wiarogdności dla zaobserwowanego
+                                         # zbioru `batch`
+  
+  diff = euclidean_dist(beta_new, beta_old) # odległość euklidesowa
+  
+  beta_old = beta_new 
+  
+  i = i + 1
+  
+end while
+
+return beta_new
 ```
 
