@@ -90,11 +90,11 @@ beta_old = numeric(0, length = k)        # punkt startowy dlugosci k,
                                          # objaśniających w modelu.
 
                               # estymacja
-while(i < n | diff < eps) do             # do zbieżności lub wyczerpania zbiorów
-  
+i = 1                                    # iterator kroku algorytmu
+while(i <= n | diff < eps) do            # do zbieżności lub wyczerpania zbiorów
   batch = data[[i]]
   
-  beta_new = beta_old - learningRates(i)*U_Batch(batch) 
+  beta_new = beta_old - learningRates(i) * U_Batch(batch) 
                                          # U_Batch to częściowa funkcja
                                          # log-wiarogdności dla zaobserwowanego
                                          # zbioru `batch`
@@ -104,9 +104,7 @@ while(i < n | diff < eps) do             # do zbieżności lub wyczerpania zbior
   beta_old = beta_new 
   
   i = i + 1
-  
 end while
-
 return beta_new
 ```
 

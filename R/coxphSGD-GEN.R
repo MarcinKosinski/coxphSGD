@@ -7,9 +7,8 @@
 #' @param formula a formula object, with the response on the left of a ~ operator,
 #' and the terms on the right. The response must be a survival object as returned by
 #' the Surv function.
-#' @param data a data.frame in which to interpret the variables named in the \code{formula}.
-#' @param reorderObs a logical value telling whether reorder observations at each epoch.
-#' when order of observations in estimation should be randomly generated.
+#' @param data a list of batch data.frames in which to interpret the variables named in the \code{formula}.
+#' See Details.
 #' @param learningRates a function specifing how to define learning rates in 
 #' steps of the algorithm. By default the \code{f(t)=1/t} is used, where \code{t} is
 #' the number of algorithm's step.
@@ -17,15 +16,15 @@
 #' equal to the number of variables after using \code{formula} in the \code{model.matrix}
 #' function
 #' @param epsilon a numeric value with the stop condition of the estimation algorithm. 
-#' @param epoch a numeric value declaring the number of epoches to run for the
-#' estimation algorithm in the stochastic gradient descent.
-#' @param batchSize a numeric value specifing the size of a batch set to take from 
-#' the reordered dataset to update the coefficients in one step of an algorithm.
 #'
-#' @note If one of the conditions is fullfiled
+#' @details A \code{data} argument should be a list of data.frames, where in every batch data.frame
+#' there is the same structure and naming convention for explanatory and survival (times, censoring)
+#' variables. See Examples.
+#'
+#' @note If one of the conditions is fullfiled (j denotes the step number)
 #' \itemize{
 #'  \item \eqn{||\beta_{j+1}-\beta_{j}|| <}\code{epsilon} parameter for any \eqn{j}
-#'  \item \eqn{\#epochs >} \code{epochs} parameter
+#'  \item \eqn{j>} \code{\#batches} 
 #' }
 #' the estimation process is stopped.
 #' @export
@@ -34,22 +33,59 @@
 #' @examples
 #' library(survival)
 #' \dontrun{
-#' coxphSGD(Surv(time, status) ~ ph.ecog + age, data=lung)
+#' coxphSGD(Surv(time, status) ~ ph.ecog + age,
+#'          data=list(lung[1:50, ],
+#'                    lung[51:100, ],
+#'                    lung[101:150, ],
+#'                    lung[151:228, ])
+#' )
 #' }
 #' 
-coxphSGD = function(formula, data, reorderObs = TRUE,
-                    learningRates = function(x) 1/x,
-                    beta_0 = 0, epsilon = 1e-5,
-                    batchSize = 10, epoch = 20 ) {
+
+coxphSGD <- function(formula, data, 
+                    learningRates = function(x){1/x},
+                    beta_0 = 0, epsilon = 1e-5 ) {
+  checkArguments(formula, data, learningRates,
+                  beta_0, epsilon) -> beta_old # check arguments
+
+  n <- length(data)
+  diff <- epsilon + 1
+  i <- 1
+  beta_new <- list() # steps are saved in a list so that they can
+                     # be tracked in the future
+  # estimate
+  while(i <= n & diff > epsilon) {
+    
+    tryCatch({
+    beta_new[[i]] <- coxphSGD_batch(formula = formula, data = data[[i]],
+                                    learningRate = learningRates(i),
+                                    beta = beta_old)
+    
+    diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
+    beta_old <- beta_new[[i]]
+    i <- i + 1  
+    }, error = function(cond) {i <<<- n + 1})
+  }
   
-  assert_that(is.data.frame(data))
-  assert_that(is.logical(reorderObs))
-  assert_that(is.function(learningRates))
-  assert_that(is.numeric(epsilon))
-  assert_that(is.numeric(epoch) & epoch > 0)
+  # return results
+  fit <- list()
+  fit$Call <- match.call()
+  fit$coefficients <- beta_new
+  fit$epsilon <- epsilon
+  fit$learningRates <- learningRates
+  fit$steps <- i
+  class(fit) <- "coxphSGD"
+  fit
+  
+}
+
+
+
+coxphSGD_batch <- function(formula, data, learningRate, beta){
+  
+  # Parameter identification as in  `survival::coxph()`.
   Call <- match.call()
-  indx <- match(c("formula", "data", "order", "learningRates",
-                  "epsilon", "batchsize", "epoch"),
+  indx <- match(c("formula", "data"),
                 names(Call), nomatch = 0)
   if (indx[1] == 0) 
       stop("A formula argument is required")
@@ -66,67 +102,67 @@ coxphSGD = function(formula, data, reorderObs = TRUE,
   if (type != "right" && type != "counting") 
       stop(paste("Cox model doesn't support \"", type, "\" survival data", 
           sep = ""))
-  if (length(beta_0) == 1) {
-    beta_0 <- rep(beta_0, ncol(mf)-1)
+  
+  # collect times, status, variables and reorder samples 
+  # to make the algorithm more clear to read and track
+  cbind(not_censored = 1 - unclass(Y)[,2],
+        times = unclass(Y)[,1],
+        mf[, -1]) %>%
+    arrange(times) -> batchData
+  
+  # calculate the log-likelihood for this batch sample
+  
+  partial_sum <- list()
+  
+  for(k in 1:nrow(batchData)) {
+    
+    # risk set for current time/observation
+    risk_set <- batchData %>%
+      filter(times <= batchData$times[k])
+    
+    nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
+      element * exp(element * beta)
+    }) %>%
+      t %>%
+      colSums()
+    
+    denominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
+      exp(element * beta)
+    }) %>%
+      t %>%
+      colSums()
+    
+    partial_sum[[k]] <- 
+      batchData[k, "not_censored"] * (batchData[k, -c(1,2)] - nominator/denominator)
+    
   }
   
-  if (reorderObs) {
-    obsOrder <- sample(1:nrow(data))
-    mf <- mf[obsOrder, ]
-    Y <- Y[obsOrder, ]
-  }
-  j <- 0 # number of an algorithm's step
-  diff <- 0 # differences between estimates along steps
-  i <- 0 # indicator of a batch sample
-  n <- nrow(data)
-  batchSamplesStarts <- seq(1,n, batchSize) # indexes of starts of batch samples
-  epochs_n <- 1# indicator of the present epochs number
-  beta_j <- beta_0
-  while ( j == 0 | (diff < eps & epochs_n <= epoch) ){
-    j <- j+1
-    i <- i+1
-  if (i < length(batchSamplesStarts)-1){
-    batchSample_variables <- mf[batchSamplesStarts[i]:(batchSamplesStarts[i]+batchSize-1), ]
-    batchSample_response <- Y[batchSamplesStarts[i]:(batchSamplesStarts[i]+batchSize-1), ]
-  } else {
-    if (i == length(batchSamplesStarts)-1) {
-      # last batch sample can me shorter than all others
-      batchSample_variables <- mf[batchSamplesStarts[i]:(n), ]
-      batchSample_response <- Y[batchSamplesStarts[i]:(n), ]
-    } else {
-      i <- 1
-      batchSample_variables <- mf[batchSamplesStarts[i]:(batchSamplesStarts[i]+batchSize-1), ]
-      batchSample_response <- Y[batchSamplesStarts[i]:(batchSamplesStarts[i]+batchSize-1), ]
-      epochs_n <- epochs_n + 1 # epoch has passed
-      # so reorder samples
-        if (reorderObs) {
-          obsOrder <- sample(1:nrow(data))
-          mf <- mf[obsOrder, ]
-          Y <- Y[obsOrder, ]
-        }
-    }
-  }
-  U_ik <- matrix(0, ncol = ncol(mf)-1,
-                 nrow = nrow(batchSample_variables))
-  U_k <- numeric(ncol(mf)-1)
-  for ( k in 2:ncol(mf)) { # 1st dimension is Y
-    for (i in 1:nrow(batchSample_variables)){
-      l <- which(batchSample_response[, 1] <= batchSample_response[i, 1])
-      U_ik[i,k] <- -batchSample_variables[i, k] +
-        sum(batchSample_variables[l, k]*exp(batchSample_variables[l, ]%*%beta_j))/
-            sum(exp(batchSample_variables[l, ]%*%beta_j)) 
-            
-    }
-  U_k[k] <- sum(U_ik[, k])  
-  }
-   beta_j <- beta_j - learningRates(j)*U_k
-   diff <- sqrt(sum(learningRates(j)*U_k))
-  }
-  fit <- list()
-  fit$Call <- Call
-  fit$mf <- mf
-  fit$coeff <- beta_j
-  fit$epochs_n <- epochs_n
-  fit
+  do.call(rbind, partial_sum) %>%
+    colSums() -> U_batch
+  
+  
+  beta_out <- beta + learningRate * U_batch
+  
+  return(beta_out)
 }
-#coxphSGD(Surv(time, status) ~ ph.ecog + age, data=lung)
+  
+checkArguments <- function(formula, data, learningRates,
+                             beta_0, epsilon) {
+  assert_that(is.list(data) & length(data) > 0)
+  assert_that(length(unique(unlist(lapply(data, ncol)))) == 1)
+  # + check names and types for every variables
+  assert_that(is.function(learningRates))
+  assert_that(is.numeric(epsilon))
+  assert_that(is.numeric(beta_0))
+  
+    # check length of the start parameter
+  if (length(beta_0) == 1) {
+    beta_0 <- rep(beta_0, as.character(formula)[3] %>%
+                    strsplit("\\+") %>%
+                    unlist %>%
+                    length)
+  }
+  
+  return(beta_0)
+}
+

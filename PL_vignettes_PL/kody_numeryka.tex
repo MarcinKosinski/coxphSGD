@@ -181,11 +181,11 @@ dupa sraka \texttt{logitGD()} jasd
                                          \CommentTok{# objaśniających w modelu.}
 
                               \CommentTok{# estymacja}
-\NormalTok{while(i <}\StringTok{ }\NormalTok{n |}\StringTok{ }\NormalTok{diff <}\StringTok{ }\NormalTok{eps) do             }\CommentTok{# do zbieżności lub wyczerpania zbiorów}
-  
+\NormalTok{i =}\StringTok{ }\DecValTok{1}                                    \CommentTok{# iterator kroku algorytmu}
+\NormalTok{while(i <=}\StringTok{ }\NormalTok{n |}\StringTok{ }\NormalTok{diff <}\StringTok{ }\NormalTok{eps) do            }\CommentTok{# do zbieżności lub wyczerpania zbiorów}
   \NormalTok{batch =}\StringTok{ }\NormalTok{data[[i]]}
   
-  \NormalTok{beta_new =}\StringTok{ }\NormalTok{beta_old -}\StringTok{ }\KeywordTok{learningRates}\NormalTok{(i)*}\KeywordTok{U_Batch}\NormalTok{(batch) }
+  \NormalTok{beta_new =}\StringTok{ }\NormalTok{beta_old -}\StringTok{ }\KeywordTok{learningRates}\NormalTok{(i) *}\StringTok{ }\KeywordTok{U_Batch}\NormalTok{(batch) }
                                          \CommentTok{# U_Batch to częściowa funkcja}
                                          \CommentTok{# log-wiarogdności dla zaobserwowanego}
                                          \CommentTok{# zbioru `batch`}
@@ -195,9 +195,7 @@ dupa sraka \texttt{logitGD()} jasd
   \NormalTok{beta_old =}\StringTok{ }\NormalTok{beta_new }
   
   \NormalTok{i =}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}
-  
 \NormalTok{end while}
-
 \NormalTok{return beta_new}
 \end{Highlighting}
 \end{Shaded}
