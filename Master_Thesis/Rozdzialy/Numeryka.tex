@@ -159,24 +159,26 @@ dla wylosowanego w danym kroku $i$.
 Ponieważ algorytmy te znajdują minimum funkcji, a docelowo szukane jest maksimum, stąd wykorzystano przeciwieństwo funkcji log-wiarogodności, dlatego w wyżej wymienionych wzorach zmieniono znaki przed pochodnymi na przeciwne.
 
 \newpage
-Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można otrzymać wartości ekstremum w danym kroku kolejnych algorytmów. Kody funkcji \texttt{logitGD()} dostępne są w Dodatku~\ref{kody}.
+Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można otrzymać wartości ekstremum w danym kroku kolejnych algorytmów. Kod funkcji \texttt{logitGD()} oraz fragmenty kodu tworzące poniższy wykres dostępne są w Dodatku~\ref{kody}.
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{logitGD}\NormalTok{(mtcars$vs, mtcars$mpg, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(-}\DecValTok{8}\NormalTok{,}\DecValTok{0}\NormalTok{),}
-        \DataTypeTok{alpha=}\NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/}\DecValTok{3}\NormalTok{\})$steps}
-\KeywordTok{logitGD}\NormalTok{(mtcars$vs, dd, }\DataTypeTok{optim.method =} \StringTok{"GDII"}\NormalTok{,}
-        \DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.43}\NormalTok{, -}\FloatTok{8.8}\NormalTok{))$steps}
-\KeywordTok{logitGD}\NormalTok{(mtcars$vs[}\KeywordTok{sample}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(mtcars))],}
-        \NormalTok{mtcars$mpg[}\KeywordTok{sample}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(mtcars))],}
-        \DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{, }\DataTypeTok{eps=}\FloatTok{1e-7}\NormalTok{, }\DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{),}
-        \DataTypeTok{alpha=}\NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/}\KeywordTok{nrow}\NormalTok{(mtcars)\})$steps}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{10000}\NormalTok{)}
+\NormalTok{z <-}\StringTok{ }\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{3}\NormalTok{*x}
+\NormalTok{y <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
+
+\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDI}
+\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDII"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDII}
+
+\NormalTok{ind <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
+\KeywordTok{logitGD}\NormalTok{(y[ind], x[ind], }\DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{,}
+        \DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{SGDI}\FloatTok{.1}
 \end{Highlighting}
 \end{Shaded}
 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.5\textwidth, height=8cm]{Obrazki/gd}
+\includegraphics[width=0.75\textwidth]{Obrazki/logit.pdf}
 \caption{Porównanie algorytmów spadku gradientu.}
 \end{center}
 \end{figure}

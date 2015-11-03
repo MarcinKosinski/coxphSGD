@@ -2,6 +2,43 @@
 \section{Implementacje optymalizacji w regresji logistycznej}\label{kody}
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{10000}\NormalTok{)}
+\NormalTok{z <-}\StringTok{ }\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{3}\NormalTok{*x}
+\NormalTok{y <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
+\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDI}
+\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDII"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDII}
+
+\NormalTok{ind <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
+\KeywordTok{logitGD}\NormalTok{(y[ind], x[ind], }\DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{,}
+        \DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{SGDI}\FloatTok{.1}
+\NormalTok{ind2 <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
+\KeywordTok{logitGD}\NormalTok{(y[ind2], x[ind2], }\DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{,}
+        \DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{SGDI}\FloatTok{.2}
+\NormalTok{ind3 <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
+\KeywordTok{logitGD}\NormalTok{(y[ind3], x[ind3], }\DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{,}
+        \DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{SGDI}\FloatTok{.3}
+\NormalTok{ind4 <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
+\KeywordTok{logitGD}\NormalTok{(y[ind4], x[ind4], }\DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{,}
+        \DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{SGDI}\FloatTok{.4}
+\NormalTok{ind5 <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
+\KeywordTok{logitGD}\NormalTok{(y[ind5], x[ind5], }\DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{,}
+        \DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{SGDI}\FloatTok{.5}
+
+\KeywordTok{do.call}\NormalTok{(rbind, }\KeywordTok{c}\NormalTok{(GDI, GDII, SGDI}\FloatTok{.1}\NormalTok{, SGDI}\FloatTok{.2}\NormalTok{, SGDI}\FloatTok{.3}\NormalTok{, SGDI}\FloatTok{.4}\NormalTok{, SGDI}\FloatTok{.5}\NormalTok{)) ->}\StringTok{ }\NormalTok{coeffs}
+\KeywordTok{unlist}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(}\KeywordTok{list}\NormalTok{(GDI, GDII, SGDI}\FloatTok{.1}\NormalTok{, SGDI}\FloatTok{.2}\NormalTok{, SGDI}\FloatTok{.3}\NormalTok{, SGDI}\FloatTok{.4}\NormalTok{, SGDI}\FloatTok{.5}\NormalTok{), length)) ->}\StringTok{ }\NormalTok{algorithm}
+\NormalTok{data2viz <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{as.data.frame}\NormalTok{(coeffs),}
+      \DataTypeTok{algorithm =} \KeywordTok{unlist}\NormalTok{(}\KeywordTok{mapply}\NormalTok{(rep, }\KeywordTok{c}\NormalTok{(}\StringTok{"GDI"}\NormalTok{, }\StringTok{"GDII"}\NormalTok{, }\StringTok{"SGDI.1"}\NormalTok{, }\StringTok{"SGDI.2"}\NormalTok{, }\StringTok{"SGDI.3"}\NormalTok{, }\StringTok{"SGDI.4"}\NormalTok{, }\StringTok{"SGDI.5"}\NormalTok{), algorithm)))}
+\KeywordTok{names}\NormalTok{(data2viz)[}\DecValTok{1}\NormalTok{:}\DecValTok{2}\NormalTok{] <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Intercept"}\NormalTok{, }\StringTok{"X"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(ggplot2); }\KeywordTok{library}\NormalTok{(ggthemes)}
+\KeywordTok{ggplot}\NormalTok{(data2viz) +}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{X, }\DataTypeTok{y =} \NormalTok{Intercept, }\DataTypeTok{col =} \NormalTok{algorithm)) +}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{X, }\DataTypeTok{y =} \NormalTok{Intercept, }\DataTypeTok{col =} \NormalTok{algorithm, }\DataTypeTok{group =} \NormalTok{algorithm)) +}
+\StringTok{  }\KeywordTok{theme_tufte}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{logitGD <-}\StringTok{ }\NormalTok{function(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-4}\NormalTok{,}
                     \DataTypeTok{max.iter =} \DecValTok{100}\NormalTok{, }\DataTypeTok{alpha =} \NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/t\}, }\DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{))\{}
   \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{length}\NormalTok{(y) ==}\StringTok{ }\KeywordTok{length}\NormalTok{(x) &}\StringTok{ }\NormalTok{optim.method %in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"GDI"}\NormalTok{, }\StringTok{"GDII"}\NormalTok{, }\StringTok{"SGDI"}\NormalTok{)}
