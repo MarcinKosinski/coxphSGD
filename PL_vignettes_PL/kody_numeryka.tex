@@ -101,8 +101,6 @@
 \maketitle
 
 
-dupa sraka \texttt{logitGD()} jasd
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{logitGD <-}\StringTok{ }\NormalTok{function(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-4}\NormalTok{,}
@@ -123,7 +121,7 @@ dupa sraka \texttt{logitGD()} jasd
       \NormalTok{w_new <-}\StringTok{ }\NormalTok{w_old +}\StringTok{ }\KeywordTok{alpha}\NormalTok{(iter)*}\KeywordTok{updateWeightsGDI}\NormalTok{(y, x, w_old)}
     \NormalTok{\}}
     \NormalTok{if (optim.method ==}\StringTok{ "GDII"}\NormalTok{)\{}
-      \NormalTok{w_new <-}\StringTok{ }\NormalTok{w_old -}\StringTok{ }\KeywordTok{as.vector}\NormalTok{(}\KeywordTok{inverseHessianGDII}\NormalTok{(x, w_old)%*%}
+      \NormalTok{w_new <-}\StringTok{ }\NormalTok{w_old +}\StringTok{ }\KeywordTok{as.vector}\NormalTok{(}\KeywordTok{inverseHessianGDII}\NormalTok{(x, w_old)%*%}
 \StringTok{                                   }\KeywordTok{updateWeightsGDI}\NormalTok{(y, x, w_old))}
     \NormalTok{\}}
     \NormalTok{if (optim.method ==}\StringTok{ "SGDI"}\NormalTok{)\{}
@@ -140,6 +138,7 @@ dupa sraka \texttt{logitGD()} jasd
 
 \NormalTok{updateWeightsGDI <-}\StringTok{ }\NormalTok{function(y, x, w_old)\{}
   \NormalTok{(}\DecValTok{1}\NormalTok{/}\KeywordTok{length}\NormalTok{(y))*}\KeywordTok{c}\NormalTok{(}\KeywordTok{sum}\NormalTok{(y-}\KeywordTok{p}\NormalTok{(w_old, x)), }\KeywordTok{sum}\NormalTok{(x*(y-}\KeywordTok{p}\NormalTok{(w_old, x))))}
+  \CommentTok{#c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))}
 \NormalTok{\}}
 
 \NormalTok{updateWeightsSGDI <-}\StringTok{ }\NormalTok{function(y_i, x_i, w_old)\{}
@@ -323,13 +322,13 @@ dupa sraka \texttt{logitGD()} jasd
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{10000}\NormalTok{)}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
 \NormalTok{z <-}\StringTok{ }\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{3}\NormalTok{*x}
-\NormalTok{y <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
+\NormalTok{pr <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
+\NormalTok{y <-}\StringTok{ }\KeywordTok{rbinom}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{1}\NormalTok{,pr)}
 
 
-
-\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDI}
+\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDI}
 \KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDII"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDII}
 
 \NormalTok{ind <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
@@ -356,7 +355,8 @@ dupa sraka \texttt{logitGD()} jasd
 \KeywordTok{library}\NormalTok{(ggplot2); }\KeywordTok{library}\NormalTok{(ggthemes)}
 \KeywordTok{ggplot}\NormalTok{(data2viz) +}
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{X, }\DataTypeTok{y =} \NormalTok{Intercept, }\DataTypeTok{col =} \NormalTok{algorithm)) +}
-\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{X, }\DataTypeTok{y =} \NormalTok{Intercept, }\DataTypeTok{col =} \NormalTok{algorithm, }\DataTypeTok{group =} \NormalTok{algorithm)) +}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{X, }\DataTypeTok{y =} \NormalTok{Intercept, }\DataTypeTok{col =} \NormalTok{algorithm,}
+                \DataTypeTok{group =} \NormalTok{algorithm)) +}
 \StringTok{  }\KeywordTok{theme_tufte}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{20}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}

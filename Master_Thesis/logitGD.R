@@ -16,7 +16,7 @@ logitGD <- function(y, x, optim.method = "GDI", eps = 10e-4,
       w_new <- w_old + alpha(iter)*updateWeightsGDI(y, x, w_old)
     }
     if (optim.method == "GDII"){
-      w_new <- w_old - as.vector(inverseHessianGDII(x, w_old)%*%
+      w_new <- w_old + as.vector(inverseHessianGDII(x, w_old)%*%
                                    updateWeightsGDI(y, x, w_old))
     }
     if (optim.method == "SGDI"){
@@ -56,14 +56,13 @@ inverseHessianGDII <- function(x, w_old){
   )
 }
 
-
-x <- rnorm(10000)
+x <- rnorm(1000)
 z <- 2 + 3*x
-y <- 1/(1+exp(-z))
+pr <- 1/(1+exp(-z))
+y <- rbinom(1000,1,pr)
 
 
-
-logitGD(y, x, optim.method = "GDI", max.iter = 500)$steps -> GDI
+logitGD(y, x, optim.method = "GDI", eps = 10e-5, max.iter = 500)$steps -> GDI
 logitGD(y, x, optim.method = "GDII", eps = 10e-5, max.iter = 500)$steps -> GDII
 
 ind <- sample(length(y))
@@ -90,6 +89,7 @@ names(data2viz)[1:2] <- c("Intercept", "X")
 library(ggplot2); library(ggthemes)
 ggplot(data2viz) +
   geom_point(aes(x = X, y = Intercept, col = algorithm)) +
-  geom_line(aes(x = X, y = Intercept, col = algorithm, group = algorithm)) +
+  geom_line(aes(x = X, y = Intercept, col = algorithm,
+                group = algorithm)) +
   theme_tufte(base_size = 20)
-  coord_polar()
+

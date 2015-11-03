@@ -145,7 +145,7 @@ Wtedy aktualizacja kandydata na miejsce zerowe w $k$-tym kroku algorytmu optymal
 \textbf{Metoda spadku wzdłuż gradientu II (Newtona-Raphsona)}
 \end{center}
 \begin{equation*}
-\beta_{k} = \beta_{k-1} - \mathscr{I}(\beta_{k-1})^{-1}\cdot\Big(\sum\limits_{i=1}^{N}(y_i-\pi_i(\beta_{k-1})), \sum\limits_{i=1}^{N}x_i(y_i-\pi_i(\beta_{k-1}))\Big),
+\beta_{k} = \beta_{k-1} + \mathscr{I}(\beta_{k-1})^{-1}\cdot\Big(\sum\limits_{i=1}^{N}(y_i-\pi_i(\beta_{k-1})), \sum\limits_{i=1}^{N}x_i(y_i-\pi_i(\beta_{k-1}))\Big),
 \end{equation*}
 gdzie $\mathscr{I}(\beta_{k-1})$ zdefiniowane jest we wzorze (\ref{iii}). 
 \begin{center}
@@ -162,11 +162,12 @@ Ponieważ algorytmy te znajdują minimum funkcji, a docelowo szukane jest maksim
 Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można otrzymać wartości ekstremum w danym kroku kolejnych algorytmów. Kod funkcji \texttt{logitGD()} oraz fragmenty kodu tworzące poniższy wykres dostępne są w Dodatku~\ref{kody}.
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{10000}\NormalTok{)}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
 \NormalTok{z <-}\StringTok{ }\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{3}\NormalTok{*x}
-\NormalTok{y <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
+\NormalTok{pr <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
+\NormalTok{y <-}\StringTok{ }\KeywordTok{rbinom}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{1}\NormalTok{,pr)}
 
-\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDI}
+\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDI}
 \KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDII"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDII}
 
 \NormalTok{ind <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
@@ -177,9 +178,24 @@ Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można
 
 
 \begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.75\textwidth]{Obrazki/logit.pdf}
-\caption{Porównanie algorytmów spadku gradientu.}
-\end{center}
+  %\vspace{-10pt}
+  %\begin{center}
+   \subfigure[Symulacja 1.]{
+     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot.pdf}}
+   \subfigure[Symulacja 2.]{
+     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot02.pdf}}
+   \subfigure[Symulacja 3.]{
+     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot03.pdf}}
+   \subfigure[Symulacja 4.]{
+     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot04.pdf}}
+   \subfigure[Symulacja 5.]{
+     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot05.pdf}}
+   \subfigure[Symulacja 6.]{
+     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
+  %\end{center}
+  %\vspace{-10pt}
+  \label{fig:sc}
+  \caption{Porównanie algorytmów spadku gradientu.}
 \end{figure}
 
+Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych wykresach. Na każdym wykresie pięciokrotnie naniesiono kolejne kroki optymalizacji algorytmem stochastycznego spadku gradientu. Widać, że stochastyczna istota algorytmu powoduje, że za każdym razem trajektoria zbiegania do optimum podczas minimalizacji jest inna jednak kierunek ostatecznie w dużej mierze pokrywa się algorytmami niestochastycznymi.
