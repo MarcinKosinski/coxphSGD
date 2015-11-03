@@ -33,6 +33,7 @@ logitGD <- function(y, x, optim.method = "GDI", eps = 10e-4,
 
 updateWeightsGDI <- function(y, x, w_old){
   (1/length(y))*c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
+  #c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
 }
 
 updateWeightsSGDI <- function(y_i, x_i, w_old){
@@ -56,20 +57,39 @@ inverseHessianGDII <- function(x, w_old){
 }
 
 
-data(mtcars)
-logitGD(mtcars$vs, mtcars$mpg, optim.method = "GDI", beta_0 = c(-8,0),
-        alpha=function(t){1/3})$steps
-logitGD(mtcars$vs, dd, optim.method = "GDII",
-        beta_0 = c(0.43, -8.8))$steps
-logitGD(mtcars$vs[sample(nrow(mtcars))],
-        mtcars$mpg[sample(nrow(mtcars))],
-        optim.method = "SGDI", eps=1e-7, beta_0 = c(0,0),
-        alpha=function(t){1/nrow(mtcars)})$steps
+x <- rnorm(10000)
+z <- 2 + 3*x
+y <- 1/(1+exp(-z))
 
 
-trace(glm.fit, quote(print(coefold)), at = list(c(22, 4, 8, 4, 19, 3)))
-logr_vm <- glm(vs ~ mpg, data=mtcars, family=binomial(link="logit"),
-               control = glm.control(trace = TRUE))
 
-untrace(glm.fit)
+logitGD(y, x, optim.method = "GDI", max.iter = 500)$steps -> GDI
+logitGD(y, x, optim.method = "GDII", eps = 10e-5, max.iter = 500)$steps -> GDII
 
+ind <- sample(length(y))
+logitGD(y[ind], x[ind], optim.method = "SGDI",
+        max.iter = 500, eps = 10e-5)$steps -> SGDI.1
+ind2 <- sample(length(y))
+logitGD(y[ind2], x[ind2], optim.method = "SGDI",
+        max.iter = 500, eps = 10e-5)$steps -> SGDI.2
+ind3 <- sample(length(y))
+logitGD(y[ind3], x[ind3], optim.method = "SGDI",
+        max.iter = 500, eps = 10e-5)$steps -> SGDI.3
+ind4 <- sample(length(y))
+logitGD(y[ind4], x[ind4], optim.method = "SGDI",
+        max.iter = 500, eps = 10e-5)$steps -> SGDI.4
+ind5 <- sample(length(y))
+logitGD(y[ind5], x[ind5], optim.method = "SGDI",
+        max.iter = 500, eps = 10e-5)$steps -> SGDI.5
+
+do.call(rbind, c(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5)) -> coeffs
+unlist(lapply(list(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5), length)) -> algorithm
+data2viz <- cbind(as.data.frame(coeffs),
+      algorithm = unlist(mapply(rep, c("GDI", "GDII", "SGDI.1", "SGDI.2", "SGDI.3", "SGDI.4", "SGDI.5"), algorithm)))
+names(data2viz)[1:2] <- c("Intercept", "X")
+library(ggplot2); library(ggthemes)
+ggplot(data2viz) +
+  geom_point(aes(x = X, y = Intercept, col = algorithm)) +
+  geom_line(aes(x = X, y = Intercept, col = algorithm, group = algorithm)) +
+  theme_tufte(base_size = 20)
+  coord_polar()
