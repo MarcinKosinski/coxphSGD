@@ -62,38 +62,74 @@ pr <- 1/(1+exp(-z))
 y <- rbinom(1000,1,pr)
 
 
-logitGD(y, x, optim.method = "GDI",
-        eps = 10e-5, max.iter = 5000, alpha = function(t){1/(1000*t)})$steps -> GDI
-logitGD(y, x, optim.method = "GDII", eps = 10e-5, max.iter = 5000)$steps -> GDII
+library(ggplot2); library(ggthemes)
+graphSGD <- function(beta, y, x){
+
+logitGD(y, x, optim.method = "GDI",beta_0 = beta,
+        eps = 10e-5, max.iter = 5000, alpha = function(t){1/(100*t)})$steps -> GDI
+logitGD(y, x, optim.method = "GDII", beta_0 = beta,
+        eps = 10e-5, max.iter = 5000)$steps -> GDII
 
 ind <- sample(length(y))
-logitGD(y[ind], x[ind], optim.method = "SGDI",
-        max.iter = 5000, eps = 10e-5)$steps -> SGDI.1
+logitGD(y[ind], x[ind], optim.method = "SGDI", beta_0 = beta,
+        max.iter = 1000, eps = 10e-5, alpha = function(t){1/t})$steps -> SGDI.1
 ind2 <- sample(length(y))
-logitGD(y[ind2], x[ind2], optim.method = "SGDI",
-        max.iter = 500, eps = 10e-5)$steps -> SGDI.2
+logitGD(y[ind2], x[ind2], optim.method = "SGDI", beta_0 = beta,
+        max.iter = 1000, eps = 10e-5, alpha = function(t){2/t})$steps -> SGDI.2
 ind3 <- sample(length(y))
-logitGD(y[ind3], x[ind3], optim.method = "SGDI",
-        max.iter = 500, eps = 10e-5)$steps -> SGDI.3
+logitGD(y[ind3], x[ind3], optim.method = "SGDI", beta_0 = beta,
+        max.iter = 1000, eps = 10e-5, alpha = function(t){3/t})$steps -> SGDI.3
 ind4 <- sample(length(y))
-logitGD(y[ind4], x[ind4], optim.method = "SGDI",
-        max.iter = 500, eps = 10e-5)$steps -> SGDI.4
+logitGD(y[ind4], x[ind4], optim.method = "SGDI", beta_0 = beta,
+        max.iter = 1000, eps = 10e-5, alpha = function(t){4/t})$steps -> SGDI.4
 ind5 <- sample(length(y))
-logitGD(y[ind5], x[ind5], optim.method = "SGDI",
-        max.iter = 500, eps = 10e-5)$steps -> SGDI.5
+logitGD(y[ind5], x[ind5], optim.method = "SGDI", beta_0 = beta,
+        max.iter = 1000, eps = 10e-5, alpha = function(t){5/t})$steps -> SGDI.5
 ind6 <- sample(length(y))
-logitGD(y[ind6], x[ind6], optim.method = "SGDI",
-        max.iter = 500, eps = 10e-5)$steps -> SGDI.6
+logitGD(y[ind6], x[ind6], optim.method = "SGDI", beta_0 = beta,
+        max.iter = 1000, eps = 10e-5, alpha = function(t){6/t})$steps -> SGDI.6
 
 do.call(rbind, c(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5, SGDI.6)) -> coeffs
 unlist(lapply(list(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5, SGDI.6), length)) -> algorithm
 data2viz <- cbind(as.data.frame(coeffs),
-      algorithm = unlist(mapply(rep, c("GDI", "GDII", "SGDI.1", "SGDI.2", "SGDI.3", "SGDI.4", "SGDI.5", "SGDI.6"), algorithm)))
+      algorithm = unlist(mapply(rep,
+                                c(paste("GDI", length(GDI), "steps"),
+                                       paste("GDII", length(GDII), "steps"),
+                                       paste("SGDI.1", length(SGDI.1), "steps"),
+                                       paste("SGDI.2", length(SGDI.2), "steps"),
+                                       paste("SGDI.3", length(SGDI.3), "steps"),
+                                       paste("SGDI.4", length(SGDI.4), "steps"),
+                                       paste("SGDI.5", length(SGDI.5), "steps"),
+                                       paste("SGDI.6", length(SGDI.6), "steps")),
+                                algorithm)))
 names(data2viz)[1:2] <- c("Intercept", "X")
-library(ggplot2); library(ggthemes)
 ggplot(data2viz) +
   geom_point(aes(x = X, y = Intercept, col = algorithm)) +
-  geom_line(aes(x = X, y = Intercept, col = algorithm,
+  geom_path(aes(x = X, y = Intercept, col = algorithm,
                 group = algorithm)) +
-  theme_tufte(base_size = 20)
+  theme_tufte(base_size = 20) +
+  geom_point(aes(x=3, y =2), col = "black", size =4) -> p
+return(p)
+}
 
+
+graphSGD(c(0,0), y, x)
+
+pdf(file = "sgd_00_1.pdf", width = 10, height = 8)
+graphSGD(c(0,0), y, x)
+dev.off()
+
+
+pdf(file = "sgd_2.1_3.1_1.pdf", width = 10, height = 8)
+graphSGD(c(2.1,3.1), y, x)
+dev.off()
+
+
+pdf(file = "sgd_3_4_2.pdf", width = 10, height = 8 )
+graphSGD(c(3,4), y, x)
+dev.off()
+
+
+pdf(file = "sgd_2_1_1.pdf", width = 10, height = 8)
+graphSGD(c(2,1), y, x)
+dev.off()
