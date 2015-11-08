@@ -32,8 +32,8 @@ logitGD <- function(y, x, optim.method = "GDI", eps = 10e-4,
 }
 
 updateWeightsGDI <- function(y, x, w_old){
-  (1/length(y))*c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
-  #c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
+  #(1/length(y))*c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
+  c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
 }
 
 updateWeightsSGDI <- function(y_i, x_i, w_old){
@@ -62,12 +62,13 @@ pr <- 1/(1+exp(-z))
 y <- rbinom(1000,1,pr)
 
 
-logitGD(y, x, optim.method = "GDI", eps = 10e-5, max.iter = 500)$steps -> GDI
-logitGD(y, x, optim.method = "GDII", eps = 10e-5, max.iter = 500)$steps -> GDII
+logitGD(y, x, optim.method = "GDI",
+        eps = 10e-5, max.iter = 5000, alpha = function(t){1/(1000*t)})$steps -> GDI
+logitGD(y, x, optim.method = "GDII", eps = 10e-5, max.iter = 5000)$steps -> GDII
 
 ind <- sample(length(y))
 logitGD(y[ind], x[ind], optim.method = "SGDI",
-        max.iter = 500, eps = 10e-5)$steps -> SGDI.1
+        max.iter = 5000, eps = 10e-5)$steps -> SGDI.1
 ind2 <- sample(length(y))
 logitGD(y[ind2], x[ind2], optim.method = "SGDI",
         max.iter = 500, eps = 10e-5)$steps -> SGDI.2
@@ -80,11 +81,14 @@ logitGD(y[ind4], x[ind4], optim.method = "SGDI",
 ind5 <- sample(length(y))
 logitGD(y[ind5], x[ind5], optim.method = "SGDI",
         max.iter = 500, eps = 10e-5)$steps -> SGDI.5
+ind6 <- sample(length(y))
+logitGD(y[ind6], x[ind6], optim.method = "SGDI",
+        max.iter = 500, eps = 10e-5)$steps -> SGDI.6
 
-do.call(rbind, c(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5)) -> coeffs
-unlist(lapply(list(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5), length)) -> algorithm
+do.call(rbind, c(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5, SGDI.6)) -> coeffs
+unlist(lapply(list(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5, SGDI.6), length)) -> algorithm
 data2viz <- cbind(as.data.frame(coeffs),
-      algorithm = unlist(mapply(rep, c("GDI", "GDII", "SGDI.1", "SGDI.2", "SGDI.3", "SGDI.4", "SGDI.5"), algorithm)))
+      algorithm = unlist(mapply(rep, c("GDI", "GDII", "SGDI.1", "SGDI.2", "SGDI.3", "SGDI.4", "SGDI.5", "SGDI.6"), algorithm)))
 names(data2viz)[1:2] <- c("Intercept", "X")
 library(ggplot2); library(ggthemes)
 ggplot(data2viz) +

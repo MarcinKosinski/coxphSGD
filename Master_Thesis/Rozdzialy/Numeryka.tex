@@ -177,25 +177,93 @@ Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można
 \end{Shaded}
 
 
+Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych wykresach. Na każdym wykresie pięciokrotnie naniesiono kolejne kroki optymalizacji algorytmem stochastycznego spadku gradientu. Widać, że stochastyczna istota algorytmu powoduje, że za każdym razem trajektoria zbiegania do optimum podczas minimalizacji jest inna jednak kierunek ostatecznie w dużej mierze pokrywa się algorytmami niestochastycznymi.
+
+
 \begin{figure}[h]
   %\vspace{-10pt}
-  %\begin{center}
-   \subfigure[Symulacja 1.]{
-     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot.pdf}}
-   \subfigure[Symulacja 2.]{
-     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot02.pdf}}
-   \subfigure[Symulacja 3.]{
-     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot03.pdf}}
-   \subfigure[Symulacja 4.]{
-     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot04.pdf}}
-   \subfigure[Symulacja 5.]{
-     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot05.pdf}}
-   \subfigure[Symulacja 6.]{
-     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
-  %\end{center}
+  \begin{center}
+   \subfigure[Symulacja dla $\beta_0 = (0,0)$ nr 1.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_00_1.pdf}}
+   \subfigure[Symulacja dla $\beta_0 = (0,0)$ nr 2.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_00_2.pdf}}
+%   \subfigure[Symulacja 3.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot03.pdf}}
+%   \subfigure[Symulacja 4.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot04.pdf}}
+%   \subfigure[Symulacja 5.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot05.pdf}}
+%   \subfigure[Symulacja 6.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
+  \end{center}
   %\vspace{-10pt}
   \label{fig:sc}
-  \caption{Porównanie algorytmów spadku gradientu.}
+  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (0,0)$.}
 \end{figure}
 
-Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych wykresach. Na każdym wykresie pięciokrotnie naniesiono kolejne kroki optymalizacji algorytmem stochastycznego spadku gradientu. Widać, że stochastyczna istota algorytmu powoduje, że za każdym razem trajektoria zbiegania do optimum podczas minimalizacji jest inna jednak kierunek ostatecznie w dużej mierze pokrywa się algorytmami niestochastycznymi.
+
+\begin{figure}[h]
+  %\vspace{-10pt}
+  \begin{center}
+   \subfigure[Symulacja dla $\beta_0 = (1,2)$ nr 1.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_2_1_1.pdf}}
+   \subfigure[Symulacja dla $\beta_0 = (1,2)$ nr 2.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_2_1_2.pdf}}
+%   \subfigure[Symulacja 3.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot03.pdf}}
+%   \subfigure[Symulacja 4.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot04.pdf}}
+%   \subfigure[Symulacja 5.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot05.pdf}}
+%   \subfigure[Symulacja 6.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
+  \end{center}
+  %\vspace{-10pt}
+  \label{fig:sc2}
+  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (1,2)$.}
+\end{figure}
+
+
+\begin{figure}[h]
+  %\vspace{-10pt}
+  \begin{center}
+   \subfigure[Symulacja dla $\beta_0 = (4,3)$ nr 1.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_3_4_1.pdf}}
+   \subfigure[Symulacja dla $\beta_0 = (4,3)$ nr 2.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_3_4_2.pdf}}
+%   \subfigure[Symulacja 3.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot03.pdf}}
+%   \subfigure[Symulacja 4.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot04.pdf}}
+%   \subfigure[Symulacja 5.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot05.pdf}}
+%   \subfigure[Symulacja 6.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
+  \end{center}
+  %\vspace{-10pt}
+  \label{fig:sc3}
+  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (4,3)$.}
+\end{figure}
+
+
+\begin{figure}[h]
+  %\vspace{-10pt}
+  \begin{center}
+   \subfigure[Symulacja dla $\beta_0 = (3.1,2.1)$ nr 1.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_21_31_1.pdf}}
+   \subfigure[Symulacja dla $\beta_0 = (3.1,2.1)$ nr 2.]{
+     \includegraphics[width=0.9\textwidth, height=300pt]{Obrazki/sgd_21_31_2.pdf}}
+%   \subfigure[Symulacja 3.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot03.pdf}}
+%   \subfigure[Symulacja 4.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot04.pdf}}
+%   \subfigure[Symulacja 5.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot05.pdf}}
+%   \subfigure[Symulacja 6.]{
+%     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
+  \end{center}
+  %\vspace{-10pt}
+  \label{fig:sc4}
+  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (3.1,2.1)$.}
+\end{figure}
+
