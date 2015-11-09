@@ -65,6 +65,8 @@ y <- rbinom(1000,1,pr)
 library(ggplot2); library(ggthemes)
 graphSGD <- function(beta, y, x){
 
+
+  beta <- rev(beta)
 logitGD(y, x, optim.method = "GDI",beta_0 = beta,
         eps = 10e-5, max.iter = 5000, alpha = function(t){1/(100*t)})$steps -> GDI
 logitGD(y, x, optim.method = "GDII", beta_0 = beta,

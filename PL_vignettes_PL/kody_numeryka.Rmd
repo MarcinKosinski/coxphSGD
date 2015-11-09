@@ -272,3 +272,13 @@ ggplot(data2viz) +
   theme_tufte(base_size = 20)
 ```
 
+
+`logitGD()`  asda `graphSGD()`
+
+```{r}
+graphSGD(c(0,0), y, x)
+graphSGD(c(3.1,2.1), y, x)
+graphSGD(c(4,3), y, x)
+graphSGD(c(1,2), y, x)
+```
+

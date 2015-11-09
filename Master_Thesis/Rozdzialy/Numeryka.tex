@@ -1,4 +1,4 @@
-\chapter{Numeryczne metody estymacji}
+\chapter{Numeryczne metody estymacji}\label{numPAJ}
 
 Przez \textbf{numerykę} rozumie się dziedzinę matematyki
 zajmującą się rozwiązywaniem przybliżonych zagadnień algebraicznych. Odkąd zjawiska przyrodnicze zaczęto opisywać przy użyciu formalizmu matematycznego,
@@ -159,26 +159,35 @@ dla wylosowanego w danym kroku $i$.
 Ponieważ algorytmy te znajdują minimum funkcji, a docelowo szukane jest maksimum, stąd wykorzystano przeciwieństwo funkcji log-wiarogodności, dlatego w wyżej wymienionych wzorach zmieniono znaki przed pochodnymi na przeciwne.
 
 \newpage
-Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można otrzymać wartości ekstremum w danym kroku kolejnych algorytmów. Kod funkcji \texttt{logitGD()} oraz fragmenty kodu tworzące poniższy wykres dostępne są w Dodatku~\ref{kody}.
+\subsubsection{Symulacje trajektorii zbieżności algorytmów}
+Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ \cite{programikr} można wygenerować 1000 obserwacji z rozkładu normalnego i na ich podstawie wygenerować 1000 zmiennych z rozkładu dwupunktowego o takim rozkładzie prawdopodobieństwa sukcesu, by rzeczywiste współczynniki w modelu regresji logistycznej dla tych zmiennych wynosiły odpowiednio: 2 dla wyrazu wolnego oraz 3 dla zmiennej objaśniającej z rozkładu normalnego. 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
 \NormalTok{z <-}\StringTok{ }\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{3}\NormalTok{*x}
 \NormalTok{pr <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
 \NormalTok{y <-}\StringTok{ }\KeywordTok{rbinom}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{1}\NormalTok{,pr)}
-
-\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDI"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDI}
-\KeywordTok{logitGD}\NormalTok{(y, x, }\DataTypeTok{optim.method =} \StringTok{"GDII"}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{GDII}
-
-\NormalTok{ind <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{length}\NormalTok{(y))}
-\KeywordTok{logitGD}\NormalTok{(y[ind], x[ind], }\DataTypeTok{optim.method =} \StringTok{"SGDI"}\NormalTok{,}
-        \DataTypeTok{max.iter =} \DecValTok{500}\NormalTok{, }\DataTypeTok{eps =} \FloatTok{10e-5}\NormalTok{)$steps ->}\StringTok{ }\NormalTok{SGDI}\FloatTok{.1}
 \end{Highlighting}
 \end{Shaded}
 
+Dla tak sztucznie zasymulowanych danych przygotowano funkcję \texttt{logitGD()}, dzięki której można śledzić wartości ekstremum w danym kroku kolejnych omawianych algorytmów. Kody funkcji \texttt{logitGD()} oraz funkcji \texttt{graphSGD} tworzącej wykresy porównujące trajektorie zbieżności dla różnych algorytmów spadku gradientu  dostępne są w Dodatku~\ref{kody}. Wyniki poniższych wywołań funkcji \texttt{graphSGD} zostały umieszczone na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}).
 
-Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych wykresach. Na każdym wykresie pięciokrotnie naniesiono kolejne kroki optymalizacji algorytmem stochastycznego spadku gradientu. Widać, że stochastyczna istota algorytmu powoduje, że za każdym razem trajektoria zbiegania do optimum podczas minimalizacji jest inna jednak kierunek ostatecznie w dużej mierze pokrywa się algorytmami niestochastycznymi.
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x)}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{3.1}\NormalTok{,}\FloatTok{2.1}\NormalTok{), y, x)}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{3}\NormalTok{), y, x)}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), y, x)}
+\end{Highlighting}
+\end{Shaded}
 
+Na każdym z wykresów na osi $OX$ ukazano współczynnik dla zmiennej objaśniającej w prostym modelu regresji logistycznej z jedną zmienną objaśniającą w kolejnych krokach poszczególnych algorytmów. Na osi $OY$ zaznaczono współczynnik wyrazu wolnego w tym modelu. Czarną kropką zaznaczono prawdziwe ekstremum funkcji log-wiarogodności w tym modelu, czyli punkt $(x,y) = (3,2)$. Trajektoria zbieżności do minimum dla odrębnych algorytmów zaznaczono oddzielnymi kolorami, które są wyjaśnione na legendzie wykresu, na której dodatkowo wpisano liczbę kroków wymaganą przez algorytm do zbieżności. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 6 różnych trajektorii dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{k}$.
+
+W trakcie każdej symulacji postawiono pewne warunki konieczne do zbieżności. Ustalono maksymalną liczbę iteracji na 5001 dla algorytmów spadku gradientu i 1001 dla wariantów stochastycznych, gdzie przez pierwszy krok rozumiano start z punktu startowego. Dodatkowo warunek stopu ustalono na $\epsilon=0.00001$ oraz ustalono ciąg odpowiadający długościom kroków w algorytmie spadku gradientu rzędu I na $\alpha_{k} = \frac{1}{100k}$. 
+
+Symulacje powtórzono czterokrotnie dla czterech różnych punktów startu algorytmów $$\beta_0 = (0,0), (1,2), (4,3), (3.1,2.1).$$
+
+Ponieważ każda trajektoria w procesie estymacji metodą stochastycznego gradientu dla tych samych parametrów zbieżności jest inna, z racji na losową kolejność obserwacji, toteż dla każdego z czterech ustalonych punktów startowych zdecydowano się zobrazować symulację dwukrotnie, aby móc przedstawić stochastyczny aspekt tej metody.
 
 \begin{figure}[h]
   %\vspace{-10pt}
@@ -197,8 +206,7 @@ Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych w
 %     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
   \end{center}
   %\vspace{-10pt}
-  \label{fig:sc}
-  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (0,0)$.}
+  \caption{\label{fig:scasd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (0,0)$.}
 \end{figure}
 
 
@@ -219,8 +227,7 @@ Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych w
 %     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
   \end{center}
   %\vspace{-10pt}
-  \label{fig:sc2}
-  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (1,2)$.}
+  \caption{\label{fig:sc2}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (1,2)$.}
 \end{figure}
 
 
@@ -241,8 +248,7 @@ Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych w
 %     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
   \end{center}
   %\vspace{-10pt}
-  \label{fig:sc3}
-  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (4,3)$.}
+  \caption{\label{fig:sc3}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (4,3)$.}
 \end{figure}
 
 
@@ -263,7 +269,6 @@ Powyższe wywołania zostały wykonane 6 razy i przedstawione na 6 oddzielnych w
 %     \includegraphics[width=0.32\textwidth]{Obrazki/Rplot06.pdf}}
   \end{center}
   %\vspace{-10pt}
-  \label{fig:sc4}
-  \caption{Porównanie algorytmów spadku gradientu dla punktu startowego $\beta = (3.1,2.1)$.}
+  \caption{\label{fig:sc4asd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (3.1,2.1)$.}
 \end{figure}
 

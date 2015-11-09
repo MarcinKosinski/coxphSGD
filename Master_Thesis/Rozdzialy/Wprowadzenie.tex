@@ -2,10 +2,40 @@
 
 
 +++
+Zlagodzenie zalozen o proporcjonalnych hazardach
+Przykład leukemii, który wykorzystał Cox [1] jako ilustrację
+modelu, podobnie jak przykład nieoperacyjnego raka
+piersi w III stopniu zaawansowania [13], nie są szczególnie
+dobre, ale założenie o proporcjonalności ryzyka
+jest do zaakceptowania. Jednakże w przypadku danych
+onkologicznych ze znaczącą liczbą długoletnich przeżyć,
+założenie stałości ryzyka względnego w czasie może już
+nie być rozsądne. Taka sytuację zaobserwowali Gore \&
+Pocock [14] dla chorych na raka piersi, których wyniki
+odległe opublikował Langlands i inni [15]. Stwierdzili
+oni, że dla tych danych założenie proporcjonalności ryzyka
+nie było spełnione. Ponadto w komentarzu Gore
+zauważył, że stopień zaawansowania, który ma początkowo
+znaczenie, traci je w czasie i po 10 latach obserwacji
+roczna śmiertelność jest już od niego niezależna.
+Problem niespełnienia założenia proporcjonalności
+można próbować rozwiązać na różne sposoby. Można, na
+przykład, uwzględnić w modelu czynniki prognostyczne
+zależne od czasu, wtedy:
+lambda(t, Z(t)) = lambda0(t)exp[Z(t)β']
+Iloczyn exp[Z(t)beta'] będąc funkcją czasu, nie jest już
+stały i współczynnik proporcjonalności także się zmienia.
+To prowadzi do mniej eleganckiego, ale być może
+bardziej realistycznego spojrzenia na historię choroby,
+w której wpływ czynników prognostycznych zmienia się
+wraz z czasem obserwacji.
++++
+
++++
 Analiza przeżycia.
 +++
 
-Najbardziej charakterystyczną cechą typowych danych, jakimi posługuje się w analizie przeżycia, jest obecność obiektów, w których końcowe zdarzenie nastąpiło (wówczas ma się do czynienia z obserwacjami \textit{kompletnymi}), oraz obiektów, w których to zdarzenie (jeszcze) nie nastąpiło (obserwacja \textit{ucięta}). Ta specyficzna postać danych statystycznych doprowadziła do powstania specjalnych metod stosowanych tylko w analizie czasu trwania zjawisk. Jednym z takich modeli jest model proporcjonalnych hazardów Coxa. Jak podaje \cite{assel}, model proporcjonalnych hazardów Coxa jest jednym z najszerzej stosowanych modeli w onkologicznych publikacjach naukowych, ale także jedną z najmniej rozumianych metod statystycznych. Wynika to z łatwego dostępu do pakietów statystycznych zawierających programy do analizy przeżyć, modeli regresji i analiz wielowariantowych, ale prawie nigdy nie zawierających dobrego opisu podstawowych zasad działania modelu Coxa. Dostarczają one wyłącznie instrukcje, jak wprowadzić dane i uruchomić odpowiednie procedury w celu uzyskania wyniku. Poniższy praca zawiera pełny opis metodologii modelu proporcjonalnych hazardów Coxa, w tym wyjaśnienie najważniejszych pojęć. 
+Najbardziej charakterystyczną cechą typowych danych, jakimi posługuje się w analizie przeżycia, jest obecność obiektów, w których końcowe zdarzenie nastąpiło (wówczas ma się do czynienia z obserwacjami \textit{kompletnymi}), oraz obiektów, w których to zdarzenie (jeszcze) nie nastąpiło (obserwacja \textit{ucięta}). Ta specyficzna postać danych statystycznych doprowadziła do powstania specjalnych metod stosowanych tylko w analizie czasu trwania zjawisk. Jednym z takich modeli jest model proporcjonalnych hazardów Coxa. Jak podaje \cite{assel}, model proporcjonalnych hazardów Coxa jest jednym z najszerzej stosowanych modeli w onkologicznych publikacjach naukowych, ale także jedną z najmniej rozumianych metod statystycznych. Wynika to z łatwego dostępu do pakietów statystycznych zawierających programy do analizy przeżyć, modeli regresji i analiz wielowariantowych, ale prawie nigdy nie zawierających dobrego opisu podstawowych zasad działania modelu Coxa. Dostarczają one wyłącznie instrukcje, jak wprowadzić dane i uruchomić odpowiednie procedury w celu uzyskania wyniku. Poniższy praca zawiera pełny opis metodologii modelu proporcjonalnych hazardów Coxa, w tym wyjaśnienie najważniejszych pojęć.
 
 
 ++++
@@ -15,9 +45,9 @@ W przeciągu ostatniej dekady, rozmiary danych rosły szybciej niż prędkość 
 
 \chapter*{Podstawy modelu statystycznego}
 
-W pracy zakłada się znajomość podstaw statystyki matematycznej. Aby ujednolicić oznaczenia w niniejszym rozdziale wprowadzona została klasyczna nomenklatura oparta~o~\cite{niemiro}.
+W pracy zakłada się znajomość podstaw statystyki matematycznej. Aby ujednolicić oznaczenia, w niniejszym rozdziale wprowadzona została klasyczna nomenklatura oparta~o~\cite{niemiro}.
 
-\begin{definition} 
+\begin{definition}
 \textbf{Model statystyczny} określamy przez podanie rodziny $\{ \mathbb P_{\theta}:\theta\in\Theta\} $ rozkładów prawdopodobieństwa na przestrzeni próbkowej $\Omega$ oraz zmiennej losowej $X : \Omega \rightarrow \mathcal{X}$, którą traktujemy jako obserwację. Zbiór $\mathcal{X}$ nazywamy przestrzenią obserwacji, zaś $\Theta$ nazywamy przestrzenią parametrów. \\
 \end{definition}
 Symbol $\theta$ jest nieznanym parametrem opisującym rozkład badanego zjawiska. Może być jednowymiarowy lub wielowymiarowy. Determinując opis zjawiska poprzez podanie parametru $\theta$, jednoznacznie wyznaczany jest rozkład rozważanego zjawiska spośród całej rodziny rozkładów prawdopodobieństwa $\{ \mathbb P_{\theta}:\theta\in\Theta\}$, co umożliwia określenie prawdziwości tezy.

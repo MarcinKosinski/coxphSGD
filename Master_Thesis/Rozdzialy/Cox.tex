@@ -104,7 +104,7 @@ Oznacza to, że cenzurowanie nie daje informacji o parametrach rozkładu czasów
 \textbf{Model proporcjonalnych hazardów Coxa oparty jest na założeniach:}
 \begin{enumerate}
 \item[$i$)] Współczynniki modelu $\beta_k, k = 1,\cdots,p$ są stałe w czasie, co przekłada się na to, że stosunek hazardów dla dwóch obserwacji jest stały w~czasie.
-\item[$ii$)] Postać funkcjonalna efektu zmiennej niezależnej, czyli postać modelu $\lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta}$.
+\item[$ii$)] Postać funkcjonalna efektu zmiennej niezależnej - postać modelu $\lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta}$.
 \item[$iii)$] Obserwacje są niezależne.
 \item[$iv)$] Cenzurowanie czasów jest nie-informatywne.
 \item[$v)$] Cenzurowanie czasów jest niezależne (od mechanizmu występowania zdarzenia).
@@ -128,7 +128,7 @@ L(\beta,\varphi) = L_p(\beta)\cdot L^{*}(\beta,\varphi),
 \end{equation}
 gdzie
 \begin{equation}
-L_p(\beta) = \prod\limits_{i=1}^{n}f(t_j;\beta)^{\delta_j}S(t_j;\beta)^{1-\delta_j}=\prod\limits_{i=1}^{n}\lambda(t_j;\beta)^{\delta_j}S(t_j;\beta)
+L_p(\beta) = \prod\limits_{i=1}^{n}f(t_i;\beta)^{\delta_i}S(t_i;\beta)^{1-\delta_i}=\prod\limits_{i=1}^{n}\lambda(t_i;\beta)^{\delta_i}S(t_i;\beta)
 \end{equation}
 to częściowa funkcja wiarogodności, a $L^{*}(\beta,\varphi)$ zależy od cenzurowania (parametr $\varphi$).
 
@@ -173,4 +173,10 @@ to kowariancja pomiędzy $X_{.k_1}$ ($k_1$-tymi zmiennymi) a $X_{.k_2}$ ($k_2$-t
 
 Estymator największej wiarogodności $\beta$ można uzyskać poprzez przyrównanie (\ref{score}) do $0$, a numerycznie poprzez iteracyjne wykorzystanie (\ref{score}) oraz (\ref{grad}) w algorytmie spadku gradientu rzędu II nazywanego również algorytmem Raphsona-Newtona, który jest opisany w podrozdziale \ref{R-N}. Jest to tradycyjne i szeroko stosowane podejście do estymacji współczynników w modelu proporcjonalnych hazardów Coxa. Niniejsza praca skupia się na wykorzystaniu metody estymacji współczynników jaką jest metoda stochastycznego spadku wzdłuż gradientu, która jest szerzej opisana w następnym rozdziale w podrozdziale \ref{SGD}.
 
+\newpage
 
+\section{Generowanie danych dla modelu Coxa}
+
+W celu skutecznej diagnostyki procesu estymacji w modelu Coxa, należy wiedzieć jak dane dla tego modelu można generować, aby ów model symulować dla znanych współczynników.
+
+Poniższy rozdział przedstawia metodę odwrotnych prawdopodobieństw opisaną szerzej w \cite{bender}, dzięki której można wygenerować czasy zdarzeń dla zadanej z góry funkcji hazardu i zmiennych objaśniających. Ta metoda posłuży w rozdziale \ref{rozdz4} do wygenerowania danych w celu weryfikacji jakości procesu numerycznej estymacji współczynników modelu, w sytuacji gdy wykorzystywany jest algorytm stochastycznego spadku gradientu, który jest opisany w rozdziale \ref{numPAJ}.
