@@ -361,4 +361,50 @@
 \end{Highlighting}
 \end{Shaded}
 
+\texttt{logitGD()} asda \texttt{graphSGD()}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x)}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{3.1}\NormalTok{,}\FloatTok{2.1}\NormalTok{), y, x)}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{3}\NormalTok{), y, x)}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), y, x)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataCox <-}\StringTok{ }\NormalTok{function(N, lambda, rho, x, beta, censRate)\{}
+  
+  \CommentTok{# real Weibull times}
+  \NormalTok{u <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(N)}
+  \NormalTok{Treal <-}\StringTok{ }\NormalTok{(-}\StringTok{ }\KeywordTok{log}\NormalTok{(u) /}\StringTok{ }\NormalTok{(lambda *}\StringTok{ }\KeywordTok{exp}\NormalTok{(x *}\StringTok{ }\NormalTok{beta)))^(}\DecValTok{1} \NormalTok{/}\StringTok{ }\NormalTok{rho)}
+  
+  \CommentTok{# censoring times}
+  \NormalTok{Censoring <-}\StringTok{ }\KeywordTok{rexp}\NormalTok{(N, censRate)}
+  
+  \CommentTok{# follow-up times and event indicators}
+  \NormalTok{time <-}\StringTok{ }\KeywordTok{pmin}\NormalTok{(Treal, Censoring)}
+  \NormalTok{status <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(Treal <=}\StringTok{ }\NormalTok{Censoring)}
+  
+  \CommentTok{# data set}
+  \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\NormalTok{:N, }\DataTypeTok{time=}\NormalTok{time, }\DataTypeTok{status=}\NormalTok{status, }\DataTypeTok{x=}\NormalTok{x)}
+\NormalTok{\}}
+
+\NormalTok{x <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{size =} \DecValTok{20}\NormalTok{, }\DataTypeTok{prob =}  \KeywordTok{rep}\NormalTok{(}\FloatTok{0.5}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)}
+
+\KeywordTok{head}\NormalTok{(}\KeywordTok{dataCox}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{, x, }\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  id       time status x
+1  1 0.34275395      1 0
+2  2 0.25465547      1 0
+3  3 0.33424171      1 0
+4  4 0.01337494      0 0
+5  5 0.15110077      1 1
+6  6 0.12959737      0 0
+\end{verbatim}
+
 \end{document}

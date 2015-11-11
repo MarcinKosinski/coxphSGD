@@ -24,7 +24,7 @@ S_j(t) = \mathbb{P}(T^*_{j,i} \geq t )  = 1 - F_j(t), t \in \mathbb{R}
 \end{equation}
 gdzie $F_j(t)$ to dystrybuanta rozkładu zadanego gęstością $f_j(t)$.
 \end{definition}
-\begin{definition}
+\begin{definition}\label{def:haz}
 \textbf{Funkcja hazardu} to funkcja, która wyraża się wzorem
 \begin{equation}
 \begin{align*}
@@ -51,9 +51,9 @@ w przypadku przeżyć w chorobach nowotworowych lub
 kardiologicznych po transplantacji serca lub zawałach
 serca \cite{norwe}. 
 
-\begin{definition}
+\begin{definition}\label{defi:koksik}
 \textbf{Model Coxa} zakłada postać funkcji hazardu dla i-tej obserwacji $X_i$ jako
-\begin{equation}
+\begin{equation}\label{eq:haz}
 \lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta},
 \end{equation}
 gdzie $\lambda_0$ to niesprecyzowana nieujemna funkcja nazywana \textit{bazowym hazardem}, a $\beta$ to wektor współczynników rozmiaru $p$, co odpowiada liczbie zmiennych objaśniających w modelu Coxa.
@@ -180,3 +180,93 @@ Estymator największej wiarogodności $\beta$ można uzyskać poprzez przyrówna
 W celu skutecznej diagnostyki procesu estymacji w modelu Coxa, należy wiedzieć jak dane dla tego modelu można generować, aby ów model symulować dla znanych współczynników.
 
 Poniższy rozdział przedstawia metodę odwrotnych prawdopodobieństw opisaną szerzej w \cite{bender}, dzięki której można wygenerować czasy zdarzeń dla zadanej z góry funkcji hazardu i zmiennych objaśniających. Ta metoda posłuży w rozdziale \ref{rozdz4} do wygenerowania danych w celu weryfikacji jakości procesu numerycznej estymacji współczynników modelu, w sytuacji gdy wykorzystywany jest algorytm stochastycznego spadku gradientu, który jest opisany w rozdziale \ref{numPAJ}.
+
+Mówiąc o funkcji przeżycia warto wprowadzić skumulowaną funkcję hazardu.
+\begin{definition}
+\textbf{Skumulowaną funkcją hazardu} nazywa się funkcję spełniającą zależność
+\begin{equation}\label{zaradzix}
+H(t) = \int\limits_{0}^{t}\lambda(u) du,
+\end{equation}
+gdzie $\lambda(u)$ to pewna funkcja hazardu, o której mówi definicja (\ref{def:haz}).
+\end{definition}
+
+Wtedy dla zdefiniowanej w (\ref{eq:haz}) funkcji hazardu funkcja przeżycia i jej dopełnienie (dystrybuanta) dla modelu Coxa proporcjonalnych hazardów wygląda następująco
+
+\begin{align}
+S(t|x)= & e^{-H_0(t)\cdot e^{x'\beta}} \\ 
+F(t|x) = & 1 - e^{-H_0(t)\cdot e^{x'\beta}}\label{siema}
+\end{align}
+gdzie $H_0(t)$ to bazowa skumulowana funkcja hazardu.
+
+Niech $Y$ będzie zmienną losową o dystrybuancie zadanej w (\ref{siema}), wtedy jak wykazano w~\cite{MOOD} zmienna losowa $U=F(Y)$ pochodzi z rozkładu jednostajnego $U \sim \mathcal{U}([0,1])$. Zachodzi to również dla zmiennej losowej $1-U \sim \mathcal{U}([0,1])$. Dodatkowo, niech $T$ będzie czasem przeżycia w modelu Coxa (definicja \ref{defi:koksik}), wtedy z (\ref{siema}) wynika
+\begin{equation}
+U = e^{-H_0(T)\cdot e^{x'\beta}} \sim \mathcal{U}([0,1]).
+\end{equation}
+
+Jeżeli $\lambda_0(t) >0$ dla każdego $t$, to $H_0(t)$ jest dodatnia i można mówić o jej odwrotności, zaś czas przeżycia $T$ dla modelu Coxa może być wyrażony przez 
+\begin{equation}\label{eq:czasy}
+T = H_0^{-1}(-\log(U)\cdot e^{-x'\beta}),
+\end{equation}
+gdzie  $U \sim \mathcal{U}([0,1])$.
+
+\subsubsection{Przykład symulacji dla rozkładu Weibulla}
+
+Równanie (\ref{eq:czasy})  jest odpowiednie do generowania czasów do zdarzenia w modelu Coxa, gdy potrafi się odpowiednio generować zmienne z rozkładu $\mathcal{U}([0,1])$. Jest to możliwe w większości pakietów statystycznych. Poniżej przedstawiony jest kod w języku $\mathcal{R}$ \cite{programikr}, dzięki któremu możliwe jest generowanie czasów zdarzeń pochodzących z rozkładu Weibulla \cite{collett}, dla którego funkcja hazardu ma postać
+\begin{equation}
+\lambda_0(t)=\lambda\rho t^{\rho-1},
+\end{equation}
+gdzie $\lambda>0$ to parametr skali, zaś $\rho > 0$ to parametr kształtu.
+
+\newpage
+
+Z (\ref{zaradzix}) wynika, że bazowa skumulowana funkcja hazardu dla rozkładu Weibulla wynosi
+\begin{equation}
+H_0(t) = \int\limits_{0}^{t} \lambda\rho u^{\rho-1} du = \lambda t^{\rho},
+\end{equation}
+zaś jej funkcja przeciwna to
+\begin{equation}\label{asd}
+H_0^{-1}(t)= (\lambda^{-1}t)^{-\rho}.
+\end{equation}
+Wtedy podstawiając (\ref{asd}) do (\ref{eq:czasy}) można otrzymać
+\begin{equation}
+T = (\lambda^{-1}\cdot(-\log(U)\cdot e^{-x'\beta})^{-\rho} = \Big(-\frac{\log(U)}{\lambda e^{x'\beta}}\Big)^{-\rho}.
+\end{equation}
+Wynik ten oznacza, że $T$ czyli odpowiadające czasy zdarzeń pochodzą z warunkowego rozkładu Weibulla (warunkowanego przez $x$) o parametrach kształtu $\rho$ i skali $\lambda  e^{x'\beta}$.
+
+Dzięki tym rozważaniom, możliwe było stworzenie kodu generującego czasy i indykatory zdarzeń dla zadanych z góry współczynników modelu i zmiennych objaśniających. Poniższy kod i jego rezultat posłużą w rozdziale \ref{implemento} do diagnostyki procesu estymacji w modelu Coxa w przypadku wykorzystania algorytmu stochastycznego spadku gradientu.
+
+\newline \ \newline
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataCox <-}\StringTok{ }\NormalTok{function(N, lambda, rho, x, beta, censRate)\{}
+  
+  \CommentTok{# real Weibull times}
+  \NormalTok{u <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(N)}
+  \NormalTok{Treal <-}\StringTok{ }\NormalTok{(-}\StringTok{ }\KeywordTok{log}\NormalTok{(u) /}\StringTok{ }\NormalTok{(lambda *}\StringTok{ }\KeywordTok{exp}\NormalTok{(x *}\StringTok{ }\NormalTok{beta)))^(}\DecValTok{1} \NormalTok{/}\StringTok{ }\NormalTok{rho)}
+  
+  \CommentTok{# censoring times}
+  \NormalTok{Censoring <-}\StringTok{ }\KeywordTok{rexp}\NormalTok{(N, censRate)}
+  
+  \CommentTok{# follow-up times and event indicators}
+  \NormalTok{time <-}\StringTok{ }\KeywordTok{pmin}\NormalTok{(Treal, Censoring)}
+  \NormalTok{status <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(Treal <=}\StringTok{ }\NormalTok{Censoring)}
+  
+  \CommentTok{# data set}
+  \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\NormalTok{:N, }\DataTypeTok{time=}\NormalTok{time, }\DataTypeTok{status=}\NormalTok{status, }\DataTypeTok{x=}\NormalTok{x)}
+\NormalTok{\}}
+
+\NormalTok{x <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{size =} \DecValTok{20}\NormalTok{, }\DataTypeTok{prob =}  \KeywordTok{rep}\NormalTok{(}\FloatTok{0.5}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)}
+
+\KeywordTok{head}\NormalTok{(}\KeywordTok{dataCox}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{, x, }\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  id       time status x
+1  1 0.34275395      1 0
+2  2 0.25465547      1 0
+3  3 0.33424171      1 0
+4  4 0.01337494      0 0
+5  5 0.15110077      1 1
+6  6 0.12959737      0 0
+\end{verbatim}
