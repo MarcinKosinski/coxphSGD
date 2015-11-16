@@ -399,12 +399,12 @@
 
 \begin{verbatim}
   id       time status x.1 x.2
-1  1 0.01193626      0   0   1
-2  2 0.03567485      0   1   1
-3  3 0.13330012      1   0   1
-4  4 0.04358821      1   1   1
-5  5 0.03825366      1   1   1
-6  6 0.29355955      1   1   0
+1  1 0.27192036      0   1   0
+2  2 0.20583781      1   0   1
+3  3 0.26799156      0   0   0
+4  4 0.04774363      1   1   1
+5  5 0.14097292      1   0   1
+6  6 0.22948057      1   0   0
 \end{verbatim}
 
 \begin{Shaded}
@@ -413,6 +413,14 @@
 \KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{), y, x, }\DecValTok{4561}\NormalTok{);}\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{), y, x, }\DecValTok{456}\NormalTok{);}
 \KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x, }\DecValTok{4561}\NormalTok{);}\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x, }\DecValTok{456}\NormalTok{);}
 \KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{2.1}\NormalTok{,}\FloatTok{3.1}\NormalTok{), y, x, }\DecValTok{4561}\NormalTok{)}\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{2.1}\NormalTok{,}\FloatTok{3.1}\NormalTok{), y, x, }\DecValTok{456}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{size =} \DecValTok{20000}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{), }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{)}
+\NormalTok{dCox <-}\StringTok{ }\KeywordTok{dataCox}\NormalTok{(}\DecValTok{10}\NormalTok{^}\DecValTok{4}\NormalTok{, }\DataTypeTok{lambda =} \DecValTok{3}\NormalTok{, }\DataTypeTok{rho =} \DecValTok{2}\NormalTok{, x, }\DataTypeTok{beta =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{censRate =} \DecValTok{5}\NormalTok{) }
+\KeywordTok{vizCoxSGD}\NormalTok{(dCox)}
 \end{Highlighting}
 \end{Shaded}
 
