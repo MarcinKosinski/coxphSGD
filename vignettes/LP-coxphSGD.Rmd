@@ -58,14 +58,14 @@ Poniżej przedstawione są argumenty, które przyjmuje funkcja `coxphSGD()`, kt�
 #' @export
 #' @importFrom survival Surv
 #' @importFrom assertthat assert_that
+#' @importFrom magrittr %>%
+#' @importFrom dplyr arrange
+#' @importFrom dplyr filter
 #' @examples
 #' library(survival)
 #' \dontrun{
 #' coxphSGD(Surv(time, status) ~ ph.ecog + age,
-#'          data=list(lung[1:50, ],
-#'                    lung[51:100, ],
-#'                    lung[101:150, ],
-#'                    lung[151:228, ])
+#'          data= split(lung, sample(1:4, size = 228, replace = TRUE))
 #' )
 #' }
 #' 
@@ -145,7 +145,7 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
     
     # risk set for current time/observation
     risk_set <- batchData %>%
-      filter(times <= batchData$times[k])
+      dplyr::filter(times <= batchData$times[k])
     
     nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
       element * exp(element * beta)

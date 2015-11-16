@@ -322,7 +322,7 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{x <-}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
 \NormalTok{z <-}\StringTok{ }\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{3}\NormalTok{*x}
 \NormalTok{pr <-}\StringTok{ }\DecValTok{1}\NormalTok{/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(-z))}
 \NormalTok{y <-}\StringTok{ }\KeywordTok{rbinom}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{1}\NormalTok{,pr)}
@@ -378,7 +378,7 @@
   
   \CommentTok{# real Weibull times}
   \NormalTok{u <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(N)}
-  \NormalTok{Treal <-}\StringTok{ }\NormalTok{(-}\StringTok{ }\KeywordTok{log}\NormalTok{(u) /}\StringTok{ }\NormalTok{(lambda *}\StringTok{ }\KeywordTok{exp}\NormalTok{(x *}\StringTok{ }\NormalTok{beta)))^(}\DecValTok{1} \NormalTok{/}\StringTok{ }\NormalTok{rho)}
+  \NormalTok{Treal <-}\StringTok{ }\NormalTok{(-}\StringTok{ }\KeywordTok{log}\NormalTok{(u) /}\StringTok{ }\NormalTok{(lambda *}\StringTok{ }\KeywordTok{exp}\NormalTok{(x %*%}\StringTok{ }\NormalTok{beta)))^(}\DecValTok{1} \NormalTok{/}\StringTok{ }\NormalTok{rho)}
   
   \CommentTok{# censoring times}
   \NormalTok{Censoring <-}\StringTok{ }\KeywordTok{rexp}\NormalTok{(N, censRate)}
@@ -391,20 +391,29 @@
   \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\NormalTok{:N, }\DataTypeTok{time=}\NormalTok{time, }\DataTypeTok{status=}\NormalTok{status, }\DataTypeTok{x=}\NormalTok{x)}
 \NormalTok{\}}
 
-\NormalTok{x <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{size =} \DecValTok{20}\NormalTok{, }\DataTypeTok{prob =}  \KeywordTok{rep}\NormalTok{(}\FloatTok{0.5}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{x <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{size =} \DecValTok{40}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{), }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{)}
 
-\KeywordTok{head}\NormalTok{(}\KeywordTok{dataCox}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{, x, }\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{))}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{dataCox}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{, x, }\DataTypeTok{beta =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DecValTok{5}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-  id       time status x
-1  1 0.34275395      1 0
-2  2 0.25465547      1 0
-3  3 0.33424171      1 0
-4  4 0.01337494      0 0
-5  5 0.15110077      1 1
-6  6 0.12959737      0 0
+  id       time status x.1 x.2
+1  1 0.01193626      0   0   1
+2  2 0.03567485      0   1   1
+3  3 0.13330012      1   0   1
+4  4 0.04358821      1   1   1
+5  5 0.03825366      1   1   1
+6  6 0.29355955      1   1   0
 \end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x, }\DecValTok{4561}\NormalTok{);}\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x, }\DecValTok{456}\NormalTok{)}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{), y, x, }\DecValTok{4561}\NormalTok{);}\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{), y, x, }\DecValTok{456}\NormalTok{);}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x, }\DecValTok{4561}\NormalTok{);}\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{), y, x, }\DecValTok{456}\NormalTok{);}
+\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{2.1}\NormalTok{,}\FloatTok{3.1}\NormalTok{), y, x, }\DecValTok{4561}\NormalTok{)}\KeywordTok{graphSGD}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{2.1}\NormalTok{,}\FloatTok{3.1}\NormalTok{), y, x, }\DecValTok{456}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \end{document}

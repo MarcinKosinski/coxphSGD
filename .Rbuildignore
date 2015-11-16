@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 Master_Thesis
+thesis_part
+PL_vignettes_PL

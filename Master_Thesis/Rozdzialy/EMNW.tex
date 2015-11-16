@@ -177,7 +177,7 @@ $$ENW(\theta) \rightarrow \theta \ \ \text{dla } \ \ n \rightarrow \infty.$$
 
 Fisher w swojej karierze wprowadził wiele pożytecznych pojęć stosowanych do dziś. Jednym z nich jest Informacja Fishera, która zostanie wykorzystana w dowodzie asymptotycznej normalności estymatora największej wiarogodności.
 
-\begin{definition}
+\begin{definition}\label{inf:fish}
 Niech $X$ będzie zmienną losową o gęstości $f_{\theta}$, zależnej od jednowymiarowego parametru $\theta \in \Theta \subset \mathbb{R}$. \textbf{Informacją Fishera} zawartą w obserwacji $X$ nazywa się funkcję
 \begin{equation}\label{wzor:fish}
 \mathcal{I}(\theta) = \mathbb{E}_{\theta}(\ell'(\theta;X))^2 = \mathbb{E}_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big)^2,

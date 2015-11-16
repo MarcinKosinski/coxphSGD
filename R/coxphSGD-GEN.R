@@ -30,14 +30,14 @@
 #' @export
 #' @importFrom survival Surv
 #' @importFrom assertthat assert_that
+#' @importFrom magrittr %>%
+#' @importFrom dplyr arrange
+#' @importFrom dplyr filter
 #' @examples
 #' library(survival)
 #' \dontrun{
 #' coxphSGD(Surv(time, status) ~ ph.ecog + age,
-#'          data=list(lung[1:50, ],
-#'                    lung[51:100, ],
-#'                    lung[101:150, ],
-#'                    lung[151:228, ])
+#'          data= split(lung, sample(1:4, size = 228, replace = TRUE))
 #' )
 #' }
 #' 
@@ -55,8 +55,7 @@ coxphSGD <- function(formula, data,
                      # be tracked in the future
   # estimate
   while(i <= n & diff > epsilon) {
-    
-    tryCatch({
+    #tryCatch({
     beta_new[[i]] <- coxphSGD_batch(formula = formula, data = data[[i]],
                                     learningRate = learningRates(i),
                                     beta = beta_old)
@@ -64,7 +63,7 @@ coxphSGD <- function(formula, data,
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
     i <- i + 1  
-    }, error = function(cond) {i <<<- n + 1})
+    #}, error = function(cond) {i <<- n + 1})
   }
   
   # return results
@@ -118,7 +117,7 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
     
     # risk set for current time/observation
     risk_set <- batchData %>%
-      filter(times <= batchData$times[k])
+      dplyr::filter(times <= batchData$times[k])
     
     nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
       element * exp(element * beta)

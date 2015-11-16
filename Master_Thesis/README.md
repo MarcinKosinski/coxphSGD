@@ -12,10 +12,6 @@
 
 # TODOS
 
-Strona 27: 
-Bardzo fajna prezentacja, ale czy te krzywe nie powinny zbiegać do jednego punktu?
-Na wykresie warto zaznaczyć jak wygląda prawdziwe rozwiazanie.
-A różne scenariusze mogą dotyczyć różnych odległosci punktu startowego od prawdziwego rozwiązania.
 
 Strona 30:
 ''Dla wielu modeli opierających się o funkcje wiarogodności te dwa punkty widzenia są równoważne,

@@ -234,7 +234,7 @@ checkArguments <- function(formula, data, learningRates,
 
 
 ```{r, eval = FALSE}
-x <- rnorm(1000)
+x <- runif(1000)
 z <- 2 + 3*x
 pr <- 1/(1+exp(-z))
 y <- rbinom(1000,1,pr)
@@ -288,7 +288,7 @@ dataCox <- function(N, lambda, rho, x, beta, censRate){
   
   # real Weibull times
   u <- runif(N)
-  Treal <- (- log(u) / (lambda * exp(x * beta)))^(1 / rho)
+  Treal <- (- log(u) / (lambda * exp(x %*% beta)))^(1 / rho)
   
   # censoring times
   Censoring <- rexp(N, censRate)
@@ -301,8 +301,16 @@ dataCox <- function(N, lambda, rho, x, beta, censRate){
   data.frame(id=1:N, time=time, status=status, x=x)
 }
 
-x <- sample(0:1, size = 20, prob =  rep(0.5,2), replace = TRUE)
+x <- matrix(sample(0:1, size = 40, replace = TRUE), ncol = 2)
 
-head(dataCox(20, 3, 2, x, 2, 5))
+head(dataCox(20, 3, 2, x, beta = c(2,3), 5))
+```
+
+
+```{r}
+graphSGD(c(0,0), y, x, 4561);graphSGD(c(0,0), y, x, 456)
+graphSGD(c(2,1), y, x, 4561);graphSGD(c(2,1), y, x, 456);
+graphSGD(c(1,0), y, x, 4561);graphSGD(c(1,0), y, x, 456);
+graphSGD(c(2.1,3.1), y, x, 4561)graphSGD(c(2.1,3.1), y, x, 456)
 ```
 

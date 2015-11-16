@@ -218,24 +218,8 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
   
   \KeywordTok{return}\NormalTok{(beta_out)}
 \NormalTok{\}}
-  
-\NormalTok{checkArguments <-}\StringTok{ }\NormalTok{function(formula, data, learningRates,}
-                             \NormalTok{beta_0, epsilon) \{}
-  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.list}\NormalTok{(data) &}\StringTok{ }\KeywordTok{length}\NormalTok{(data) >}\StringTok{ }\DecValTok{0}\NormalTok{)}
-  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(data, ncol)))) ==}\StringTok{ }\DecValTok{1}\NormalTok{)}
-  \CommentTok{# + check names and types for every variables}
-  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.function}\NormalTok{(learningRates))}
-  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(epsilon))}
-  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(beta_0))}
-  
-    \CommentTok{# check length of the start parameter}
-  \NormalTok{if (}\KeywordTok{length}\NormalTok{(beta_0) ==}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
-    \NormalTok{beta_0 <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(beta_0, }\KeywordTok{as.character}\NormalTok{(formula)[}\DecValTok{3}\NormalTok{] %>%}
-\StringTok{                    }\KeywordTok{strsplit}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{+"}\NormalTok{) %>%}
-\StringTok{                    }\NormalTok{unlist %>%}
-\StringTok{                    }\NormalTok{length)}
-  \NormalTok{\}}
-  \KeywordTok{return}\NormalTok{(beta_0)}
-\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
+\section{Symulacje estymacji w modelu Coxa}
+
+Dzięki przygotowanej w rozdziale \ref{symWei} funkcji \texttt{dataCox} możliwe będzie symulacje zbadanie zachowania się współczynników w modelu Coxa w trakcie estymacji metodą stochastycznego spadku gradientu, której algorytm został zaimplementowany w rozdziale \ref{implemento}. Poniższe wywołanie zwraca ramkę danych o 10 tysiącach wierszy, wraz z ze sztucznie wygenerowanymi czasami z rozkładu Weibulla o parametrach $\lambda =3$ oraz $\rho =2$. Czasy cenzurowania generowane są z rozkładu wykładniczego o parametrze $5$. W rezultacie otrzymać można czasy przeżycia oraz status zdarzenia bąd

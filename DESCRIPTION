@@ -1,17 +1,29 @@
 Package: coxphSGD
 Type: Package
-Title: Stochastic Gradient Descent log-likelihood estimation in Cox proportional hazards model
-Version: 0.0.2
-Date: 2015-09-06
+Title: Stochastic Gradient Descent log-likelihood estimation in Cox proportional
+    hazards model
+Version: 0.0.3
+Date: 2015-11-16
 Authors@R: as.person(c(
     "Marcin Kosinski [aut, cre] <m.p.kosinski@gmail.com>"
     ))
 Maintainer: Marcin Kosinski <m.p.kosinski@gmail.com>
-Description: This package provides coxphSGD function, which estimates coefficients using stochastic gradient descent algorithm in Cox proportional hazards model.
+Description: This package provides coxphSGD function, which estimates
+    coefficients using stochastic gradient descent algorithm in Cox proportional
+    hazards model.
 License: GPL2
-Depends: R (>= 3.2.0)
-Imports: survival, assertthat, dplyr
-Suggests: knitr (>= 1.8.12), rmarkdown, rlp
+Depends:
+    R (>= 3.2.0),
+    survival
+Imports:
+    assertthat,
+    dplyr,
+    magrittr
+Suggests:
+    knitr (>= 1.8.12),
+    rmarkdown,
+    rlp
 VignetteBuilder: knitr
 URL: https://github.com/MarcinKosinski/Cox-SGD
 BugReports: https://github.com/MarcinKosinski/Cox-SGD/issues
+RoxygenNote: 5.0.1
