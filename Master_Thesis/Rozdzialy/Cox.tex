@@ -126,7 +126,7 @@ Chcąc estymować współczynniki metodą największej wiarogodności należy ro
 \begin{equation}
 L(\beta,\varphi) = L_p(\beta)\cdot L^{*}(\beta,\varphi),
 \end{equation}
-gdzie
+gdzie, dla $\lambda(t)$ wprowadzonego w definicji (\ref{def:haz})
 \begin{equation}
 L_p(\beta) = \prod\limits_{i=1}^{n}f(t_i;\beta)^{\delta_i}S(t_i;\beta)^{1-\delta_i}=\prod\limits_{i=1}^{n}\lambda(t_i;\beta)^{\delta_i}S(t_i;\beta)
 \end{equation}
@@ -150,7 +150,7 @@ Standardowo w celu znalezienia maximum, aby ułatwić obliczenia, można rozważ
 \begin{equation}
 \ell_p(\beta) = \sum\limits_{i=1}^{K}X_i'\beta - \sum\limits_{i=1}^{K}\log\Big(\sum\limits_{l\in \mathscr{R}(t_i)}^{}e^{X_l'\beta}\Big).
 \end{equation}
-Bezpośrednie kalkulacje dają $p$-wymiarowy wektor pochodnych, dla $k=1,\dots,p$
+Analityczne obliczenia dają $p$-wymiarowy wektor pochodnych, dla $k=1,\dots,p$
 \marginnote{\tiny{$X_{ik}$~to~$i$~ta \\ obserwacja \\ i $k$ ta zmienna.}}[1cm]
 \begin{equation}\label{score}
 U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-A_{ik}\Big),
