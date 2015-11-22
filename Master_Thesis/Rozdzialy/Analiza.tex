@@ -18,5 +18,23 @@ Zmiany genetyczne w komórkach zachodzą pod wpływem działania czynników muta
 
 Jedną z podstawowych cech komórek nowotworowych jest zdolność do endogennej produkcji sygnałów mitogennych bez udziału zewnętrznych czynników wzrostu, dlatego choroby nowotworowe są tak niebezpieczne a ich zwalczanie tak potrzebne.
 
-\section{Opis danych z The Cancer Genome Atlas}
+\section{Projekt The Cancer Genome Atlas}
+
+Do analizy wykorzystano dane udostępniane w ramach \textit{The Cancer Genome Atlas}~\cite{broad}. The~Cancer~Genome Atlas (TCGA) to kompleksowy projekt o skoordynowanych wysiłkach, mający na celu przyśpieszenie zrozumienia molekularnych podstaw raka. Ma się to odbywać poprzez stosowanie technologii analizy danych dużej skali do udostępnianych danych genomicznych i zsekwencjonowanego genomu tkanek nowotworowych. TCGA to inicjatywa \textit{National Cancer Institute} (NCI) oraz \textit{National Human Genome Research Institute} (NHGRI), czyli 2 z pośród 27 instytutów i centrów Narodowego Instytutu Zdrowia w Departamencie Zdrowia i Opieki Społecznej Stanów Zjednoczonych.
+
+Jak podaje \cite{patrycja}, w biologii jest znane ponad 200 różnych form nowotworu i jeszcze więcej ich podtypów. Każdy z nich wywołany jest błędami w DNA, które sprawiają, że komórki rozrastają się w sposób niekontrolowany. Identyfikując zmiany w kompletnym zbiorze DNA (genomie) dla każdego nowotworu i zrozumiawszy jak te zmiany wpływają na jego rozrost, możliwe będzie stworzenie podstaw pod poprawne zapobieganie nowotworom, wczesne ich wykrywanie i leczenie. 
+
+Nadrzędnym celem TCGA jest poprawić naszą zdolność do diagnozowania, leczenia i profilaktyki raka. TCGA aby osiągnąć ten cel w sposób naukowo rygorystyczny, początkowo jako projekt pilotażowy, opracowało i przetestowało strukturę badawczą konieczną do systematycznego badania całego spektrum zmian genomu zawartych w ponad 20 rodzajach raka.
+
+Dzięki projektowi TCGA społeczność naukowców walczących z rakiem może korzystać z~danych o zsekwencjonowanych tkankach nowotworowych zebranych przez instytucje takie jak \textit{Cancer Genomics Hub} (CGHub) czy \textit{Genome Data Analysis Centers} (GDACs). Te i~wiele więcej instytucji opisanych szerzej jest w \cite{patrycja}. TCGA Genome Data Analysis Centers składają się z 7 instytucji, a jedna z nich \textit{Broad Institute, Cambridge} udostępnia dane oraz wyniki swoich analiz poprzez portal Firehose Broad GDAC (\texttt{http://gdac.broadinstitute.org/}). Portal udostępnia dane dla 38 kohort związanych z występującym typem nowotworu. Więcej na temat kohort i danych zawartych w TCGA można znaleźć w~\cite{chin1}, \cite{chin2}, \cite{future} czy \cite{patrycja}. 
+
+Dane z TCGA pobrano przy użyciu pakietu \texttt{RTCGA} \cite{kosa1} i umieszczono w pakietach
+\begin{itemize}
+\item \texttt{RTCGA.clinical} \cite{kosa2}, zawierającym dane kliniczne o pacjentach,
+\item \texttt{RTCGA.mutations} \cite{kosa3}, zawierającym dane o występujących w genach mutacjach
+\end{itemize} 
+oraz zostały one wykorzystane w następnym rozdziale do sprawdzenia czy występowanie mutacji w danym genie ma wpływ na przeżywalność pacjentów dotkniętych nowotworem.
+
+
+
 \section{Analiza}
