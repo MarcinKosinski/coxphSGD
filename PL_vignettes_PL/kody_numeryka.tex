@@ -398,13 +398,13 @@
 \end{Shaded}
 
 \begin{verbatim}
-  id       time status x.1 x.2
-1  1 0.27192036      0   1   0
-2  2 0.20583781      1   0   1
-3  3 0.26799156      0   0   0
-4  4 0.04774363      1   1   1
-5  5 0.14097292      1   0   1
-6  6 0.22948057      1   0   0
+  id        time status x.1 x.2
+1  1 0.021530741      0   0   0
+2  2 0.022200468      0   0   1
+3  3 0.009355016      1   0   1
+4  4 0.156673908      0   1   0
+5  5 0.151352826      1   0   0
+6  6 0.132864938      0   0   1
 \end{verbatim}
 
 \begin{Shaded}
@@ -421,6 +421,64 @@
 \NormalTok{x <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{size =} \DecValTok{20000}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{), }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{)}
 \NormalTok{dCox <-}\StringTok{ }\KeywordTok{dataCox}\NormalTok{(}\DecValTok{10}\NormalTok{^}\DecValTok{4}\NormalTok{, }\DataTypeTok{lambda =} \DecValTok{3}\NormalTok{, }\DataTypeTok{rho =} \DecValTok{2}\NormalTok{, x, }\DataTypeTok{beta =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{censRate =} \DecValTok{5}\NormalTok{) }
 \KeywordTok{vizCoxSGD}\NormalTok{(dCox)}
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coxphSGD <-}\StringTok{ }\NormalTok{function(formula, data, }\DataTypeTok{learningRates =} \NormalTok{function(x)\{}\DecValTok{1}\NormalTok{/x\},}
+                    \DataTypeTok{beta_0 =} \DecValTok{0}\NormalTok{, }\DataTypeTok{epsilon =} \FloatTok{1e-5} \NormalTok{) \{}
+  \KeywordTok{checkArguments}\NormalTok{(formula, data, learningRates,}
+                  \NormalTok{beta_0, epsilon) ->}\StringTok{ }\NormalTok{beta_old }\CommentTok{# check arguments}
+  \NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(data)}
+  \NormalTok{diff <-}\StringTok{ }\NormalTok{epsilon +}\StringTok{ }\DecValTok{1}
+  \NormalTok{i <-}\StringTok{ }\DecValTok{1}
+  \NormalTok{beta_new <-}\StringTok{ }\KeywordTok{list}\NormalTok{() }\CommentTok{# steps are saved in a list so that they can}
+                     \CommentTok{# be tracked in the future}
+  \CommentTok{# estimate}
+  \NormalTok{while(i <=}\StringTok{ }\NormalTok{n &}\StringTok{ }\NormalTok{diff >}\StringTok{ }\NormalTok{epsilon) \{}
+    \NormalTok{beta_new[[i]] <-}\StringTok{ }\KeywordTok{coxphSGD_batch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{data =} \NormalTok{data[[i]],}
+                      \DataTypeTok{learningRate =} \KeywordTok{learningRates}\NormalTok{(i), }\DataTypeTok{beta =} \NormalTok{beta_old)}
+    
+    \NormalTok{diff <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{((beta_new[[i]] -}\StringTok{ }\NormalTok{beta_old)^}\DecValTok{2}\NormalTok{))}
+    \NormalTok{beta_old <-}\StringTok{ }\NormalTok{beta_new[[i]]}
+    \NormalTok{i <-}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}  
+  \NormalTok{\}}
+  \CommentTok{# return results}
+  \KeywordTok{list}\NormalTok{(}\DataTypeTok{Call =} \KeywordTok{match.call}\NormalTok{(), }\DataTypeTok{coefficients =} \NormalTok{beta_new, }\DataTypeTok{epsilon =} \NormalTok{epsilon,}
+       \DataTypeTok{learningRates =} \NormalTok{learningRates, }\DataTypeTok{steps =} \NormalTok{i)}
+\NormalTok{\}}
+
+\NormalTok{coxphSGD_batch <-}\StringTok{ }\NormalTok{function(formula, data, learningRate, beta)\{}
+  \CommentTok{# collect times, status, variables and reorder samples }
+  \CommentTok{# to make the algorithm more clear to read and track}
+  \NormalTok{batchData <-}\StringTok{ }\KeywordTok{prepareBatch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{data =} \NormalTok{data)}
+  
+  \CommentTok{# calculate the log-likelihood for this batch sample}
+  \NormalTok{partial_sum <-}\StringTok{ }\KeywordTok{list}\NormalTok{()}
+  
+  \NormalTok{for(k in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(batchData)) \{}
+    \CommentTok{# risk set for current time/observation}
+    \NormalTok{risk_set <-}\StringTok{ }\NormalTok{batchData %>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(times <=}\StringTok{ }\NormalTok{batchData$times[k])}
+    
+    \NormalTok{nominator <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(risk_set[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)], }\DataTypeTok{MARGIN =} \DecValTok{1}\NormalTok{, function(element)\{}
+      \NormalTok{element *}\StringTok{ }\KeywordTok{exp}\NormalTok{(element *}\StringTok{ }\NormalTok{beta)}
+    \NormalTok{\}) %>%}\StringTok{ }\KeywordTok{rowSums}\NormalTok{()}
+      
+    \NormalTok{denominator <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(risk_set[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)], }\DataTypeTok{MARGIN =} \DecValTok{1}\NormalTok{, function(element)\{}
+      \KeywordTok{exp}\NormalTok{(element *}\StringTok{ }\NormalTok{beta)}
+    \NormalTok{\}) %>%}\StringTok{ }\KeywordTok{rowSums}\NormalTok{()}
+      
+    \NormalTok{partial_sum[[k]] <-}\StringTok{ }
+\StringTok{      }\NormalTok{batchData[k, }\StringTok{"event"}\NormalTok{] *}\StringTok{ }\NormalTok{(batchData[k, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)] -}\StringTok{ }\NormalTok{nominator/denominator)}
+  \NormalTok{\}}
+  \KeywordTok{do.call}\NormalTok{(rbind, partial_sum) %>%}
+\StringTok{    }\KeywordTok{colSums}\NormalTok{() ->}\StringTok{ }\NormalTok{U_batch}
+  
+  \KeywordTok{return}\NormalTok{(beta +}\StringTok{ }\NormalTok{learningRate *}\StringTok{ }\NormalTok{U_batch)}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 

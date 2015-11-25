@@ -70,12 +70,10 @@ Poniżej przedstawione są argumenty, które przyjmuje funkcja `coxphSGD()`, kt�
 #' }
 #' 
 
-coxphSGD <- function(formula, data, 
-                    learningRates = function(x){1/x},
+coxphSGD <- function(formula, data, learningRates = function(x){1/x},
                     beta_0 = 0, epsilon = 1e-5 ) {
   checkArguments(formula, data, learningRates,
                   beta_0, epsilon) -> beta_old # check arguments
-
   n <- length(data)
   diff <- epsilon + 1
   i <- 1
@@ -83,33 +81,69 @@ coxphSGD <- function(formula, data,
                      # be tracked in the future
   # estimate
   while(i <= n & diff > epsilon) {
-    #tryCatch({
     beta_new[[i]] <- coxphSGD_batch(formula = formula, data = data[[i]],
-                                    learningRate = learningRates(i),
-                                    beta = beta_old)
+                      learningRate = learningRates(i), beta = beta_old)
     
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
     i <- i + 1  
-    #}, error = function(cond) {i <<- n + 1})
+  }
+  # return results
+  list(Call = match.call(), coefficients = beta_new, epsilon = epsilon,
+       learningRates = learningRates, steps = i)
+}
+
+coxphSGD_batch <- function(formula, data, learningRate, beta){
+  # collect times, status, variables and reorder samples 
+  # to make the algorithm more clear to read and track
+  batchData <- prepareBatch(formula = formula, data = data)
+  
+  # calculate the log-likelihood for this batch sample
+  partial_sum <- list()
+  
+  for(k in 1:nrow(batchData)) {
+    # risk set for current time/observation
+    risk_set <- batchData %>% filter(times <= batchData$times[k])
+    
+    nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
+      element * exp(element * beta)
+    }) %>% rowSums()
+      
+    denominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
+      exp(element * beta)
+    }) %>% rowSums()
+      
+    partial_sum[[k]] <- 
+      batchData[k, "event"] * (batchData[k, -c(1,2)] - nominator/denominator)
+  }
+  do.call(rbind, partial_sum) %>%
+    colSums() -> U_batch
+  
+  return(beta + learningRate * U_batch)
+}
+  
+checkArguments <- function(formula, data, learningRates,
+                             beta_0, epsilon) {
+  assert_that(is.list(data) & length(data) > 0)
+  assert_that(length(unique(unlist(lapply(data, ncol)))) == 1)
+  # + check names and types for every variables
+  assert_that(is.function(learningRates))
+  assert_that(is.numeric(epsilon))
+  assert_that(is.numeric(beta_0))
+  
+    # check length of the start parameter
+  if (length(beta_0) == 1) {
+    beta_0 <- rep(beta_0, as.character(formula)[3] %>%
+                    strsplit("\\+") %>%
+                    unlist %>%
+                    length)
   }
   
-  # return results
-  fit <- list()
-  fit$Call <- match.call()
-  fit$coefficients <- beta_new
-  fit$epsilon <- epsilon
-  fit$learningRates <- learningRates
-  fit$steps <- i
-  class(fit) <- "coxphSGD"
-  fit
-  
+  return(beta_0)
 }
 
 
-
-coxphSGD_batch <- function(formula, data, learningRate, beta){
-  
+prepareBatch <- function(formula, data) {
   # Parameter identification as in  `survival::coxph()`.
   Call <- match.call()
   indx <- match(c("formula", "data"),
@@ -132,65 +166,10 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   
   # collect times, status, variables and reorder samples 
   # to make the algorithm more clear to read and track
-  cbind(not_censored = 1 - unclass(Y)[,2],
+  cbind(event = unclass(Y)[,2], # 1 indicates event, 0 indicates cens
         times = unclass(Y)[,1],
         mf[, -1]) %>%
-    arrange(times) -> batchData
-  
-  # calculate the log-likelihood for this batch sample
-  
-  partial_sum <- list()
-  
-  for(k in 1:nrow(batchData)) {
-    
-    # risk set for current time/observation
-    risk_set <- batchData %>%
-      dplyr::filter(times <= batchData$times[k])
-    
-    nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
-      element * exp(element * beta)
-    }) %>%
-      t %>%
-      colSums()
-    
-    denominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
-      exp(element * beta)
-    }) %>%
-      t %>%
-      colSums()
-    
-    partial_sum[[k]] <- 
-      batchData[k, "not_censored"] * (batchData[k, -c(1,2)] - nominator/denominator)
-    
-  }
-  
-  do.call(rbind, partial_sum) %>%
-    colSums() -> U_batch
-  
-  
-  beta_out <- beta + learningRate * U_batch
-  
-  return(beta_out)
-}
-  
-checkArguments <- function(formula, data, learningRates,
-                             beta_0, epsilon) {
-  assert_that(is.list(data) & length(data) > 0)
-  assert_that(length(unique(unlist(lapply(data, ncol)))) == 1)
-  # + check names and types for every variables
-  assert_that(is.function(learningRates))
-  assert_that(is.numeric(epsilon))
-  assert_that(is.numeric(beta_0))
-  
-    # check length of the start parameter
-  if (length(beta_0) == 1) {
-    beta_0 <- rep(beta_0, as.character(formula)[3] %>%
-                    strsplit("\\+") %>%
-                    unlist %>%
-                    length)
-  }
-  
-  return(beta_0)
+    arrange(times) 
 }
 
 ```
