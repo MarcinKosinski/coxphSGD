@@ -56,10 +56,10 @@ inverseHessianGDII <- function(x, w_old){
   )
 }
 set.seed(1283)
-x <- runif(1000)
+x <- runif(10000)
 z <- 2 + 3*x
 pr <- 1/(1+exp(-z))
-y <- rbinom(1000,1,pr)
+y <- rbinom(10000,1,pr)
 
 
 global_loglog <- function(beta1, beta2, xX, yY){
@@ -96,92 +96,98 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
   set.seed(seed)
 
   beta <- rev(beta)
-logitGD(y, x, optim.method = "GDI",beta_0 = beta,
-        eps = 10e-6, max.iter = 5000, alpha = function(t){1/(100*t)})$steps -> GDI
-logitGD(y, x, optim.method = "GDII", beta_0 = beta,
-        eps = 10e-6, max.iter = 5000)$steps -> GDII
+  logitGD(y, x, optim.method = "GDI",beta_0 = beta,
+          eps = 10e-6, max.iter = 10000, alpha = function(t){1/(1000*t)})$steps -> GDI
+  logitGD(y, x, optim.method = "GDI",beta_0 = beta,
+          eps = 10e-6, max.iter = 10000, alpha = function(t){1/(1000*sqrt(t))})$steps -> GDI.S
 
 
-ind <- sample(length(y))
-logitGD(y[ind], x[ind], optim.method = "SGDI", beta_0 = beta,
-        max.iter = 1000, eps = 10e-6, alpha = function(t){1/t})$steps -> SGDI.1
-ind2 <- sample(length(y))
-logitGD(y[ind2], x[ind2], optim.method = "SGDI", beta_0 = beta,
-        max.iter = 1000, eps = 10e-6, alpha = function(t){2/t})$steps -> SGDI.2
-ind3 <- sample(length(y))
-logitGD(y[ind3], x[ind3], optim.method = "SGDI", beta_0 = beta,
-        max.iter = 1000, eps = 10e-6, alpha = function(t){3/t})$steps -> SGDI.3
-ind4 <- sample(length(y))
-logitGD(y[ind4], x[ind4], optim.method = "SGDI", beta_0 = beta,
-        max.iter = 1000, eps = 10e-6, alpha = function(t){4/t})$steps -> SGDI.4
-ind5 <- sample(length(y))
-logitGD(y[ind5], x[ind5], optim.method = "SGDI", beta_0 = beta,
-        max.iter = 1000, eps = 10e-6, alpha = function(t){5/t})$steps -> SGDI.5
-ind6 <- sample(length(y))
-logitGD(y[ind6], x[ind6], optim.method = "SGDI", beta_0 = beta,
-        max.iter = 1000, eps = 10e-6, alpha = function(t){6/t})$steps -> SGDI.6
+  logitGD(y, x, optim.method = "GDII", beta_0 = beta,
+          eps = 10e-6, max.iter = 5000)$steps -> GDII
 
-do.call(rbind, c(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5, SGDI.6)) -> coeffs
-unlist(lapply(list(GDI, GDII, SGDI.1, SGDI.2, SGDI.3, SGDI.4, SGDI.5, SGDI.6), length)) -> algorithm
-data2viz <- cbind(as.data.frame(coeffs),
-      algorithm = unlist(mapply(rep,
-                                c(paste("GDI", length(GDI), "steps"),
-                                       paste("GDII", length(GDII), "steps"),
-                                       paste("SGDI.1", length(SGDI.1), "steps"),
-                                       paste("SGDI.2", length(SGDI.2), "steps"),
-                                       paste("SGDI.3", length(SGDI.3), "steps"),
-                                       paste("SGDI.4", length(SGDI.4), "steps"),
-                                       paste("SGDI.5", length(SGDI.5), "steps"),
-                                       paste("SGDI.6", length(SGDI.6), "steps")),
-                                algorithm)))
-names(data2viz)[1:2] <- c("Intercept", "X")
-beta[2] -> XX
-beta[1] -> YY
 
-#outer_res_melted <- outerBounds
+  # ind <- sample(length(y))
+  # logitGD(y[ind], x[ind], optim.method = "SGDI", beta_0 = beta,
+  #         max.iter = 10000, eps = 10e-6, alpha = function(t){1/t})$steps -> SGDI.1
+  ind2 <- sample(length(y))
+  logitGD(y[ind2], x[ind2], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-6, alpha = function(t){1/sqrt(t)})$steps -> SGDI.1.S
+  ind3 <- sample(length(y))
+  logitGD(y[ind3], x[ind3], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-6, alpha = function(t){5/sqrt(t)})$steps -> SGDI.5.S
+  ind4 <- sample(length(y))
+  logitGD(y[ind4], x[ind4], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-6, alpha = function(t){6/sqrt(t)})$steps -> SGDI.6.S
+  ind5 <- sample(length(y))
+  logitGD(y[ind5], x[ind5], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-6, alpha = function(t){5/t})$steps -> SGDI.5
+  ind6 <- sample(length(y))
+  logitGD(y[ind6], x[ind6], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-6, alpha = function(t){6/t})$steps -> SGDI.6
 
-# ggplot(data2viz) +
-#   geom_point(aes(x = X, y = Intercept, col = algorithm)) +
-#   geom_path(aes(x = X, y = Intercept, col = algorithm,
-#                 group = algorithm)) +
-#   theme_bw(base_size = 20) +
-#   scale_colour_brewer(palette="Dark2") +
-#   #theme_tufte(base_size = 20) +
-#   #geom_point(aes(x=3, y =2), col = "black", size =4) +
-#   geom_point(aes(as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[2]),
-#                  as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[1])),
-#              col = "black", size = 4, shape = 15) +
-#   geom_point(x=XX, y=YY,
-#              col = "black", size = 4, shape = 17) +
-#   theme(panel.border = element_blank(),
-#         legend.key = element_blank()) +
+  do.call(rbind, c(GDI, GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S, SGDI.5, SGDI.6)) -> coeffs
+  unlist(lapply(list(GDI, GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S, SGDI.5, SGDI.6), length)) -> algorithm
+  data2viz <- cbind(as.data.frame(coeffs),
+                    algorithm = unlist(mapply(rep,
+                                              c(paste("GDI", length(GDI), "steps"),
+                                                paste("GDI.S", length(GDI.S), "steps"),
+                                                paste("GDII", length(GDII), "steps"),
+                                                # paste("SGDI.1", length(SGDI.1), "steps"),
+                                                paste("SGDI.1.S", length(SGDI.1.S), "steps"),
+                                                paste("SGDI.5.S", length(SGDI.5.S), "steps"),
+                                                paste("SGDI.6.S", length(SGDI.6.S), "steps"),
+                                                paste("SGDI.5", length(SGDI.5), "steps"),
+                                                paste("SGDI.6", length(SGDI.6), "steps")),
+                                              algorithm)))
+  names(data2viz)[1:2] <- c("Intercept", "X")
+  beta[2] -> XX
+  beta[1] -> YY
+
+  #outer_res_melted <- outerBounds
+
+  # ggplot(data2viz) +
+  #   geom_point(aes(x = X, y = Intercept, col = algorithm)) +
+  #   geom_path(aes(x = X, y = Intercept, col = algorithm,
+  #                 group = algorithm)) +
+  #   theme_bw(base_size = 20) +
+  #   scale_colour_brewer(palette="Dark2") +
+  #   #theme_tufte(base_size = 20) +
+  #   #geom_point(aes(x=3, y =2), col = "black", size =4) +
+  #   geom_point(aes(as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[2]),
+  #                  as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[1])),
+  #              col = "black", size = 4, shape = 15) +
+  #   geom_point(x=XX, y=YY,
+  #              col = "black", size = 4, shape = 17) +
+  #   theme(panel.border = element_blank(),
+  #         legend.key = element_blank()) +
 
   ggplot()+
-  stat_contour(aes(x=outerBounds$Var1,
-                   y=outerBounds$Var2,
-                   z=outerBounds$value+900),
-               alpha = 0.25) +
-  geom_point(aes(as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[2]),
-                 as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[1])),
-             col = "black", size = 4, shape = 15) +
-  geom_point(aes(x=XX, y=YY),
-             col = "black", size = 4, shape = 17) +
-  theme_bw(base_size = 20) +
-  theme(panel.border = element_blank(),
-        legend.key = element_blank()) +
-  geom_path(aes(x = data2viz$X,
-                y = data2viz$Intercept,
-                col = data2viz$algorithm,
-                group = data2viz$algorithm), size =1) +
-#   geom_point(aes(x = data2viz$X,
-#                 y = data2viz$Intercept,
-#                 col = data2viz$algorithm,
-#                 group = data2viz$algorithm)) +
-  scale_colour_brewer(palette="Dark2", name = 'Algorithm') +
+    stat_contour(aes(x=outerBounds$Var1,
+                     y=outerBounds$Var2,
+                     z=outerBounds$value+900),
+                 alpha = 0.25) +
+    geom_path(aes(x = data2viz$X,
+                  y = data2viz$Intercept,
+                  col = data2viz$algorithm,
+                  group = data2viz$algorithm), size =1) +
+    geom_point(aes(as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[2]),
+                   as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[1])),
+               col = "black", size = 4, shape = 15) +
+    geom_point(aes(x=XX, y=YY),
+               col = "black", size = 4, shape = 17) +
+    theme_bw(base_size = 20) +
+    theme(panel.border = element_blank(),
+          legend.key = element_blank()) +
+
+    #   geom_point(aes(x = data2viz$X,
+    #                 y = data2viz$Intercept,
+    #                 col = data2viz$algorithm,
+    #                 group = data2viz$algorithm)) +
+    scale_colour_brewer(palette="Dark2", name = 'Algorithm') +
     xlab('X') +
     ylab('Intercept')  -> pl_g
 
-return(pl_g)
+  return(pl_g)
 }
 
 
