@@ -96,14 +96,14 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
   set.seed(seed)
 
   beta <- rev(beta)
+#   logitGD(y, x, optim.method = "GDI",beta_0 = beta,
+#           eps = 10e-6, max.iter = 10000, alpha = function(t){1/(1000*t)})$steps -> GDI
   logitGD(y, x, optim.method = "GDI",beta_0 = beta,
-          eps = 10e-6, max.iter = 10000, alpha = function(t){1/(1000*t)})$steps -> GDI
-  logitGD(y, x, optim.method = "GDI",beta_0 = beta,
-          eps = 10e-6, max.iter = 10000, alpha = function(t){1/(1000*sqrt(t))})$steps -> GDI.S
+          eps = 10e-4, max.iter = 10000, alpha = function(t){1/(1000*sqrt(t))})$steps -> GDI.S
 
 
   logitGD(y, x, optim.method = "GDII", beta_0 = beta,
-          eps = 10e-6, max.iter = 5000)$steps -> GDII
+          eps = 10e-4, max.iter = 5000)$steps -> GDII
 
 
   # ind <- sample(length(y))
@@ -111,33 +111,33 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
   #         max.iter = 10000, eps = 10e-6, alpha = function(t){1/t})$steps -> SGDI.1
   ind2 <- sample(length(y))
   logitGD(y[ind2], x[ind2], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-6, alpha = function(t){1/sqrt(t)})$steps -> SGDI.1.S
+          max.iter = 10000, eps = 10e-4, alpha = function(t){1/sqrt(t)})$steps -> SGDI.1.S
   ind3 <- sample(length(y))
   logitGD(y[ind3], x[ind3], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-6, alpha = function(t){5/sqrt(t)})$steps -> SGDI.5.S
+          max.iter = 10000, eps = 10e-4, alpha = function(t){5/sqrt(t)})$steps -> SGDI.5.S
   ind4 <- sample(length(y))
   logitGD(y[ind4], x[ind4], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-6, alpha = function(t){6/sqrt(t)})$steps -> SGDI.6.S
-  ind5 <- sample(length(y))
-  logitGD(y[ind5], x[ind5], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-6, alpha = function(t){5/t})$steps -> SGDI.5
-  ind6 <- sample(length(y))
-  logitGD(y[ind6], x[ind6], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-6, alpha = function(t){6/t})$steps -> SGDI.6
+          max.iter = 10000, eps = 10e-4, alpha = function(t){6/sqrt(t)})$steps -> SGDI.6.S
+#   ind5 <- sample(length(y))
+#   logitGD(y[ind5], x[ind5], optim.method = "SGDI", beta_0 = beta,
+#           max.iter = 10000, eps = 10e-6, alpha = function(t){5/t})$steps -> SGDI.5
+#   ind6 <- sample(length(y))
+#   logitGD(y[ind6], x[ind6], optim.method = "SGDI", beta_0 = beta,
+#           max.iter = 10000, eps = 10e-6, alpha = function(t){6/t})$steps -> SGDI.6
 
-  do.call(rbind, c(GDI, GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S, SGDI.5, SGDI.6)) -> coeffs
-  unlist(lapply(list(GDI, GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S, SGDI.5, SGDI.6), length)) -> algorithm
+  do.call(rbind, c(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S)) -> coeffs
+  unlist(lapply(list(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S), length)) -> algorithm
   data2viz <- cbind(as.data.frame(coeffs),
                     algorithm = unlist(mapply(rep,
-                                              c(paste("GDI", length(GDI), "steps"),
-                                                paste("GDI.S", length(GDI.S), "steps"),
+                                              #c(paste("GDI", length(GDI), "steps"),
+                                                c(paste("GDI", length(GDI.S), "steps"),
                                                 paste("GDII", length(GDII), "steps"),
                                                 # paste("SGDI.1", length(SGDI.1), "steps"),
-                                                paste("SGDI.1.S", length(SGDI.1.S), "steps"),
-                                                paste("SGDI.5.S", length(SGDI.5.S), "steps"),
-                                                paste("SGDI.6.S", length(SGDI.6.S), "steps"),
-                                                paste("SGDI.5", length(SGDI.5), "steps"),
-                                                paste("SGDI.6", length(SGDI.6), "steps")),
+                                                paste("SGDI.1", length(SGDI.1.S), "steps"),
+                                                paste("SGDI.5", length(SGDI.5.S), "steps"),
+                                                paste("SGDI.6", length(SGDI.6.S), "steps")),
+#                                                 paste("SGDI.5", length(SGDI.5), "steps"),
+#                                                 paste("SGDI.6", length(SGDI.6), "steps")),
                                               algorithm)))
   names(data2viz)[1:2] <- c("Intercept", "X")
   beta[2] -> XX
@@ -183,7 +183,7 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
     #                 y = data2viz$Intercept,
     #                 col = data2viz$algorithm,
     #                 group = data2viz$algorithm)) +
-    scale_colour_brewer(palette="Dark2", name = 'Algorithm') +
+    scale_colour_brewer(palette="Set1", name = 'Algorithm') +
     xlab('X') +
     ylab('Intercept')  -> pl_g
 
