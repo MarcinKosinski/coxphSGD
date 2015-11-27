@@ -186,7 +186,7 @@ Dla tak sztucznie zasymulowanych danych przygotowano funkcję \texttt{logitGD()}
 
 Na każdym z wykresów na osi $OX$ ukazano współczynnik dla zmiennej objaśniającej w prostym modelu regresji logistycznej z jedną zmienną objaśniającą w kolejnych krokach poszczególnych algorytmów. Na osi $OY$ zaznaczono współczynnik wyrazu wolnego w tym modelu. Punkt startowym zaznaczono na wykresie czarnym trójkątem. Czarnym kwadratem zaznaczono ekstremum funkcji log-wiarogodności w tym modelu, wyliczone dzięki funkcji \texttt{glm} \cite{glmglm}, która do estymacji używa algorytmu Fishera (\textit{ang. Fisher's Scoring algorithm} \cite{scoring1}, \cite{scoring2}) używającego obserwowanej macierzy Informacji Fishera (definicja (\ref{inf:fish})) w miejscu Hesjanu w algorytmie Newtona-Raphsona (równanie (\ref{NJU-rap})). Trajektoria zbieżności do minimum dla odrębnych algorytmów zaznaczono oddzielnymi kolorami, które są wyjaśnione na legendzie wykresu, na której dodatkowo wpisano liczbę kroków wymaganą przez algorytm do zbieżności. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 3 różne trajektorie dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{\sqrt{k}}$.
 
-W trakcie każdej symulacji postawiono pewne warunki konieczne do zbieżności. Ustalono maksymalną liczbę iteracji na 10001 dla wariantów stochastycznych, gdzie przez pierwszy krok rozumiano start z punktu startowego. Dodatkowo warunek stopu ustalono na $\epsilon=10^{-4}$ ($\epsilon=10^{-5}$ dla punktu startowego $\beta_0 = (0,0)$) oraz ustalono ciąg odpowiadający długościom kroków w algorytmie spadku gradientu rzędu I \texttt{GDI} na $\alpha_{k} = \frac{1}{1000\sqrt{k}}$. Symulacje powtórzono czterokrotnie dla czterech różnych punktów startu algorytmów $\beta_0 = (0,0), (2,1), (3.5,1), (4,3.2).$
+W trakcie każdej symulacji postawiono pewne warunki konieczne do zbieżności. Ustalono maksymalną liczbę iteracji na 10001, gdzie przez pierwszy krok rozumiano start z punktu startowego. Dodatkowo warunek stopu ustalono na $\epsilon=10^{-4}$ ($\epsilon=10^{-5}$ dla punktu startowego $\beta_0 = (0,0)$) oraz ustalono ciąg odpowiadający długościom kroków w algorytmie spadku gradientu rzędu I \texttt{GDI} na $\alpha_{k} = \frac{1}{1000\sqrt{k}}$. Symulacje powtórzono czterokrotnie dla czterech różnych punktów startu algorytmów $\beta_0 = (0,0), (1,2), (3.5,1), (4,3.2).$
 
 Ponieważ każda trajektoria w procesie estymacji metodą stochastycznego gradientu dla tych samych parametrów zbieżności jest inna, z racji na losową kolejność obserwacji, toteż dla każdego z czterech ustalonych punktów startowych zdecydowano się zobrazować symulację dwukrotnie, aby móc przedstawić stochastyczny aspekt tej metody. Symulacja nr 1 bazowała na losowym wzięciu punktów do algorytmów stochastycznego spadku gradientu, gdy ziarno losowania było ustawione na 4561, zaś dla symulacji nr 2 ziarno ustawiono na 456.
 
@@ -205,7 +205,7 @@ Ponieważ na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}) każda z symulacji
    \begin{subfigure}[h!]{0.45\textwidth}
    %     \centering
         \includegraphics[width=\textwidth]{Obrazki/contour_2_1.pdf}
-        \caption{Symulacja dla $\beta_0 = (2,1)$.}
+        \caption{Symulacja dla $\beta_0 = (1,2)$.}
       \end{subfigure}
    \begin{subfigure}[h!]{0.45\textwidth}
       %     \centering
@@ -218,7 +218,7 @@ Ponieważ na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}) każda z symulacji
               \caption{Symulacja dla $\beta_0 = (4,3.2)$.}
             \end{subfigure}
 \end{center}
-\caption[Porównanie algorytmów spadku gradientu o wspólnym zakresie osi.]{\label{fig:sc5asd} Wykresy o wspólnym zakresie osi z zaznaczeniem warstwic funkcji log-wiarogodności dla modelu regresji logistycznej (równanie (\ref{logglm})). Wykresy przedstawiają porównanie algorytmów spadku gradientu. Początkowe dane losowano z innego ziarna niż na wykresach ukazanych na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}). Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\epsilon=10^{-4}$ ($\epsilon=10^{-5}$ dla punktu startowego $\beta_0 = (0,0)$). Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 3 różne trajektorie dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{\sqrt{k}}$.}
+\caption[Porównanie algorytmów spadku gradientu o wspólnym zakresie osi.]{\label{fig:sc5asd} Wykresy o wspólnym zakresie osi z zaznaczeniem warstwic funkcji log-wiarogodności dla modelu regresji logistycznej (równanie (\ref{logglm})). Wykresy przedstawiają porównanie algorytmów spadku gradientu. Początkowe dane losowano z innego ziarna losowania ustalone na 4561. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\epsilon=10^{-4}$ ($\epsilon=10^{-5}$ dla punktu startowego $\beta_0 = (0,0)$). Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 3 różne trajektorie dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{\sqrt{k}}$.}
 \end{figure}
 
 Na kolejnych wykresach na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}) osie dopasowane są do obecnej symulacji. Ze względu na pomniejszenie zakresu osi, nie zdecydowano się na ukazanie warstwic.
@@ -237,7 +237,7 @@ Na kolejnych wykresach na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}) osie 
       \caption{Symulacja dla $\beta_0 = (0,0)$ nr 2 dla ziarna losowania ustalonego na 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (0,0)$.]{\label{fig:scasd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (0,0)$. Wykres przedstawia ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 5001 dla algorytmów spadku gradientu i 1001 dla wariantów stochastycznych, zaś warunek stopu ustalono na $\epsilon=10^{-6}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 6 różnych trajektorii dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{k}$.}
+  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (0,0)$.]{\label{fig:scasd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (0,0)$. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\epsilon=10^{-5}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 3 różne trajektorie dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{\sqrt{k}}$.}
 \end{figure}
 
 
@@ -245,15 +245,15 @@ Na kolejnych wykresach na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}) osie 
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_2_1_1.pdf}
-      \caption{Symulacja dla $\beta_0 = (2,1)$ nr 1 dla ziarna losowania ustalonego na 4561.}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_1_2_1.pdf}
+      \caption{Symulacja dla $\beta_0 = (1,2)$ nr 1 dla ziarna losowania ustalonego na 4561.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_2_1_2.pdf}
-      \caption{Symulacja dla $\beta_0 = (2,1)$ nr 2 dla ziarna losowania ustalonego na 456.}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_1_2_2.pdf}
+      \caption{Symulacja dla $\beta_0 = (1,2)$ nr 2 dla ziarna losowania ustalonego na 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (2,1)$.]{\label{fig:sc2asd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (2,1)$. Wykres przedstawia ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 5001 dla algorytmów spadku gradientu i 1001 dla wariantów stochastycznych, zaś warunek stopu ustalono na $\epsilon=10^{-6}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 6 różnych trajektorii dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{k}$.}
+  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (1,2)$.]{\label{fig:sc2asd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (1,2)$. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\epsilon=10^{-4}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 3 różne trajektorie dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{\sqrt{k}}$.}
 \end{figure}
 
 
@@ -261,15 +261,15 @@ Na kolejnych wykresach na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}) osie 
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_1_0_1.pdf}
-      \caption{Symulacja dla $\beta_0 = (1,0)$ nr 1 dla ziarna losowania ustalonego na 4561.}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_35_1_1.pdf}
+      \caption{Symulacja dla $\beta_0 = (3.5,1)$ nr 1 dla ziarna losowania ustalonego na 4561.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_1_0_2.pdf}
-      \caption{Symulacja dla $\beta_0 = (1,0)$ nr 2 dla ziarna losowania ustalonego na 456.}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_35_1_2.pdf}
+      \caption{Symulacja dla $\beta_0 = (3.5,1)$ nr 2 dla ziarna losowania ustalonego na 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (1,0)$.]{\label{fig:sc3asd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (1,0)$. Wykres przedstawia ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 5001 dla algorytmów spadku gradientu i 1001 dla wariantów stochastycznych, zaś warunek stopu ustalono na $\epsilon=10^{-6}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 6 różnych trajektorii dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{k}$.}
+  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (3.5,1)$.]{\label{fig:sc3asd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (3.5,1)$. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\epsilon=10^{-4}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 3 różne trajektorie dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{\sqrt{k}}$.}
 \end{figure}
 
 
@@ -277,15 +277,15 @@ Na kolejnych wykresach na Rysunkach (\ref{fig:scasd}) - (\ref{fig:sc4asd}) osie 
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_21_31_1.pdf}
-      \caption{Symulacja dla $\beta_0 = (2.1,3.1)$ nr 1 dla ziarna losowania ustalonego na 4561.}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_32_4_1.pdf}
+      \caption{Symulacja dla $\beta_0 = (4,3.2)$ nr 1 dla ziarna losowania ustalonego na 4561.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_21_31_2.pdf}
-      \caption{Symulacja dla $\beta_0 = (2.1,3.1)$ nr 2 dla ziarna losowania ustalonego na 456.}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_32_4_2.pdf}
+      \caption{Symulacja dla $\beta_0 = (4,3.2)$ nr 2 dla ziarna losowania ustalonego na 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (2.1,3.1)$.]{\label{fig:sc4asd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (2.1,3.1)$. Wykres przedstawia ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 5001 dla algorytmów spadku gradientu i 1001 dla wariantów stochastycznych, zaś warunek stopu ustalono na $\epsilon=10^{-6}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 6 różnych trajektorii dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{k}$.}
+  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (4,3.2)$.]{\label{fig:sc4asd}Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (4,3.2)$. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\epsilon=10^{-4}$. Trójkątem zaznaczono punkt startowy, a kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm} \cite{glmglm}. Przez \texttt{GDI} oznaczono trajektoria dla algorytmu spadku gradientu rzędu I, przez \texttt{GDII} oznaczono trajektoria dla algorytmu spadku gradientu rzędu II, zaś przez \texttt{SGD.i} oznaczono 3 różne trajektorie dla algorytmów stochastycznego spadku gradientu dla różnych ciągów odpowiadających długości kroku algorytmu. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{ki} = \frac{i}{\sqrt{k}}$.}
 \end{figure}
 
 

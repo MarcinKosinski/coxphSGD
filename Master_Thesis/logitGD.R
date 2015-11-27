@@ -140,6 +140,7 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
 #                                                 paste("SGDI.6", length(SGDI.6), "steps")),
                                               algorithm)))
   names(data2viz)[1:2] <- c("Intercept", "X")
+  data2viz$algorithm <- factor(data2viz$algorithm, levels = rev(levels(data2viz$algorithm)))
   beta[2] -> XX
   beta[1] -> YY
 
@@ -162,14 +163,14 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
   #         legend.key = element_blank()) +
 
   ggplot()+
-    stat_contour(aes(x=outerBounds$Var1,
-                     y=outerBounds$Var2,
-                     z=outerBounds$value+900),
-                 alpha = 0.25) +
+#     stat_contour(aes(x=outerBounds$Var1,
+#                      y=outerBounds$Var2,
+#                      z=outerBounds$value+900),
+#                  alpha = 0.25) +
     geom_path(aes(x = data2viz$X,
                   y = data2viz$Intercept,
                   col = data2viz$algorithm,
-                  group = data2viz$algorithm), size =1) +
+                  group = data2viz$algorithm), size = 1) +
     geom_point(aes(as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[2]),
                    as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[1])),
                col = "black", size = 4, shape = 15) +
@@ -199,37 +200,37 @@ dev.off()
 pdf(file = "sgd_00_2.pdf", width = 10, height = 8)
 graphSGD(c(0,0), y, x, 456)
 dev.off()
-pdf(file = "sgd_1_0_1.pdf", width = 10, height = 8)
-graphSGD(c(1,0), y, x, 4561)
+pdf(file = "sgd_1_2_1.pdf", width = 10, height = 8)
+graphSGD(c(1,2), y, x, 4561)
 dev.off()
-pdf(file = "sgd_1_0_2.pdf", width = 10, height = 8)
-graphSGD(c(1,0), y, x, 456)
-dev.off()
-
-
-pdf(file = "sgd_21_31_1.pdf", width = 10, height = 8)
-graphSGD(c(2.1,3.1), y, x, 4561)
-dev.off()
-pdf(file = "sgd_21_31_2.pdf", width = 10, height = 8)
-graphSGD(c(2.1,3.1), y, x, 456)
+pdf(file = "sgd_1_2_2.pdf", width = 10, height = 8)
+graphSGD(c(1,2), y, x, 456)
 dev.off()
 
 
+pdf(file = "sgd_35_1_1.pdf", width = 10, height = 8)
+graphSGD(c(1,3.5), y, x, 4561)
+dev.off()
+pdf(file = "sgd_35_1_2.pdf", width = 10, height = 8)
+graphSGD(c(1,3.5), y, x, 456)
+dev.off()
 
-pdf(file = "sgd_3_4_1.pdf", width = 10, height = 8 )
+
+
+pdf(file = "sgd_32_4_1.pdf", width = 10, height = 8 )
 graphSGD(c(3.2,4), y, x, 4561)
 dev.off()
-pdf(file = "sgd_3_4_1.pdf", width = 10, height = 8 )
+pdf(file = "sgd_32_4_2.pdf", width = 10, height = 8 )
 graphSGD(c(3.2,4), y, x, 456)
 dev.off()
 
 
 
-pdf(file = "sgd_2_1_1.pdf", width = 10, height = 8)
-graphSGD(c(2,1), y, x, 4561)
-dev.off()
-
-pdf(file = "sgd_2_1_2.pdf", width = 10, height = 8)
-graphSGD(c(2,1), y, x, 456)
-dev.off()
+# pdf(file = "sgd_2_1_1.pdf", width = 10, height = 8)
+# graphSGD(c(2,1), y, x, 4561)
+# dev.off()
+#
+# pdf(file = "sgd_2_1_2.pdf", width = 10, height = 8)
+# graphSGD(c(2,1), y, x, 456)
+# dev.off()
 
