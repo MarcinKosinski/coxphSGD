@@ -26,6 +26,40 @@
 \end{Highlighting}
 \end{Shaded}
 
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{prepareBatch <-}\StringTok{ }\NormalTok{function(formula, data) \{}
+  \CommentTok{# Parameter identification as in  `survival::coxph()`.}
+  \NormalTok{Call <-}\StringTok{ }\KeywordTok{match.call}\NormalTok{()}
+  \NormalTok{indx <-}\StringTok{ }\KeywordTok{match}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"formula"}\NormalTok{, }\StringTok{"data"}\NormalTok{),}
+                \KeywordTok{names}\NormalTok{(Call), }\DataTypeTok{nomatch =} \DecValTok{0}\NormalTok{)}
+  \NormalTok{if (indx[}\DecValTok{1}\NormalTok{] ==}\StringTok{ }\DecValTok{0}\NormalTok{) }
+      \KeywordTok{stop}\NormalTok{(}\StringTok{"A formula argument is required"}\NormalTok{)}
+  \NormalTok{temp <-}\StringTok{ }\NormalTok{Call[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, indx)]}
+  \NormalTok{temp[[}\DecValTok{1}\NormalTok{]] <-}\StringTok{ }\KeywordTok{as.name}\NormalTok{(}\StringTok{"model.frame"}\NormalTok{)}
+  
+  \NormalTok{mf <-}\StringTok{ }\KeywordTok{eval}\NormalTok{(temp, }\KeywordTok{parent.frame}\NormalTok{())}
+  \NormalTok{Y <-}\StringTok{ }\KeywordTok{model.extract}\NormalTok{(mf, }\StringTok{"response"}\NormalTok{)}
+  
+  \NormalTok{if (!}\KeywordTok{inherits}\NormalTok{(Y, }\StringTok{"Surv"}\NormalTok{)) }
+      \KeywordTok{stop}\NormalTok{(}\StringTok{"Response must be a survival object"}\NormalTok{)}
+  \NormalTok{type <-}\StringTok{ }\KeywordTok{attr}\NormalTok{(Y, }\StringTok{"type"}\NormalTok{)}
+  
+  \NormalTok{if (type !=}\StringTok{ "right"} \NormalTok{&&}\StringTok{ }\NormalTok{type !=}\StringTok{ "counting"}\NormalTok{) }
+      \KeywordTok{stop}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Cox model doesn't support }\CharTok{\textbackslash{}"}\StringTok{"}\NormalTok{, type, }\StringTok{"}\CharTok{\textbackslash{}"}\StringTok{ survival data"}\NormalTok{, }
+          \DataTypeTok{sep =} \StringTok{""}\NormalTok{))}
+  
+  \CommentTok{# collect times, status, variables and reorder samples }
+  \CommentTok{# to make the algorithm more clear to read and track}
+  \KeywordTok{cbind}\NormalTok{(}\DataTypeTok{event =} \KeywordTok{unclass}\NormalTok{(Y)[,}\DecValTok{2}\NormalTok{], }\CommentTok{# 1 indicates event, 0 indicates cens}
+        \DataTypeTok{times =} \KeywordTok{unclass}\NormalTok{(Y)[,}\DecValTok{1}\NormalTok{],}
+        \NormalTok{mf[, -}\DecValTok{1}\NormalTok{]) %>%}
+\StringTok{    }\KeywordTok{arrange}\NormalTok{(times) }
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
 %dokumentacja funkcji coxphSGD
 \includepdf[pages=-]{coxphSGD3.pdf}
 %\chapter{Dokumentacja pakietu RTCGA}

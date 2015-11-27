@@ -379,3 +379,35 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
 }
 ```
 
+
+```{r}
+prepareBatch <- function(formula, data) {
+  # Parameter identification as in  `survival::coxph()`.
+  Call <- match.call()
+  indx <- match(c("formula", "data"),
+                names(Call), nomatch = 0)
+  if (indx[1] == 0) 
+      stop("A formula argument is required")
+  temp <- Call[c(1, indx)]
+  temp[[1]] <- as.name("model.frame")
+  
+  mf <- eval(temp, parent.frame())
+  Y <- model.extract(mf, "response")
+  
+  if (!inherits(Y, "Surv")) 
+      stop("Response must be a survival object")
+  type <- attr(Y, "type")
+  
+  if (type != "right" && type != "counting") 
+      stop(paste("Cox model doesn't support \"", type, "\" survival data", 
+          sep = ""))
+  
+  # collect times, status, variables and reorder samples 
+  # to make the algorithm more clear to read and track
+  cbind(event = unclass(Y)[,2], # 1 indicates event, 0 indicates cens
+        times = unclass(Y)[,1],
+        mf[, -1]) %>%
+    arrange(times) 
+}
+```
+
