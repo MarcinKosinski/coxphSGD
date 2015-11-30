@@ -61,8 +61,8 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
     i <- i + 1  
   }
   # return results
-  list(Call = match.call(), coefficients = beta_new, epsilon = epsilon,
-       learningRates = learningRates, steps = i)
+  list(Call = match.call(), epsilon = epsilon, learningRates = learningRates, steps = i,
+       coefficients = c(list(checkArguments(formula, data, learningRates, beta_0, epsilon)), beta_new))
 }
 
 coxphSGD_batch <- function(formula, data, learningRate, beta){
@@ -75,7 +75,7 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   
   for(k in 1:nrow(batchData)) {
     # risk set for current time/observation
-    risk_set <- batchData %>% filter(times <= batchData$times[k])
+    risk_set <- batchData %>% filter(times >= batchData$times[k])
     
     nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
       element * exp(element * beta)
