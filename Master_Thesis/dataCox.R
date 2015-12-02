@@ -155,12 +155,13 @@ simulateCoxSGD <- function(dCox = dCox, learningRates = function(x){1/x},
 
 
 
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5, epsilon = 1e-4) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
 beta_0 = c(0,0)
 solution = c(1,3)
 
+pdf(file = "iter_5_e-4.pdf")
 ggplot() +
   stat_contour(aes(x=outerCox$Var1,
                    y=outerCox$Var2,
@@ -176,7 +177,7 @@ ggplot() +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
-
+dev.off()
 
 
 
