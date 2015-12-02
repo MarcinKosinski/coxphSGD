@@ -3,3 +3,5 @@
 Master_Thesis
 thesis_part
 PL_vignettes_PL
+^.*\.pdf$
+^.*\.jpeg$

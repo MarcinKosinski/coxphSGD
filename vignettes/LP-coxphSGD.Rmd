@@ -71,26 +71,26 @@ Poniżej przedstawione są argumenty, które przyjmuje funkcja `coxphSGD()`, kt�
 #' 
 
 coxphSGD <- function(formula, data, learningRates = function(x){1/x},
-                    beta_0 = 0, epsilon = 1e-5 ) {
+                    beta_0 = 0, epsilon = 1e-5, max.iter = 500 ) {
   checkArguments(formula, data, learningRates,
-                  beta_0, epsilon) -> beta_old # check arguments
+                  beta_0, epsilon) -> beta_start # check arguments
   n <- length(data)
   diff <- epsilon + 1
   i <- 1
   beta_new <- list() # steps are saved in a list so that they can
-                     # be tracked in the future
+  beta_old <- beta_start # be tracked in the future
   # estimate
-  while(i <= n & diff > epsilon) {
-    beta_new[[i]] <- coxphSGD_batch(formula = formula, data = data[[i]],
-                      learningRate = learningRates(i), beta = beta_old)
+  while(i <= max.iter & diff > epsilon) {
+    beta_new[[i]] <- coxphSGD_batch(formula = formula, beta = beta_old,
+        learningRate = learningRates(i), data = data[[ifelse(i%%n==0,n,i%%n)]])
     
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
     i <- i + 1  
   }
   # return results
-  list(Call = match.call(), epsilon = epsilon, learningRates = learningRates, steps = i,
-       coefficients = c(list(checkArguments(formula, data, learningRates, beta_0, epsilon)), beta_new))
+  list(Call = match.call(), epsilon = epsilon, learningRates = learningRates,
+       steps = i, coefficients = c(list(beta_start), beta_new))
 }
 
 coxphSGD_batch <- function(formula, data, learningRate, beta){

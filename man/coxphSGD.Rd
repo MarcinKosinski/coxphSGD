@@ -6,7 +6,7 @@ Cox proportional hazards model}
 \usage{
 coxphSGD(formula, data, learningRates = function(x) {
     1/x
-}, beta_0 = 0, epsilon = 1e-05)
+}, beta_0 = 0, epsilon = 1e-05, max.iter = 500)
 }
 \arguments{
 \item{formula}{a formula object, with the response on the left of a ~ operator,
