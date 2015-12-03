@@ -1,4 +1,4 @@
-
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 10, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -22,6 +22,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 10, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -45,6 +46,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 10, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -68,6 +70,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 10, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -93,7 +96,7 @@ ggplot() +
 dev.off()
 
 
-
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 10, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -117,6 +120,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 10, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -144,7 +148,7 @@ dev.off()
 
 
 
-
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -168,6 +172,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -191,6 +196,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 5, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -214,6 +220,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 5, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -239,7 +246,7 @@ ggplot() +
 dev.off()
 
 
-
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 5, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -263,6 +270,7 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 5, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -288,7 +296,7 @@ ggplot() +
 dev.off()
 
 
-
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 1, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -312,6 +320,8 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 1, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -335,6 +345,8 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 1, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -358,6 +370,8 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 1, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -383,7 +397,7 @@ ggplot() +
 dev.off()
 
 
-
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 1, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
@@ -407,6 +421,8 @@ ggplot() +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
+
+set.seed(456)
 simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 1, epsilon = 1e-6) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
