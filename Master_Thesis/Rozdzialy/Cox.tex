@@ -17,6 +17,8 @@ W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. G�
 
 Analiza przeżycia, w której model Coxa znalazł największe zastosowania, polega na modelowaniu wpływu czynników na czas
 do wystąpienia pewnego zdarzenia. Zdarzeniem może być np. śmierć pacjenta, awaria urządzenia, zerwanie umowy przez klienta, odejście z pracy pracownika lub deaktywacja pewnej usługi. Analizując czasy do wystąpienia zdarzenia wykorzystuje się funkcję przeżycia bądź niosącą równoważną informację funkcję hazardu.
+
+W poniższych definicjach $T^*$ to czas do wystąpienia zdarzenia. Zakłada się, że wewnątrz każdej grupy $j=1,2,\dots, m$ wyznaczonej przez poziomy zmiennych objaśniających, czasy~$T_{j,i}^*$ dla \ $i=1,\dots,n_j$~to~niezależne~zmienne~losowe~z~tego~samego~rozkładu~o~gęstości~$f_j(t)$.
 \begin{definition}
 \textbf{Funkcja przeżycia} w grupie $j$, to funkcja, która spełnia
 \begin{equation}
@@ -34,7 +36,7 @@ gdzie $F_j(t)$ to dystrybuanta rozkładu zadanego gęstością $f_j(t)$.
 \end{equation}
 \end{definition}
 
-W tych definicjach $T^*$ oznacza czas do wystąpienia zdarzenia. Zakłada się, że wewnątrz każdej grupy $j=1,2,\dots, m$ wyznaczonej przez poziomy zmiennych objaśniających, czasy~$T_{j,i}^*$ dla \ $i=1,\dots,n_j$~to~niezależne~zmienne~losowe~z~tego~samego~rozkładu~o~gęstości~$f_j(t)$.
+
 \newpage
 Wartość funkcji hazardu w momencie $t$ traktuje się jako chwilowy potencjał pojawiającego się zdarzenia (np. śmierci lub choroby), pod warunkiem że osoba dożyła czasu $t$. Funkcja hazardu nazywana jest również funkcją ryzyka,
 intensywnością umieralności (\textit{force of mortality}), umieralnością
@@ -62,7 +64,7 @@ gdzie $\lambda_0$ to niesprecyzowana nieujemna funkcja nazywana \textit{bazowym 
 Takie sformułowanie modelu gwarantuje, że funkcja hazardu jest nieujemna. 
 
 
-Model Coxa, dla wersji kiedy współczynniki są stałe w czasie, nazywany jest \textbf{modelem proporcjonalnych hazardów}, gdyż stosunek (proporcja) hazardów dla dwóch obserwacji $X_i$ oraz $X_j$ jest stały w czasie:  
+Model Coxa, dla wersji kiedy zmienne są stałe w czasie, nazywany jest \textbf{modelem proporcjonalnych hazardów}, gdyż stosunek (proporcja) hazardów dla dwóch obserwacji $X_i$ oraz $X_j$ jest stały w czasie:  
 $$\dfrac{\lambda_i(t)}{\lambda_j(t)} = \dfrac{\lambda_0(t)e^{X_i\beta}}{\lambda_0(t)e^{X_j\beta}} = \dfrac{e^{X_i\beta}}{e^{X_j\beta}} = e^{(X_i-X_j)\beta}.$$
 
 Oznacza to, że hazard dla jednej obserwacji można uzyskać poprzez przemnożenie hazardu dla innej obserwacji przez pewną stałą $c_{ij}$:
@@ -142,7 +144,7 @@ Jeśli dodatkowo cenzurowanie jest nie-informatywne, to $L_p(\beta)$ jest \textb
 
 Ponieważ model proporcjonalnych hazardów Coxa zakłada niezależność i nie-informatywność cenzurowania zatem można uważać, że częściowa funkcja wiarogodności daje pełną informację o współczynnikach i wnioskowanie w oparciu o nią jest uzasadnione i poprawne.
 
-W sytuacjach, gdy nie jest spełnione założenie nie-informatywności cenzurowania i częściowa funkcja wiarogodności nie jest funkcją wiarogodności w sensie bycia proporcjonalną do prawdopodobieństwa obserwowanego zbioru, można ją traktować jako funkcję wiarogodności dla celów asymptotycznego wnioskowania o współczynnikach modelu, zobacz \cite{???}.
+W sytuacjach, gdy nie jest spełnione założenie nie-informatywności cenzurowania i częściowa funkcja wiarogodności nie jest funkcją wiarogodności w sensie bycia proporcjonalną do prawdopodobieństwa obserwowanego zbioru, można ją traktować jako funkcję wiarogodności dla celów asymptotycznego wnioskowania o współczynnikach modelu, zobacz \cite{ther}.
 
 
 \subsubsection{Analityczna estymacja współczynników}

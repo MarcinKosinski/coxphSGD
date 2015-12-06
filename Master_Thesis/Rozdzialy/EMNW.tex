@@ -64,12 +64,12 @@ $$\sqrt{n}(\hat{g}(X_1,\dots,X_n) -g(\theta))  \overset{d}{\rightarrow} \mathcal
 \end{definition}
 
 
-Oznacza to, że rozkład prawdopodobieństwa statystyki $\hat{g}(X_1,\dots,X_n)$ jest dla dużych $n$ zbliżony do rozkładu $$\mathcal{N}\Big(g(\theta), \dfrac{\sigma^2(\theta)}{n}\Big).$$ Inaczej mówiąc, estymator jest asymptotycznie normalny, gdy: 
+Oznacza to, że rozkład prawdopodobieństwa statystyki $\hat{g}(X_1,\dots,X_n)$ jest dla dużych $n$ zbliżony do rozkładu normalnego o średniej $g(\theta)$ i wariancji $\frac{\sigma^2(\theta)}{n}$ oznaczanego jako $$\mathcal{N}\Big(g(\theta), \dfrac{\sigma^2(\theta)}{n}\Big).$$ Inaczej mówiąc, estymator jest asymptotycznie normalny, gdy: 
 $$\lim\limits_{n \rightarrow \infty} \mathbb{P}_{\theta} \Big(\dfrac{\sqrt{n}}{\sigma(\theta)}(\hat{g}(X_1,\dots,X_n) -g(\theta) \leq a \Big) = \Phi(a),$$
 gdzie $\Phi(x)$ to dystrybuanta standardowego rozkładu normalnego $\mathcal{N}(0,1)$.
 
 Asymptotyczna normalność mówi, że estymator nie tylko zbiega do nieznanego parametru, ale również że zbiega wystarczająco szybko, jak $\frac{1}{\sqrt{n}}$, czyli, że 
-$$\mathbb{P}_{\theta} \Big(\dfrac{\sqrt{n}}{\sigma(\theta)}(\hat{g}(X_1,\dots,X_n) -g(\theta) \leq a \Big) - \Phi(a) = f(n) \in \eth(\frac{1}{\sqrt{n}}) . $$ 
+$$\mathbb{P}_{\theta} \Big(\dfrac{\sqrt{n}}{\sigma(\theta)}(\hat{g}(X_1,\dots,X_n) -g(\theta) \leq a \Big) - \Phi(a) = f(n) \in o(\frac{1}{\sqrt{n}}) . $$ 
 
 Jeśli estymator jest asymptotycznie normalny, to jest zgodny, choć nie musi
 być \textit{\text{mocno zgodny}}.
@@ -80,7 +80,7 @@ W dalszej części tego rozdziału zostanie wprowadzone pojęcie estymatora najw
 
 \section{Metoda największej wiarogodności}
 
-Metodę największej wiarogodności wprowadził R. A. Fisher w 1922 r. \cite{fisher2}, dla której po raz pierwszy procedurę numeryczną zaproponował już w 1912 r. \cite{fisher1}. O burzliwym procesie powstawania metody, o zmianach w jej uzasadnieniu, o koncepcjach, które powstały w obrębie tej metody takich jak parametr, statystyka, wiarogodność, dostateczność czy efektywność oraz o podejściach, które Fisher odrzucił tworząc podstawy pod nową teorię można przeczytać w~obszernej pracy dokumentalnej \cite{aldrich1}. 
+Metodę największej wiarogodności wprowadził R. A. Fisher w 1922 r. \cite{fisher2}, dla której po raz pierwszy heurystyczną procedurę numeryczną zaproponował już w 1912 r. \cite{fisher1}. O burzliwym procesie powstawania metody, o zmianach w jej uzasadnieniu, o koncepcjach, które powstały w obrębie tej metody takich jak parametr, statystyka, wiarogodność, dostateczność czy efektywność oraz o podejściach, które Fisher odrzucił tworząc podstawy pod nową teorię można przeczytać w~obszernej pracy dokumentalnej \cite{aldrich1}. 
 
 Metoda ta, jako alternatywa dla metody najmniejszych kwadratów \cite{legendre1}, \cite{gauss1}, była rozwijana i szeroko stosowana później przez wielu statystyków, i wciąż znajduje obszerne zastosowania w wielu obszarach estymacji statystycznej, np. \cite{hutch1}, \cite{kenward1}, \cite{millar1}.
 
@@ -89,8 +89,8 @@ Aby zdefiniować estymator oparty o metodę największej wiarogodności, należy
 \begin{definition}
 \textbf{Funkcją wiarogodności} nazywamy funkcję $L : \Theta \rightarrow \mathbb{R}$ daną wzorem $$ L(\theta) =L(\theta;x_1, \dots , x_n) = f(\theta; x_1, \dots , x_n),$$
 którą rozważamy jako funkcję parametru $\theta$ przy ustalonych wartościach obserwacji $x_1, \dots , x_n$, gdzie $$ f(\theta; x_1, \dots , x_n) = \begin{dcases*}
- \mathbb{P}_{\theta}( X_1 = x_1, \dots , X_n = x_n), & dla rozkładów dyskretnych,  \\
- f_{\theta}(x_1, \dots , x_n), & dla rozkładów absolutnie ciągłych.
+ \mathbb{P}_{\theta}( X_1 = x_1, \dots , X_n = x_n), & jeśli $\mathbb{P}_{\theta}$ ma rozkład dyskretny,  \\
+ f_{\theta}(x_1, \dots , x_n), & jeśli $\mathbb{P}_{\theta}$ ma rozkład absolutnie ciągły.
 \end{dcases*}$$
 
 \end{definition}
@@ -133,8 +133,11 @@ gdzie przyjmuje się $\ell(\theta) = -\infty$ jeśli $L(\theta) = 0$.
 \end{definition}
 
 \begin{lemma}\label{l:pierwszy}
-Gdy $\theta_0$ to prawdziwe maksimum funkcji wiarogodności, to dla każdego \text{$\theta \in \Theta$}
-$$\mathbb{E}_{\theta_0}\ell(\theta) \leq \mathbb{E}_{\theta_0}\ell(\theta_0).$$
+Gdy $\theta_0$ to maksimum funkcji wiarogodności, to dla każdego \text{$\theta \in \Theta$}
+\marginnote{\tiny{$\mathbb{E}_{\theta_0}$ oznacza wartość oczekiwaną względem rozkładu $\mathbb{P}_{\theta_{0}}$}}[0.5cm]
+\begin{equation*}
+\mathbb{E}_{\theta_0}\ell(\theta) \leq \mathbb{E}_{\theta_0}\ell(\theta_0).
+\end{equation*}
 \end{lemma}
 
 \begin{proof}
@@ -146,11 +149,10 @@ Rozważając różnicę, przy założeniu ciągłości rozkładu:
 \end{split}
 \end{equation*}
 i pamiętając o tym, że $\log t \leq t - 1$, można dojść do
-\marginnote{\tiny{$\mathbb{E}_{\theta_0}$ oznacza wartość oczekiwaną względem rozkładu parametryzowanego przez $\theta_0$.}}[0.5cm]
 \begin{equation*}
 \begin{split}
-\mathbb{E}_{\theta_0}\log\dfrac{f(\theta; X)}{f(\theta_0; X)} & \leq \mathbb{E}_{\theta_0}\Big(\dfrac{f(\theta; X)}{f(\theta_0; X)} - 1 \Big) = \int \Big(\dfrac{f(\theta; x)}{f(\theta_0; x)} - 1 \Big) f(\theta_0;x) dx \\ 
-& = \int f(\theta;x)dx - \int f(\theta_0;x)dx = 1-1 =0.
+\mathbb{E}_{\theta_0}\log\dfrac{f(\theta; X)}{f(\theta_0; X)} & \leq \mathbb{E}_{\theta_0}\Big(\dfrac{f(\theta; X)}{f(\theta_0; X)} - 1 \Big) = \int_{\mathbb{R}} \Big(\dfrac{f(\theta; x)}{f(\theta_0; x)} - 1 \Big) f(\theta_0;x) dx \\ 
+& = \int_{\mathbb{R}} f(\theta;x)dx - \int_{\mathbb{R}} f(\theta_0;x)dx = 1-1 =0.
 \end{split}
 \end{equation*}
 Obie całki równają się 1 jako, że są całkami z funkcji gęstości, zaś równość w nierówności zachodzi tylko wtedy, gdy  $\mathbb{P}_{\theta}=\mathbb{P}_{\theta_0}$.
@@ -164,11 +166,11 @@ $$ENW(\theta) \rightarrow \theta \ \ \text{dla } \ \ n \rightarrow \infty.$$
 \end{theorem}
 \begin{proof}
 \ \\
-1) Z definicji w $ENW(\theta)$ przyjmowana jest wartość największa funkcji $L(\theta)$, a więc tym bardziej funkcji $ \ell(\theta) = \log L(\theta)$ oraz funkcji $$ \ell_n(\theta) = \frac{1}{n}\ell(\theta) = \frac{1}{n}\log L(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X_i)$$ (zakładając ciągłość rozkładu i niezależność $X_1,\dots,X_n$), gdyż ekstremum jest niezmiennicze ze względu na monotoniczną transformację i liniowe przekształcenie jakim jest dzielenie.
+1) Z definicji w $ENW(\theta)$ przyjmowana jest wartość największa funkcji $L(\theta)$, a więc tym bardziej funkcji $ \ell(\theta) = \log L(\theta)$ oraz funkcji $$ \ell_n(\theta) = \frac{1}{n}\ell(\theta) = \frac{1}{n}\log L(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;x_i)$$ (zakładając ciągłość rozkładu i niezależność $X_1,\dots,X_n$), gdyż ekstremum jest niezmiennicze ze względu na monotoniczną transformację i liniowe przekształcenie jakim jest dzielenie.
 
 2) Z Lematu \ref{l:pierwszy} wynika, że $\theta_0$ maksymalizuje $\mathbb{E}_{\theta_0}\ell(\theta)$.
 
-3) Z Prawa Wielkich Liczb, które jest spełnione gdy założy się, że $X_i$ to realizacje ciągu zmiennych losowych o skończonych wartościach oczekiwanych, wynika, że $$ \ell_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X_i) \rightarrow \mathbb{E}_{\theta_0}\ell(\theta),$$ co ostatecznie oznacza, że $ENW(\theta)$ jest zgodny.
+3) Z Prawa Wielkich Liczb, które jest spełnione gdy założy się, że $x_i$ to realizacje ciągu zmiennych losowych o skończonych wartościach oczekiwanych, wynika, że $$ \ell_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;x_i) \rightarrow \mathbb{E}_{\theta_0}\ell(\theta),$$ co ostatecznie oznacza, że $ENW(\theta)$ jest zgodny.
 \end{proof}
 
 \newpage
@@ -209,7 +211,7 @@ Wprowadzając takie założenia, otrzymano przydatne właściwości~Informacji~F
 \begin{proposition}\label{prop:warunki}
 Jeśli spełnione są warunki regularności (\ref{def:regur}) to:
 \begin{align*}
-(i) \ & \ \mathbb{E}_\theta\frac{\partial}{\partial\theta}\log f_{\theta}(x) = 0, \\
+(i) \ & \ \mathbb{E}_\theta\frac{\partial}{\partial\theta}\log f_{\theta}(X) = 0, \\
 (ii) \ & \ \mathcal{I}(\theta) = \mathbb{V}ar_{\theta}\Big(\frac{\partial}{\partial\theta}\log f_{\theta}(X) \Big), \\
 (iii) \ & \ \mathcal{I}(\theta) = -\mathbb{E}_{\theta}\Big(\frac{\partial^2}{\partial\theta^2}\log f_\theta(X) \Big).
 \end{align*}
@@ -219,7 +221,7 @@ Dowód tego stwierdzenia można znaleźć w \cite{niemiro}.
 
 \newpage
 Patrząc na postać pochodnej funkcji log-wiarogodności
-$$\ell'(\theta_0;X) = (\log f(\theta_0;X))' = \dfrac{f'(\theta_0;X)}{f(\theta_0;X)},$$
+$$\ell'(\theta_0;x) = (\log f(\theta_0;x))' = \dfrac{f'(\theta_0;x)}{f(\theta_0;x)},$$
 można wywnioskować, że nieformalnie interpretacja Informacji Fishera jest miarą tego jak szybko zmieni się funkcja gęstości jeśli delikatnie zmieni się parametr $\theta$ w okolicach $\theta_0$. Biorąc kwadrat i wartość oczekiwaną, innymi słowy uśredniając po $X$, otrzymuje się uśrednioną wersję tej miary. Jeżeli Informacja Fishera jest duża, oznacza to, że gęstość zmieni się szybko
 gdyby poruszyć parametr $\theta_0$, innymi słowy - gęstość z parametrem $\theta_0$ jest
 znacząco inna i może zostać łatwo odróżniona od gęstości z parametrami nie tak bliskimi $\theta_0$.
@@ -230,14 +232,14 @@ Dzięki pojęciu Informacji Fishera i warunkom regularności, możliwe jest udow
 
 \begin{theorem}
 Pod pewnymi \textbf{warunkami regularności} nałożonymi na rodzinę rozkładów prawdopodobieństwa, estymator największej wiarogodności jest asymptotycznie normalny, 
-$$ \sqrt{n}(ENW(\theta) - \theta_0) \rightarrow \mathcal{N}\Big(0, \dfrac{1}{\mathcal{I}(\theta_0)}\Big).$$
+$$ \sqrt{n}(ENW(\theta) - \theta_0) \overset{d}{\rightarrow} \mathcal{N}\Big(0, \dfrac{1}{\mathcal{I}(\theta_0)}\Big).$$
 \end{theorem}
 
 Z Twierdzenia widać, że im większa Informacja Fishera tym mniejsza asymptotyczna wariancja estymatora prawdziwego parametru $\theta_0$.
 
 \begin{proof}
 Ponieważ $ENW(\theta)$ maksymalizuje $\ell_n(\theta) = \frac{1}{n}\sum\limits_{i=1}^{n}\log f(\theta;X)$, to $\ell'_n(\theta)=0$. \\ Dalej, korzystając z Twierdzenia o Wartości Średniej:
-$$\dfrac{g(a)-g(b)}{a-b} = g'(c) \ \text{albo} \ g(a)=g(b)+g'(c)(a-b), \ \text{dla} \ c \in [a,b],$$
+$$\dfrac{g(a)-g(b)}{a-b} = g'(c) \ \text{albo} \ g(a)=g(b)+g'(c)(a-b), \ \text{dla pewnego} \ c \in [a,b],$$
 gdzie $g(\theta) = \ell'_n(\theta), a = ENW(\theta), b = \theta_0$, można zapisać równość
 $$ 0 = \ell'_n(ENW(\theta)) = \ell'_n(\theta_0) + \ell''_n(\theta_1)(ENW(\theta)-\theta_0), \ \text{dla} \ \theta_1 \in [ENW(\theta),\theta_0],$$ 
 a z niej przejść do postaci 
@@ -264,7 +266,7 @@ $$\ell''_n(\theta_1) \rightarrow \mathbb{E}_{\theta_0}\ell''(\theta_0) = -\mathc
 z punktu $(iii)$ ze Stwierdzenia (\ref{prop:warunki}).\\ \ \\ Wtedy prawa strona równania (\ref{dowod1}), dzięki (\ref{dowod2})
 $$- \dfrac{\sqrt{n}\ell'_n(\theta_0)}{\ell''_n(\theta_1)} \overset{d}{\rightarrow} \mathcal{N}\Big(0,\dfrac{\mathbb{V}ar_{\theta_0}(\ell'(\theta_0))}{(\mathcal{I}(\theta_0))^2} \Big).$$
 Ostatecznie wariancja
-$$\mathbb{V}ar_{\theta_0}(\ell'(\theta_0)) \overset{z \ def}{=} \mathbb{E}_{\theta_0}(\ell'(\theta_0))^2 - (\mathbb{E}_{\theta_0}\ell'(\theta_0))^2 = \mathcal{I}(\theta_0) - 0,$$
+$$\mathbb{V}ar_{\theta_0}(\ell'(\theta_0)) = \mathbb{E}_{\theta_0}(\ell'(\theta_0))^2 - (\mathbb{E}_{\theta_0}\ell'(\theta_0))^2 = \mathcal{I}(\theta_0) - 0,$$
 co wynika z definicji Informacji Fishera i (\ref{row:maksymalizator}).
 
 \end{proof}
