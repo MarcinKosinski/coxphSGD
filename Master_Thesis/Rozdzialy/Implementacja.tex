@@ -193,29 +193,88 @@ Przykładowe wywołanie funkcji \texttt{simulateCoxSGD()} znajduje się poniżej
 \end{Shaded}
 gdzie w tym wypadku parametr \texttt{max.iter} odpowiada za liczbę epok do wykorzystania, \texttt{learningRates} to funkcja odpowiedzialna za wyznaczenie długości kolejnych kroków algorytmu, \texttt{dCox} to dane do analizy przygotowane w postaci jaką zwraca funkcja \texttt{dataCox()}, \texttt{epsilon} to warunek stopu, zaś \texttt{beta\_0} to punkt startowy algorytmu.
 
-Na Rysunkach (\ref{rysCox}) - (\ref{rysCox5}) przedstawiono symulacje zbieżności procesu optymalizacji częściowej funkcji log-wiarogodności dla zaobserwowanego podzbioru obserwacji w modelu Coxa proporcjonalnych hazardów, z wykorzystanie algorytmu stochastycznego spadku gradientu. Trajektorie zbieżności zależne są od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. Dodatkowo przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum. 
+Na Rysunkach (\ref{rysCox}) - (\ref{rysCox4}) przedstawiono symulacje zbieżności procesu optymalizacji częściowej funkcji log-wiarogodności dla zaobserwowanego podzbioru obserwacji w modelu Coxa proporcjonalnych hazardów, z wykorzystanie algorytmu stochastycznego spadku gradientu. Trajektorie zbieżności zależne są od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. Dodatkowo przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum. 
+
+\newpage
+\subsubsection{Podsumowanie symulacji dla modelu proporcjonalnych hazardów Coxa}
+
+W trakcie symulacji badano jak podział całego zbioru obserwacji na podzbiory wpływa na trajektoria optymalizacji częściowej funkcji log-wiarogodności w modelu Coxa proporcjonalnych hazardów dla zaobserwowanego podzbioru. Badano również wpływ punktu początkowego, warunku stopu, liczby epok oraz konstrukcji ciągu odpowiedzialnego za długości kroków na proces optymalizacji w tym modelu. 
+
+Na Rysunkach (\ref{rysCox}) - (\ref{rysCox4}) zaprezentowano trajektoria dla punktów początkowych: $\beta_0 = (0,0), (2,2), (-1,4)$. Brano pod uwagę ciągi odpowiadające długościom kroków równe $\frac{1}{20\sqrt{t}}, \frac{1}{50\sqrt{t}}, \frac{1}{100\sqrt{t}}$, eksperymentowano z liczbą epok ustalaną na $1,5,10$ oraz sprawdzano jak zachowają się trajektoria dla warunków stopu $\epsilon=10^{-6}, \epsilon=10^{-5}$. Dla ciągów odpowiadającym długościom kroków ustalanym na $\frac{1}{20t}, \frac{1}{50t}, \frac{1}{100t}$ algorytm nie osiągał zbieżności i zatrzymywał się po maksymalnej liczbie iteracji w losowym punkcie.
+
+Dla żadnej z symulacji algorytm nie zbiegł do punktu, w którym powinno być teoretyczne optimum. Może to wynikać z dużej liczby obserwacji cenzurowanych bądź z samej istoty losowości przy procesie generowania danych. Należy podkreślić, że dla różnych sprawdzanych wariantów procesu optymalizacji za każdym razem metoda zbiegała do tego samego punktu. Może być to optimum wynikające z postaci danych. Stochastyczny spadek gradientu nie wykorzystuje wszystkich obserwacji jednocześnie przez co trudniej zbiec do teoretycznego optimum. Warto zauważyć stabilność procesu optymalizacji dla ciągów odpowiadających za długość kroków w algorytmie, które ustawione zostały na mniejsze wartości $\frac{1}{50\sqrt{t}}, \frac{1}{100\sqrt{t}}$ (Rysunki (\ref{rysCox}) - (\ref{rysCox3})) - w przypadku ciągu o zbyt dużych wartościach początkowych ($\frac{1}{20\sqrt{t}}$) trajektoria algorytmu we wczesnej fazie procesu były daleki od optimum (Rysunek (\ref{rysCox4})). Dzięki ukazanym warstwicom funkcji częściowej log-wiarogodności skonstruowanym na całych danych, widać, że poczynając od punktu startowego algorytm w różnych wydaniach postępuje we właściwym kierunku zbieżności i kieruje się w okolice teoretycznego optimum. Algorytm zatrzymuje się niedaleko teoretycznego optimum, jednak patrząc na rozrzedzone zagęszczenie warstwic w okolicach teoretycznego optimum, można stwierdzić, że wartości funkcji częściowej log-wiarogodności nie różnią się już na tyle, aby proces optymalizacji mógł być kontynuowany. 
+
+Warto podkreślić, że większa liczba epok i mniejszy warunek stopu powodują jedynie poprawienie optymalizacji dla wariantów, w których cały zbiór obserwacji był podzielony na największą liczbę obserwacji, a więc każdy krok algorytmu budowany był na najmniej licznych podzbiorach.
+
+Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metody stochastycznego spadku gradientu w sytuacji napływających danych wygląda na stabilny i zbiega w okolice bliskie do teoretycznego optimum, niekiedy nawet dla tylko jednej epoki. Dla dobrze dobranych parametrów optymalizacji proces może być z powodzeniem wykorzystywany do znajdowania współczynników modelu. Kluczowym momentem mającym wpływ na powodzenie optymalizacji jest wybór ciągu odpowiedzialnego za dobór długości kroków w algorytmie, więc zaleca się symulacje badające różne ciągi oraz wybranie tego ciągu, który w większości przypadków daje stabilne, jednorodne współczynniki. 
 
 \begin{figure}[hbt!]
   %\vspace{-10pt}
   \begin{center}
-   \begin{subfigure}[h!]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{Obrazki/plot1_cox.pdf}
-      \caption{Symulacja nr 1.}
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_0_0_iter_1_e-6_50sqrt.pdf}
+      \caption{$\beta_0=(0,0)$, liczba epok 1, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
    \end{subfigure}     
-   \begin{subfigure}[h!]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{Obrazki/plot2_cox.pdf}
-      \caption{Symulacja nr 2.}
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_0_0_iter_5_e-6_50sqrt.pdf}
+            \caption{$\beta_0=(0,0)$, liczba epok 5, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
    \end{subfigure}  
-      \begin{subfigure}[h!]{0.45\textwidth}
-         \includegraphics[width=\textwidth]{Obrazki/plot3_cox.pdf}
-         \caption{Symulacja nr 3.}
-      \end{subfigure}  
-            \begin{subfigure}[h!]{0.45\textwidth}
-               \includegraphics[width=\textwidth]{Obrazki/plot4_cox.pdf}
-               \caption{Symulacja nr 4.}
-            \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
   \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
 \end{figure}
+
+
+
+\begin{figure}[hbt!]
+  %\vspace{-10pt}
+  \begin{center}
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_2_2_iter_10_e-6_50sqrt.pdf}
+      \caption{$\beta_0=(2,2)$, liczba epok 10, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
+   \end{subfigure}     
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_2_2_iter_5_e-5_50sqrt.pdf}
+            \caption{$\beta_0=(2,2)$, liczba epok 5, warunek stopu: $\epsilon=10^{-5}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
+   \end{subfigure}  
+      \end{center}
+  %\vspace{-10pt}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox2}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
+\end{figure}
 	
+	
+	
+	
+\begin{figure}[hbt!]
+  %\vspace{-10pt}
+  \begin{center}
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_1_e-6_100sqrt.pdf}
+      \caption{$\beta_0=(-1,4)$, liczba epok 1, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{100\sqrt{t}}$.}
+   \end{subfigure}     
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_10_e-5_100sqrt.pdf}
+            \caption{$\beta_0=(-1,4)$, liczba epok 10, warunek stopu: $\epsilon=10^{-5}$, długości kroków = $\frac{1}{100\sqrt{t}}$.}
+   \end{subfigure}  
+      \end{center}
+  %\vspace{-10pt}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox3}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
+\end{figure}
+
+
+
+\begin{figure}[hbt!]
+  %\vspace{-10pt}
+  \begin{center}
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_1_e-6_20sqrt.pdf}
+      \caption{$\beta_0=(-1,4)$, liczba epok 1, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{20\sqrt{t}}$.}
+   \end{subfigure}     
+   \begin{subfigure}[h!]{0.9\textwidth}
+      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_10_e-5_20sqrt.pdf}
+            \caption{$\beta_0=(-1,4)$, liczba epok 10, warunek stopu: $\epsilon=10^{-5}$, długości kroków = $\frac{1}{20\sqrt{t}}$.}
+   \end{subfigure}  
+      \end{center}
+  %\vspace{-10pt}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox4}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
+\end{figure}

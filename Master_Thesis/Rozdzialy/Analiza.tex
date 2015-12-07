@@ -6,7 +6,7 @@ The Cancer Genome Atlas Study
 }
 \end{flushright}
 
-Niniejszy rozdział poświęcony jest analizie danych genomicznych. W podrozdziale \ref{cha:gen} przedstawiono pokrótce genetyczne podstawy nowotworzenia, które szerzej opisane są w cytowanej literaturze. W podrozdziale \ref{chan:TCGA} opisano schemat \textit{The Cancer Genome Atlas} (TCGA), badania z którego zaczerpnięto dane do analizy biostatystycznej. Analiza przeżycia polegająca na zastosowaniu modelu Coxa, dla którego estymacja współczynników odbywa się metodą stochastycznego spadku gradientu (opisaną w rozdziale \ref{rozdz4}) zaprezentowana została w podrozdziale \ref{chap:analiza}, zaś komentarz do wyników można znaleźć w podrozdziale \ref{chap:wnioski}. 
+Niniejszy rozdział poświęcony jest analizie danych genomicznych. W podrozdziale \ref{cha:gen} przedstawiono pokrótce genetyczne podstawy nowotworzenia, które szerzej opisane są w cytowanej literaturze. W podrozdziale \ref{chan:TCGA} opisano schemat \textit{The Cancer Genome Atlas} (TCGA), badania z którego zaczerpnięto dane do analizy biostatystycznej. Analiza przeżycia polegająca na zastosowaniu modelu Coxa, dla którego estymacja współczynników odbywa się metodą stochastycznego spadku gradientu (opisaną w rozdziale \ref{rozdz4}) zaprezentowana została wraz z komentarzami w podrozdziale \ref{chap:analiza}. 
 
 W ramach analizy starano się ocenić wpływu mutacji poszczególnych genów na przeżywalność pacjentów. Celem analizy było uzyskanie odpowiedzi na pytanie czy istnieją geny, które zmutowane powodują, że ryzyko wystąpienia zdarzenia jakim jest zgon w wyniku choroby nowotworowej jest większe w grupach pacjentów bez mutacji w danym genie. Aby zweryfikować hipotezę na tak obszernych danych zdecydowano się zastosować metodę strumieniowej estymacj współczynników w modelu Coxa przy pomocy stochastycznego spadku gradientu, której stworzenie było głównym założeniem pracy, gdyż tradycyjna metoda zaimplementowana w funkcji \texttt{coxph} w pakiecie \texttt{survival} \cite{survival} nie jest przystosowana do tak dużych zbiorów danych jak te z TCGA. Z racji na zbyt dużą ilość genów (przekraczającą kilkanaście tysięcy), które mogły być zmutowane i wzięte do analizy jako zmienna objaśniająca czas do zdarzenia, niemożliwe byłoby wyestymowanie współczynników modelu standardową metodą.
 
@@ -45,7 +45,6 @@ Dane z TCGA pobrano przy użyciu pakietu \texttt{RTCGA} \cite{kosa1} i umieszczo
 \end{itemize} 
 oraz zostały one wykorzystane w następnym rozdziale do sprawdzenia czy występowanie mutacji w danym genie ma wpływ na przeżywalność pacjentów dotkniętych nowotworem.
 
+\newpage
 
-
-\section{Analiza}\label{chap:analiza}
-\section{Wnioski}\label{chap:wnioski}
+\section{Analiza wpływu mutacji genów na czas życia}\label{chap:analiza}
