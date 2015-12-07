@@ -96,20 +96,19 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
                                          \CommentTok{# gdzie k to liczba zmiennych}
                                          \CommentTok{# objaśniających w modelu.}
 
+\NormalTok{max.iter =}\StringTok{ }\DecValTok{500}                           \CommentTok{# maksymalna liczba kroków.}
+
                               \CommentTok{# estymacja}
-\NormalTok{i =}\StringTok{ }\DecValTok{1}                                    \CommentTok{# iterator kroku algorytmu}
-\NormalTok{while(i <=}\StringTok{ }\NormalTok{n \&}\StringTok{ }\NormalTok{diff >}\StringTok{ }\NormalTok{eps) do            }\CommentTok{# do zbieżności lub wyczerpania zbiorów}
-  \NormalTok{batch =}\StringTok{ }\NormalTok{data[[i]]}
-  
+\NormalTok{i =}\StringTok{ }\DecValTok{1}                                    \CommentTok{# iterator kroku algorytmu.}
+\NormalTok{while(i <=}\StringTok{ }\NormalTok{max.iter |}\StringTok{ }\NormalTok{diff <}\StringTok{ }\NormalTok{eps) do     }
+  \NormalTok{iter =}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(i mod n ==}\StringTok{ }\DecValTok{0}\NormalTok{, n, i mod n)}\CommentTok{# wybierz kolejny podzbiór batch.}
+  \NormalTok{batch =}\StringTok{ }\NormalTok{data[[iter]] }
   \NormalTok{beta_new =}\StringTok{ }\NormalTok{beta_old -}\StringTok{ }\KeywordTok{learningRates}\NormalTok{(i) *}\StringTok{ }\KeywordTok{U_Batch}\NormalTok{(batch) }
                                          \CommentTok{# U_Batch to częściowa funkcja}
                                          \CommentTok{# log-wiarogdności dla zaobserwowanego}
                                          \CommentTok{# zbioru `batch`}
-  
   \NormalTok{diff =}\StringTok{ }\KeywordTok{euclidean_dist}\NormalTok{(beta_new, beta_old) }\CommentTok{# odległość euklidesowa}
-  
   \NormalTok{beta_old =}\StringTok{ }\NormalTok{beta_new }
-  
   \NormalTok{i =}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}
 \NormalTok{end while}
 \NormalTok{return beta_new}
@@ -121,36 +120,36 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{coxphSGD <-}\StringTok{ }\NormalTok{function(formula, data, }\DataTypeTok{learningRates =} \NormalTok{function(x)\{}\DecValTok{1}\NormalTok{/x\},}
-                    \DataTypeTok{beta_0 =} \DecValTok{0}\NormalTok{, }\DataTypeTok{epsilon =} \FloatTok{1e-5} \NormalTok{) \{}
+                    \DataTypeTok{beta_0 =} \DecValTok{0}\NormalTok{, }\DataTypeTok{epsilon =} \FloatTok{1e-5}\NormalTok{, }\DataTypeTok{max.iter =} \DecValTok{500} \NormalTok{) \{}
   \KeywordTok{checkArguments}\NormalTok{(formula, data, learningRates,}
-                  \NormalTok{beta_0, epsilon) ->}\StringTok{ }\NormalTok{beta_old }\CommentTok{# check arguments}
+                  \NormalTok{beta_0, epsilon) ->}\StringTok{ }\NormalTok{beta_start }\CommentTok{# check arguments}
   \NormalTok{n <-}\StringTok{ }\KeywordTok{length}\NormalTok{(data)}
   \NormalTok{diff <-}\StringTok{ }\NormalTok{epsilon +}\StringTok{ }\DecValTok{1}
   \NormalTok{i <-}\StringTok{ }\DecValTok{1}
-  \NormalTok{beta_new <-}\StringTok{ }\KeywordTok{list}\NormalTok{() }\CommentTok{# steps are saved in a list so that they can}
-                     \CommentTok{# be tracked in the future}
+  \NormalTok{beta_new <-}\StringTok{ }\KeywordTok{list}\NormalTok{()     }\CommentTok{# steps are saved in a list so that they can}
+  \NormalTok{beta_old <-}\StringTok{ }\NormalTok{beta_start }\CommentTok{# be tracked in the future}
   \CommentTok{# estimate}
-  \NormalTok{while(i <=}\StringTok{ }\NormalTok{n &}\StringTok{ }\NormalTok{diff >}\StringTok{ }\NormalTok{epsilon) \{}
-    \NormalTok{beta_new[[i]] <-}\StringTok{ }\KeywordTok{coxphSGD_batch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{data =} \NormalTok{data[[i]],}
-                      \DataTypeTok{learningRate =} \KeywordTok{learningRates}\NormalTok{(i), }\DataTypeTok{beta =} \NormalTok{beta_old)}
-    
+  \NormalTok{while(i <=}\StringTok{ }\NormalTok{max.iter &}\StringTok{ }\NormalTok{diff >}\StringTok{ }\NormalTok{epsilon) \{}
+    \NormalTok{beta_new[[i]] <-}\StringTok{ }\KeywordTok{coxphSGD_batch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{beta =} \NormalTok{beta_old,}
+        \DataTypeTok{learningRate =} \KeywordTok{learningRates}\NormalTok{(i), }\DataTypeTok{data =} \NormalTok{data[[}\KeywordTok{ifelse}\NormalTok{(i%%n==}\DecValTok{0}\NormalTok{,n,i%%n)]])}
     \NormalTok{diff <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{((beta_new[[i]] -}\StringTok{ }\NormalTok{beta_old)^}\DecValTok{2}\NormalTok{))}
     \NormalTok{beta_old <-}\StringTok{ }\NormalTok{beta_new[[i]]}
     \NormalTok{i <-}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}  
   \NormalTok{\}}
   \CommentTok{# return results}
-  \KeywordTok{list}\NormalTok{(}\DataTypeTok{Call =} \KeywordTok{match.call}\NormalTok{(), }\DataTypeTok{coefficients =} \NormalTok{beta_new, }\DataTypeTok{epsilon =} \NormalTok{epsilon,}
-       \DataTypeTok{learningRates =} \NormalTok{learningRates, }\DataTypeTok{steps =} \NormalTok{i)}
+  \KeywordTok{list}\NormalTok{(}\DataTypeTok{Call =} \KeywordTok{match.call}\NormalTok{(), }\DataTypeTok{epsilon =} \NormalTok{epsilon, }\DataTypeTok{learningRates =} \NormalTok{learningRates,}
+       \DataTypeTok{steps =} \NormalTok{i, }\DataTypeTok{coefficients =} \KeywordTok{c}\NormalTok{(}\KeywordTok{list}\NormalTok{(beta_start), beta_new))}
 \NormalTok{\}}
 
 \NormalTok{coxphSGD_batch <-}\StringTok{ }\NormalTok{function(formula, data, learningRate, beta)\{}
   \CommentTok{# collect times, status, variables and reorder samples }
+  \CommentTok{# to make the algorithm more clear to read and track}
   \NormalTok{batchData <-}\StringTok{ }\KeywordTok{prepareBatch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{data =} \NormalTok{data)}
   \CommentTok{# calculate the log-likelihood for this batch sample}
   \NormalTok{partial_sum <-}\StringTok{ }\KeywordTok{list}\NormalTok{()}
   \NormalTok{for(k in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(batchData)) \{}
     \CommentTok{# risk set for current time/observation}
-    \NormalTok{risk_set <-}\StringTok{ }\NormalTok{batchData %>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(times <=}\StringTok{ }\NormalTok{batchData$times[k])}
+    \NormalTok{risk_set <-}\StringTok{ }\NormalTok{batchData %>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(times >=}\StringTok{ }\NormalTok{batchData$times[k])}
     
     \NormalTok{nominator <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(risk_set[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)], }\DataTypeTok{MARGIN =} \DecValTok{1}\NormalTok{, function(element)\{}
       \NormalTok{element *}\StringTok{ }\KeywordTok{exp}\NormalTok{(element *}\StringTok{ }\NormalTok{beta)}
@@ -173,18 +172,28 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
 \newpage
 \section{Symulacje estymacji w modelu Coxa}
 
-Dzięki przygotowanej w rozdziale \ref{symWei} funkcji \texttt{dataCox()} możliwe będzie symulacje zbadanie zachowania się współczynników w modelu Coxa w trakcie estymacji metodą stochastycznego spadku gradientu, której algorytm został zaimplementowany w rozdziale \ref{implemento}. Poniższe wywołanie zwraca ramkę danych o 10 tysiącach wierszy, wraz z ze sztucznie wygenerowanymi czasami z rozkładu Weibulla o parametrach $\lambda =3$ oraz $\rho =2$. Czasy cenzurowania generowane są z rozkładu wykładniczego o parametrze $5$ i odpowiadają współczynnikom modelu $\beta = (1,3)$. W rezultacie otrzymać można czasy przeżycia oraz status zdarzenia bądź cenzurowania. Funkcja \texttt{vizCoxSGD()} opisana w Dodatku \ref{coxKody123} trzykrotnie dzieli wygenerowany zbiór danych odpowiednio na 60, 90 i 120 podzbiorów ustawiając obserwacje w losowej kolejności, a następnie wykorzystuję funkcję \texttt{coxphSGD()} do wyznaczenia wartości współczynników w kolejnych krokach estymacji funkcji log-wiarogodności dla modelu Coxa przy pomocy metody stochastycznego spadku gradientu.
-
-
+Dzięki przygotowanej w rozdziale \ref{symWei} funkcji \texttt{dataCox()} możliwe będzie symulacyjne zbadanie zachowania się współczynników w modelu Coxa w trakcie estymacji metodą stochastycznego spadku gradientu, której algorytm został zaimplementowany w rozdziale \ref{implemento}. Poniższe wywołanie zwraca ramkę danych o 10 tysiącach wierszy, wraz z ze sztucznie wygenerowanymi czasami z rozkładu Weibulla o parametrach $\lambda =3$ oraz $\rho =2$. Czasy cenzurowania generowane są z rozkładu wykładniczego o parametrze $5$ a ostateczne czasy bycia pod obserwacją odpowiadają współczynnikom modelu $\beta = (1,3)$. Porównując czas życia oraz czas cenzurowania wylosowany dla obserwacji, rezultacie otrzymać można czasy przeżycia oraz status zdarzenia bądź cenzurowania. 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{x <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{1}\NormalTok{, }\DataTypeTok{size =} \DecValTok{20000}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{), }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{)}
 \NormalTok{dCox <-}\StringTok{ }\KeywordTok{dataCox}\NormalTok{(}\DecValTok{10}\NormalTok{^}\DecValTok{4}\NormalTok{, }\DataTypeTok{lambda =} \DecValTok{3}\NormalTok{, }\DataTypeTok{rho =} \DecValTok{2}\NormalTok{, x, }\DataTypeTok{beta =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{censRate =} \DecValTok{5}\NormalTok{) }
-\KeywordTok{vizCoxSGD}\NormalTok{(dCox)}
 \end{Highlighting}
 \end{Shaded}
+Funkcja \texttt{simulateCoxSGD()} opisana w Dodatku \ref{coxKody123} sześciokrotnie dzieli wygenerowany zbiór danych odpowiednio na 10, 30, 60, 90, 120 i 200 podzbiorów losowych długości ustawiając obserwacje w losowej kolejności, a następnie wykorzystuję funkcję \texttt{coxphSGD()} do wyznaczenia wartości współczynników w kolejnych krokach estymacji funkcji log-wiarogodności dla modelu Coxa przy pomocy metody stochastycznego spadku gradientu. Dzięki tak otrzymany współczynnikom modelu w kolejnych krokach algorytmu dla różnych podziałów zbiorów, możliwe było graficzne przedstawienie trajektorii zbieżności algorytmu w zależności od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. 
 
-Efekt czterokrotnego wywołania funkcji \texttt{vizCoxSGD()} widoczny jest na Rysunku (\ref{rysCox}).
+Implementacja umożliwia ponowne wykorzystanie wszystkich zaobserwowanych podzbiorów danych w kolejnych krokach algorytmu, jeżeli nie pozostały już do wykorzystania żadne nowe podzbiory zaś zbieżność algorytmu, poza warunkiem stopu, zależna jest także od maksymalnej liczby iteracji, która gdy jest większa od liczby zaobserwowanych podzbiorów powoduje, że w trakcie procesu optymalizacji algorytm przechodzi do nowej epoki. 
+
+Przykładowe wywołanie funkcji \texttt{simulateCoxSGD()} znajduje się poniżej
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{simulateCoxSGD}\NormalTok{(dCox, }\DataTypeTok{learningRates =} \NormalTok{function(x)\{}\DecValTok{1}\NormalTok{/(}\DecValTok{100}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(x))\},}
+               \DataTypeTok{max.iter =} \DecValTok{10}\NormalTok{, }\DataTypeTok{epsilon =} \FloatTok{1e-5}\NormalTok{, }\DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+gdzie w tym wypadku parametr \texttt{max.iter} odpowiada za liczbę epok do wykorzystania, \texttt{learningRates} to funkcja odpowiedzialna za wyznaczenie długości kolejnych kroków algorytmu, \texttt{dCox} to dane do analizy przygotowane w postaci jaką zwraca funkcja \texttt{dataCox()}, \texttt{epsilon} to warunek stopu, zaś \texttt{beta\_0} to punkt startowy algorytmu.
+
+Na Rysunkach (\ref{rysCox}) - (\ref{rysCox5}) przedstawiono symulacje zbieżności procesu optymalizacji częściowej funkcji log-wiarogodności dla zaobserwowanego podzbioru obserwacji w modelu Coxa proporcjonalnych hazardów, z wykorzystanie algorytmu stochastycznego spadku gradientu. Trajektorie zbieżności zależne są od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. Dodatkowo przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum. 
 
 \begin{figure}[hbt!]
   %\vspace{-10pt}

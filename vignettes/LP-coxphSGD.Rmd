@@ -77,13 +77,12 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
   n <- length(data)
   diff <- epsilon + 1
   i <- 1
-  beta_new <- list() # steps are saved in a list so that they can
+  beta_new <- list()     # steps are saved in a list so that they can
   beta_old <- beta_start # be tracked in the future
   # estimate
   while(i <= max.iter & diff > epsilon) {
     beta_new[[i]] <- coxphSGD_batch(formula = formula, beta = beta_old,
         learningRate = learningRates(i), data = data[[ifelse(i%%n==0,n,i%%n)]])
-    
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
     i <- i + 1  
@@ -97,10 +96,8 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   # collect times, status, variables and reorder samples 
   # to make the algorithm more clear to read and track
   batchData <- prepareBatch(formula = formula, data = data)
-  
   # calculate the log-likelihood for this batch sample
   partial_sum <- list()
-  
   for(k in 1:nrow(batchData)) {
     # risk set for current time/observation
     risk_set <- batchData %>% filter(times >= batchData$times[k])

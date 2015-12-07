@@ -90,20 +90,19 @@ beta_old = numeric(0, length = k)        # punkt startowy dlugosci k,
                                          # gdzie k to liczba zmiennych
                                          # objaśniających w modelu.
 
+max.iter = 500                           # maksymalna liczba kroków.
+ź
                               # estymacja
-i = 1                                    # iterator kroku algorytmu
-while(i <= n | diff < eps) do            # do zbieżności lub wyczerpania zbiorów
-  batch = data[[i]]
-  
+i = 1                                    # iterator kroku algorytmu.
+while(i <= max.iter | diff < eps) do     
+  iter = ifelse(i mod n == 0, n, i mod n)# wybierz kolejny podzbiór batch.
+  batch = data[[iter]] 
   beta_new = beta_old - learningRates(i) * U_Batch(batch) 
                                          # U_Batch to częściowa funkcja
                                          # log-wiarogdności dla zaobserwowanego
                                          # zbioru `batch`
-  
   diff = euclidean_dist(beta_new, beta_old) # odległość euklidesowa
-  
   beta_old = beta_new 
-  
   i = i + 1
 end while
 return beta_new
@@ -113,102 +112,56 @@ return beta_new
 
 
 ```{r, eval=FALSE}
-coxphSGD <- function(formula, data, 
-                    learningRates = function(x){1/x},
-                    beta_0 = 0, epsilon = 1e-5 ) {
+coxphSGD <- function(formula, data, learningRates = function(x){1/x},
+                    beta_0 = 0, epsilon = 1e-5, max.iter = 500 ) {
   checkArguments(formula, data, learningRates,
-                  beta_0, epsilon) -> beta_old # check arguments
-
+                  beta_0, epsilon) -> beta_start # check arguments
   n <- length(data)
   diff <- epsilon + 1
   i <- 1
-  beta_new <- list() # steps are saved in a list so that they can
-                     # be tracked in the future
+  beta_new <- list()     # steps are saved in a list so that they can
+  beta_old <- beta_start # be tracked in the future
   # estimate
-  while(i <= n & diff > epsilon) {
-    #tryCatch({
-    beta_new[[i]] <- coxphSGD_batch(formula = formula, data = data[[i]],
-                                    learningRate = learningRates(i),
-                                    beta = beta_old)
+  while(i <= max.iter & diff > epsilon) {
+    beta_new[[i]] <- coxphSGD_batch(formula = formula, beta = beta_old,
+        learningRate = learningRates(i), data = data[[ifelse(i%%n==0,n,i%%n)]])
     
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
     i <- i + 1  
-    #}, error = function(cond) {i <<- n + 1})
   }
-  
   # return results
-  fit <- list()
-  fit$Call <- match.call()
-  fit$coefficients <- beta_new
-  fit$epsilon <- epsilon
-  fit$learningRates <- learningRates
-  fit$steps <- i
-  class(fit) <- "coxphSGD"
-  fit
+  list(Call = match.call(), epsilon = epsilon, learningRates = learningRates,
+       steps = i, coefficients = c(list(beta_start), beta_new))
 }
 
 coxphSGD_batch <- function(formula, data, learningRate, beta){
-  
-  # Parameter identification as in  `survival::coxph()`.
-  Call <- match.call()
-  indx <- match(c("formula", "data"),
-                names(Call), nomatch = 0)
-  if (indx[1] == 0) 
-      stop("A formula argument is required")
-  temp <- Call[c(1, indx)]
-  temp[[1]] <- as.name("model.frame")
-  
-  mf <- eval(temp, parent.frame())
-  Y <- model.extract(mf, "response")
-  
-  if (!inherits(Y, "Surv")) 
-      stop("Response must be a survival object")
-  type <- attr(Y, "type")
-  
-  if (type != "right" && type != "counting") 
-      stop(paste("Cox model doesn't support \"", type, "\" survival data", 
-          sep = ""))
-  
   # collect times, status, variables and reorder samples 
   # to make the algorithm more clear to read and track
-  cbind(not_censored = 1 - unclass(Y)[,2],
-        times = unclass(Y)[,1],
-        mf[, -1]) %>%
-    arrange(times) -> batchData
+  batchData <- prepareBatch(formula = formula, data = data)
   
   # calculate the log-likelihood for this batch sample
   partial_sum <- list()
   
   for(k in 1:nrow(batchData)) {
-    
     # risk set for current time/observation
-    risk_set <- batchData %>%
-      filter(times <= batchData$times[k])
+    risk_set <- batchData %>% filter(times >= batchData$times[k])
     
     nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
       element * exp(element * beta)
-    }) %>%
-      t %>%
-      colSums()
-    
+    }) %>% rowSums()
+      
     denominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
       exp(element * beta)
-    }) %>%
-      t %>%
-      colSums()
-    
+    }) %>% rowSums()
+      
     partial_sum[[k]] <- 
-      batchData[k, "not_censored"] * (batchData[k, -c(1,2)] - nominator/denominator)
-    
+      batchData[k, "event"] * (batchData[k, -c(1,2)] - nominator/denominator)
   }
-  
   do.call(rbind, partial_sum) %>%
     colSums() -> U_batch
   
-  beta_out <- beta + learningRate * U_batch
-  
-  return(beta_out)
+  return(beta + learningRate * U_batch)
 }
   
 checkArguments <- function(formula, data, learningRates,
@@ -410,4 +363,12 @@ prepareBatch <- function(formula, data) {
     arrange(times) 
 }
 ```
+
+
+
+```{r}
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))},
+               max.iter = 10, epsilon = 1e-5, beta_0 = c(2,2))
+```
+
 
