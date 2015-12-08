@@ -33,6 +33,8 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr arrange
 #' @importFrom dplyr filter
+#' @author 
+#' Marcin Kosinski, \email{m.p.kosinski@@gmail.com}
 #' @examples
 #' library(survival)
 #' \dontrun{
@@ -49,16 +51,15 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
   n <- length(data)
   diff <- epsilon + 1
   i <- 1
-  beta_new <- list() # steps are saved in a list so that they can
+  beta_new <- list()     # steps are saved in a list so that they can
   beta_old <- beta_start # be tracked in the future
   # estimate
   while(i <= max.iter & diff > epsilon) {
     beta_new[[i]] <- coxphSGD_batch(formula = formula, beta = beta_old,
         learningRate = learningRates(i), data = data[[ifelse(i%%n==0,n,i%%n)]])
-    
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
-    i <- i + 1  
+    i <- i + 1  ; cat("iteration: ", i, "\r")
   }
   # return results
   list(Call = match.call(), epsilon = epsilon, learningRates = learningRates,
@@ -69,10 +70,8 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   # collect times, status, variables and reorder samples 
   # to make the algorithm more clear to read and track
   batchData <- prepareBatch(formula = formula, data = data)
-  
   # calculate the log-likelihood for this batch sample
   partial_sum <- list()
-  
   for(k in 1:nrow(batchData)) {
     # risk set for current time/observation
     risk_set <- batchData %>% filter(times >= batchData$times[k])
@@ -142,5 +141,183 @@ prepareBatch <- function(formula, data) {
         times = unclass(Y)[,1],
         mf[, -1]) %>%
     arrange(times) 
+}
+
+#'
+#' Cox Proportional Hazards Model Data Generation From Weibull Distribution
+#'
+#' Function \code{dataCox} generaters random survivaldata from Weibull
+#' distribution (with parameters \code{lambda} and \code{rho} for given input
+#' \code{x} data, model coefficients \code{beta} and censoring rate for censoring
+#' that comes from exponential distribution with parameter \code{censRate}.
+#'
+#' @param N Number of observations to generate.
+#' @param lambda lambda parameter for Weibull distribution.
+#' @param rho rho parameter for Weibull distribution.
+#' @param x A data.frame with input data to generate the survival times for.
+#' @param beta True model coefficients.
+#' @param censRate Parameter for exponential distribution, which is 
+#' responsible for censoring.
+#'
+#' @details For each observation true survival time is generated and a censroing time. If censoring time is less then survival time, then the survival time 
+#' is returned and a status of observations is set to \code{0} which means the
+#' observation had censored time. If the survival time is less than censoring
+#' time, then for this observation the true survival time is returned and the
+#' status of this observation is set to \code{1} which means that the event has
+#' been noticed.
+#'
+#' @references
+#' \url{http://onlinelibrary.wiley.com/doi/10.1002/sim.2059/abstract}
+#'
+#' \code{Generating survival times to simulate Cox proportional hazards models}, 2005 by Ralf Bender, Thomas Augustin, Maria Blettner.
+#' @importFrom reshape2 melt
+#' @examples
+#' \dontrun{
+#' x <- matrix(sample(0:1, size = 20000, replace = TRUE), ncol = 2)
+#' dataCox(10^4, lambda = 3, rho = 2, x, 
+#' beta = c(1,3), censRate = 5) -> dCox
+#'}
+#' @export
+dataCox <- function(N, lambda, rho, x, beta, censRate){
+
+  # real Weibull times
+  u <- runif(N)
+  Treal <- (- log(u) / (lambda * exp(x %*% beta)))^(1 / rho)
+
+  # censoring times
+  Censoring <- rexp(N, censRate)
+
+  # follow-up times and event indicators
+  time <- pmin(Treal, Censoring)
+  status <- as.numeric(Treal <= Censoring)
+
+  # data set
+  data.frame(id=1:N, time=time, status=status, x=x)
+}
+
+
+# assuming observations are sorted by time
+full_cox_loglik <- function(beta1, beta2, x1, x2, censored){
+  sum(rev(censored)*(beta1*rev(x1) + beta2*rev(x2) -
+                       log(cumsum(exp(beta1*rev(x1) + beta2*rev(x2))))))
+}
+
+
+calculate_outer_cox <- function(x1, x2, censored){
+  ## contours
+  outer_res <- outer(seq(-1,3, length = 100),
+           seq(0,4, length = 100),
+           Vectorize( function(beta1,beta2){
+             full_cox_loglik(beta1, beta2, x1 = x1, x2 = x2, censored = censored)
+           } )
+  )
+  outer_res_melted <- melt(outer_res)
+  outer_res_melted$Var1 <- as.factor(outer_res_melted$Var1)
+  levels(outer_res_melted$Var1) <- as.character(seq(-1,3, length = 100))
+  outer_res_melted$Var2 <- as.factor(outer_res_melted$Var2)
+  levels(outer_res_melted$Var2) <- as.character(seq(0,4, length = 100))
+  outer_res_melted$Var1 <- as.numeric(as.character(outer_res_melted$Var1))
+  outer_res_melted$Var2 <- as.numeric(as.character(outer_res_melted$Var2))
+  return(outer_res_melted)
+}
+
+
+#'
+#' Optimize Partial Log-Likelihood Function For Cox Propotional Hazards Model
+#' Using Stochastic Gradient Descent 
+#'
+#' Function \code{simulateCoxSGD} splits input \code{dCox} data on 10, 30, 60, 90, 120 and 200 
+#' groups and for each split it uses \link{coxphSGD} function to generate estimates for Cox
+#' Proportional Hazards Model with stochastic gradient descent optimization.
+#'
+#' @param dCox Input data.frame containing survival times (columnd should be named \code{time}) and status
+#' (columnd should be named \code{status}). So far this function only supports 2 explanatory variable 
+#' (that should be named \code{x1} and \code{x2}.
+#' @param learningRates Parameter passed to \link{coxphSGD}.
+#' @param epsilon Parameter passed to \link{coxphSGD}.
+#' @param beta_0 Parameter passed to \link{coxphSGD}.
+#' @param max.iter Parameter passed to \link{coxphSGD} to multiple the maximal iterations by the rows number.
+#'
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr mutate
+#' @examples
+#' \dontrun{
+#' x <- matrix(sample(0:1, size = 20000, replace = TRUE), ncol = 2)
+#' dataCox(10^4, lambda = 3, rho = 2, x, 
+#' beta = c(1,3), censRate = 5) -> dCox
+#'  simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, 
+#'                 max.iter = 10, epsilon = 1e-5) -> d2ggplot
+#'}
+#' @export
+simulateCoxSGD <- function(dCox = dCox, learningRates = function(x){1/x},
+                      epsilon = 1e-03, beta_0 = c(0,0), max.iter = 100){
+
+  sample(1:90, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates, 
+           beta_0 = beta_0, max.iter = max.iter*90) -> estimates
+
+  sample(1:60, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*60) -> estimates2
+
+  sample(1:120, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*120) -> estimates3
+
+  sample(1:200, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*200) -> estimates4
+
+
+  sample(1:30, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*30) -> estimates5
+
+
+  sample(1:10, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*10) -> estimates6
+
+  t(simplify2array(estimates$coefficients)) %>%
+    as.data.frame() -> df1
+  t(simplify2array(estimates2$coefficients)) %>%
+    as.data.frame() -> df2
+  t(simplify2array(estimates3$coefficients)) %>%
+    as.data.frame() -> df3
+  t(simplify2array(estimates4$coefficients)) %>%
+    as.data.frame() -> df4
+  t(simplify2array(estimates5$coefficients)) %>%
+    as.data.frame() -> df5
+  t(simplify2array(estimates6$coefficients)) %>%
+    as.data.frame() -> df6
+
+  df1 %>%
+    mutate(version = paste("90 batches,", nrow(df1), " steps")) %>%
+    bind_rows(df2 %>%
+                mutate(version = paste("60 batches,", nrow(df2), " steps"))) %>%
+    bind_rows(df3 %>%
+                mutate(version = paste("120 batches,", nrow(df3), " steps"))) %>%
+    bind_rows(df4 %>%
+                mutate(version = paste("200 batches,", nrow(df4), " steps"))) %>%
+    bind_rows(df5 %>%
+                mutate(version = paste("30 batches,", nrow(df5), " steps"))) %>%
+    bind_rows(df6 %>%
+                mutate(version = paste("10 batches,", nrow(df6), " steps"))) -> d2ggplot
+
+  return(list(d2ggplot = d2ggplot, est1 = estimates, est2 = estimates2,
+              est3 = estimates3, est4 = estimates4, est5 = estimates5))
+
 }
 

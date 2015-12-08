@@ -371,4 +371,291 @@ simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))},
                max.iter = 10, epsilon = 1e-5, beta_0 = c(2,2))
 ```
 
+```{r, eval = FALSE}
+logitGD <- function(y, x, optim.method = "GDI", eps = 10e-4,
+                    max.iter = 100, alpha = function(t){1/t}, beta_0 = c(0,0)){
+  stopifnot(length(y) == length(x) & optim.method %in% c("GDI", "GDII", "SGDI")
+            & is.numeric(c(max.iter, eps, x)) & all(c(eps, max.iter) > 0) &
+              is.function(alpha))
+  iter <- 0
+  err <- list()
+  err[[iter+1]] <- eps+1
+  w_old <- beta_0
+
+  res <-list()
+  while(iter < max.iter && (abs(err[[ifelse(iter==0,1,iter)]]) > eps)){
+
+    iter <- iter + 1
+    if (optim.method == "GDI"){
+      w_new <- w_old + alpha(iter)*updateWeightsGDI(y, x, w_old)
+    }
+    if (optim.method == "GDII"){
+      w_new <- w_old + as.vector(inverseHessianGDII(x, w_old)%*%
+                                   updateWeightsGDI(y, x, w_old))
+    }
+    if (optim.method == "SGDI"){
+      w_new <- w_old + alpha(iter)*updateWeightsSGDI(y[iter], x[iter], w_old)
+    }
+    res[[iter]] <- w_new
+    err[[iter]] <- sqrt(sum((w_new - w_old)^2))
+
+    w_old <- w_new
+
+  }
+  return(list(steps = c(list(beta_0),res), errors = c(list(c(0,0)),err)))
+}
+
+updateWeightsGDI <- function(y, x, w_old){
+  #(1/length(y))*c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
+  c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))
+}
+
+updateWeightsSGDI <- function(y_i, x_i, w_old){
+  c(y_i-p(w_old, x_i), x_i*(y_i-p(w_old, x_i)))
+}
+
+p <- function(w_old, x_i){
+  1/(1+exp(-w_old[1]-w_old[2]*x_i))
+}
+
+inverseHessianGDII <- function(x, w_old){
+  solve(
+    matrix(c(
+      sum(p(w_old, x)*(1-p(w_old, x))),
+      sum(x*p(w_old, x)*(1-p(w_old, x))),
+      sum(x*p(w_old, x)*(1-p(w_old, x))),
+      sum(x*x*p(w_old, x)*(1-p(w_old, x)))
+    ),
+    nrow =2 )
+  )
+}
+set.seed(1283)
+x <- runif(10000)
+z <- 2 + 3*x
+pr <- 1/(1+exp(-z))
+y <- rbinom(10000,1,pr)
+
+
+global_loglog <- function(beta1, beta2, xX, yY){
+  sum(yY*(beta1+beta2*xX)-log(1+exp(beta1+beta2*xX)))
+}
+
+
+
+calculate_outer <- function(x, y){
+  ## contours
+  outer_res <- outer(seq(0,4, length = 100),
+                     seq(0,5, length = 100),
+                     Vectorize( function(beta1,beta2){
+                       global_loglog(beta1, beta2, xX = x, yY = y)
+                     } )
+  )
+
+  outer_res_melted <- melt(outer_res)
+
+
+  outer_res_melted$Var1 <- as.factor(outer_res_melted$Var1)
+  levels(outer_res_melted$Var1) <- as.character(seq(0,4, length = 100))
+  outer_res_melted$Var2 <- as.factor(outer_res_melted$Var2)
+  levels(outer_res_melted$Var2) <- as.character(seq(0,5, length = 100))
+  outer_res_melted$Var1 <- as.numeric(as.character(outer_res_melted$Var1))
+  outer_res_melted$Var2 <- as.numeric(as.character(outer_res_melted$Var2))
+  return(outer_res_melted)
+}
+
+
+
+library(ggplot2); library(ggthemes); library(reshape2)
+graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)){
+  set.seed(seed)
+
+  beta <- rev(beta)
+
+  logitGD(y, x, optim.method = "GDI",beta_0 = beta,
+          eps = 10e-4, max.iter = 10000,
+          alpha = function(t){1/(1000*sqrt(t))})$steps -> GDI.S
+
+  logitGD(y, x, optim.method = "GDII", beta_0 = beta,
+          eps = 10e-4, max.iter = 5000)$steps -> GDII
+
+  ind2 <- sample(length(y))
+  logitGD(y[ind2], x[ind2], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-4,
+          alpha = function(t){1/sqrt(t)})$steps -> SGDI.1.S
+  ind3 <- sample(length(y))
+  logitGD(y[ind3], x[ind3], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-4,
+          alpha = function(t){5/sqrt(t)})$steps -> SGDI.5.S
+  ind4 <- sample(length(y))
+  logitGD(y[ind4], x[ind4], optim.method = "SGDI", beta_0 = beta,
+          max.iter = 10000, eps = 10e-4,
+          alpha = function(t){6/sqrt(t)})$steps -> SGDI.6.S
+
+  do.call(rbind, c(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S)) -> coeffs
+  unlist(lapply(list(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S),
+                length)) -> algorithm
+  data2viz <- cbind(as.data.frame(coeffs),
+  algorithm = unlist(mapply(rep,
+                              c(paste("GDI", length(GDI.S), "steps"),
+                              paste("GDII", length(GDII), "steps"),
+                              paste("SGDI.1", length(SGDI.1.S), "steps"),
+                              paste("SGDI.5", length(SGDI.5.S), "steps"),
+                              paste("SGDI.6", length(SGDI.6.S), "steps")),
+                            algorithm)))
+  names(data2viz)[1:2] <- c("Intercept", "X")
+  data2viz$algorithm <- factor(data2viz$algorithm, levels = rev(levels(data2viz$algorithm)))
+  beta[2] -> XX
+  beta[1] -> YY
+
+
+  ggplot()+
+    geom_path(aes(x = data2viz$X,
+                  y = data2viz$Intercept,
+                  col = data2viz$algorithm,
+                  group = data2viz$algorithm), size = 1) +
+    geom_point(aes(as.vector(round(coefficients(glm(y~x,
+                          family = 'binomial')), 2)[2]),
+                   as.vector(round(coefficients(glm(y~x,
+                          family = 'binomial')), 2)[1])),
+               col = "black", size = 4, shape = 15) +
+    geom_point(aes(x=XX, y=YY),
+               col = "black", size = 4, shape = 17) +
+    theme_bw(base_size = 20) +
+    theme(panel.border = element_blank(),
+          legend.key = element_blank()) +
+    scale_colour_brewer(palette="Set1", name = 'Algorithm') +
+    xlab('X') +
+    ylab('Intercept')  -> pl_g
+
+  return(pl_g)
+}
+
+
+
+
+```
+
+
+
+
+```{r}
+full_cox_loglik <- function(beta1, beta2, x1, x2, censored){
+  sum(rev(censored)*(beta1*rev(x1) + beta2*rev(x2) -
+                       log(cumsum(exp(beta1*rev(x1) + beta2*rev(x2))))))
+}
+
+
+calculate_outer_cox <- function(x1, x2, censored){
+  ## contours
+  outer_res <- outer(seq(-1,3, length = 100),
+           seq(0,4, length = 100),
+           Vectorize( function(beta1,beta2){
+             full_cox_loglik(beta1, beta2, x1 = x1, x2 = x2, censored = censored)
+           } )
+  )
+  outer_res_melted <- melt(outer_res)
+  outer_res_melted$Var1 <- as.factor(outer_res_melted$Var1)
+  levels(outer_res_melted$Var1) <- as.character(seq(-1,3, length = 100))
+  outer_res_melted$Var2 <- as.factor(outer_res_melted$Var2)
+  levels(outer_res_melted$Var2) <- as.character(seq(0,4, length = 100))
+  outer_res_melted$Var1 <- as.numeric(as.character(outer_res_melted$Var1))
+  outer_res_melted$Var2 <- as.numeric(as.character(outer_res_melted$Var2))
+  return(outer_res_melted)
+}
+simulateCoxSGD <- function(dCox = dCox, learningRates = function(x){1/x},
+                      epsilon = 1e-03, beta_0 = c(0,0), max.iter = 100){
+
+  sample(1:90, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates, 
+           beta_0 = beta_0, max.iter = max.iter*90) -> estimates
+
+  sample(1:60, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*60) -> estimates2
+
+  sample(1:120, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*120) -> estimates3
+
+  sample(1:200, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*200) -> estimates4
+
+
+  sample(1:30, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*30) -> estimates5
+
+
+  sample(1:10, size = 10^4, replace = TRUE) -> group
+  split(dCox, group) -> dCox_splitted
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
+           epsilon = epsilon, learningRates = learningRates,
+           beta_0 = beta_0, max.iter = max.iter*10) -> estimates6
+
+  t(simplify2array(estimates$coefficients)) %>%
+    as.data.frame() -> df1
+  t(simplify2array(estimates2$coefficients)) %>%
+    as.data.frame() -> df2
+  t(simplify2array(estimates3$coefficients)) %>%
+    as.data.frame() -> df3
+  t(simplify2array(estimates4$coefficients)) %>%
+    as.data.frame() -> df4
+  t(simplify2array(estimates5$coefficients)) %>%
+    as.data.frame() -> df5
+  t(simplify2array(estimates6$coefficients)) %>%
+    as.data.frame() -> df6
+
+  df1 %>%
+    mutate(version = paste("90 batches,", nrow(df1), " steps")) %>%
+    bind_rows(df2 %>%
+                mutate(version = paste("60 batches,", nrow(df2), " steps"))) %>%
+    bind_rows(df3 %>%
+                mutate(version = paste("120 batches,", nrow(df3), " steps"))) %>%
+    bind_rows(df4 %>%
+                mutate(version = paste("200 batches,", nrow(df4), " steps"))) %>%
+    bind_rows(df5 %>%
+                mutate(version = paste("30 batches,", nrow(df5), " steps"))) %>%
+    bind_rows(df6 %>%
+                mutate(version = paste("10 batches,", nrow(df6), " steps"))) -> d2ggplot
+
+  return(list(d2ggplot = d2ggplot, est1 = estimates, est2 = estimates2,
+              est3 = estimates3, est4 = estimates4, est5 = estimates5))
+
+}
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))},
+               max.iter = 10, epsilon = 1e-5) -> d2ggplot
+d2ggplot -> backpack
+d2ggplot <- d2ggplot$d2ggplot
+beta_0 = c(0,0)
+solution = c(1,3)
+
+pdf(file = "b_0_0_iter_10_e-5_100sqrt_878.pdf", width = 10, height = 10)
+ggplot() +
+  stat_contour(aes(x=outerCox$Var1,
+                   y=outerCox$Var2,
+                   z=outerCox$value),
+               bins = 40, alpha = 0.25) +
+  geom_path(aes(d2ggplot$V1, d2ggplot$V2, group = d2ggplot$version,
+                colour = d2ggplot$version), size = 1) +
+  theme_bw(base_size = 20) +
+  theme(panel.border = element_blank(),
+        legend.key = element_blank(), legend.position = "top") +
+  scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
+  geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
+  geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  xlab("X1") + ylab("X2") +
+  guides(col = guide_legend(ncol = 3))
+dev.off()
+```
 

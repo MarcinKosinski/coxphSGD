@@ -51,3 +51,6 @@ coxphSGD(Surv(time, status) ~ ph.ecog + age, data = split(lung, sample(1:4,
 }
 
 }
+\author{
+Marcin Kosinski, \email{m.p.kosinski@gmail.com}
+}

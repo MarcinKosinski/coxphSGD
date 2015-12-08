@@ -96,19 +96,13 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
   set.seed(seed)
 
   beta <- rev(beta)
-#   logitGD(y, x, optim.method = "GDI",beta_0 = beta,
-#           eps = 10e-6, max.iter = 10000, alpha = function(t){1/(1000*t)})$steps -> GDI
+
   logitGD(y, x, optim.method = "GDI",beta_0 = beta,
           eps = 10e-4, max.iter = 10000, alpha = function(t){1/(1000*sqrt(t))})$steps -> GDI.S
-
 
   logitGD(y, x, optim.method = "GDII", beta_0 = beta,
           eps = 10e-4, max.iter = 5000)$steps -> GDII
 
-
-  # ind <- sample(length(y))
-  # logitGD(y[ind], x[ind], optim.method = "SGDI", beta_0 = beta,
-  #         max.iter = 10000, eps = 10e-6, alpha = function(t){1/t})$steps -> SGDI.1
   ind2 <- sample(length(y))
   logitGD(y[ind2], x[ind2], optim.method = "SGDI", beta_0 = beta,
           max.iter = 10000, eps = 10e-4, alpha = function(t){1/sqrt(t)})$steps -> SGDI.1.S
@@ -118,49 +112,22 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
   ind4 <- sample(length(y))
   logitGD(y[ind4], x[ind4], optim.method = "SGDI", beta_0 = beta,
           max.iter = 10000, eps = 10e-4, alpha = function(t){6/sqrt(t)})$steps -> SGDI.6.S
-#   ind5 <- sample(length(y))
-#   logitGD(y[ind5], x[ind5], optim.method = "SGDI", beta_0 = beta,
-#           max.iter = 10000, eps = 10e-6, alpha = function(t){5/t})$steps -> SGDI.5
-#   ind6 <- sample(length(y))
-#   logitGD(y[ind6], x[ind6], optim.method = "SGDI", beta_0 = beta,
-#           max.iter = 10000, eps = 10e-6, alpha = function(t){6/t})$steps -> SGDI.6
 
   do.call(rbind, c(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S)) -> coeffs
   unlist(lapply(list(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S), length)) -> algorithm
   data2viz <- cbind(as.data.frame(coeffs),
                     algorithm = unlist(mapply(rep,
-                                              #c(paste("GDI", length(GDI), "steps"),
                                                 c(paste("GDI", length(GDI.S), "steps"),
                                                 paste("GDII", length(GDII), "steps"),
-                                                # paste("SGDI.1", length(SGDI.1), "steps"),
                                                 paste("SGDI.1", length(SGDI.1.S), "steps"),
                                                 paste("SGDI.5", length(SGDI.5.S), "steps"),
                                                 paste("SGDI.6", length(SGDI.6.S), "steps")),
-#                                                 paste("SGDI.5", length(SGDI.5), "steps"),
-#                                                 paste("SGDI.6", length(SGDI.6), "steps")),
                                               algorithm)))
   names(data2viz)[1:2] <- c("Intercept", "X")
   data2viz$algorithm <- factor(data2viz$algorithm, levels = rev(levels(data2viz$algorithm)))
   beta[2] -> XX
   beta[1] -> YY
 
-  #outer_res_melted <- outerBounds
-
-  # ggplot(data2viz) +
-  #   geom_point(aes(x = X, y = Intercept, col = algorithm)) +
-  #   geom_path(aes(x = X, y = Intercept, col = algorithm,
-  #                 group = algorithm)) +
-  #   theme_bw(base_size = 20) +
-  #   scale_colour_brewer(palette="Dark2") +
-  #   #theme_tufte(base_size = 20) +
-  #   #geom_point(aes(x=3, y =2), col = "black", size =4) +
-  #   geom_point(aes(as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[2]),
-  #                  as.vector(round(coefficients(glm(y~x, family = 'binomial')), 2)[1])),
-  #              col = "black", size = 4, shape = 15) +
-  #   geom_point(x=XX, y=YY,
-  #              col = "black", size = 4, shape = 17) +
-  #   theme(panel.border = element_blank(),
-  #         legend.key = element_blank()) +
 
   ggplot()+
 #     stat_contour(aes(x=outerBounds$Var1,
@@ -179,11 +146,6 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
     theme_bw(base_size = 20) +
     theme(panel.border = element_blank(),
           legend.key = element_blank()) +
-
-    #   geom_point(aes(x = data2viz$X,
-    #                 y = data2viz$Intercept,
-    #                 col = data2viz$algorithm,
-    #                 group = data2viz$algorithm)) +
     scale_colour_brewer(palette="Set1", name = 'Algorithm') +
     xlab('X') +
     ylab('Intercept')  -> pl_g
@@ -192,45 +154,4 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
 }
 
 
-graphSGD(beta=c(1,0), y, x, 456, outerBounds = calculate_outer(x,y))
-
-pdf(file = "sgd_00_1.pdf", width = 10, height = 8)
-graphSGD(c(0,0), y, x, 4561)
-dev.off()
-pdf(file = "sgd_00_2.pdf", width = 10, height = 8)
-graphSGD(c(0,0), y, x, 456)
-dev.off()
-pdf(file = "sgd_1_2_1.pdf", width = 10, height = 8)
-graphSGD(c(1,2), y, x, 4561)
-dev.off()
-pdf(file = "sgd_1_2_2.pdf", width = 10, height = 8)
-graphSGD(c(1,2), y, x, 456)
-dev.off()
-
-
-pdf(file = "sgd_35_1_1.pdf", width = 10, height = 8)
-graphSGD(c(1,3.5), y, x, 4561)
-dev.off()
-pdf(file = "sgd_35_1_2.pdf", width = 10, height = 8)
-graphSGD(c(1,3.5), y, x, 456)
-dev.off()
-
-
-
-pdf(file = "sgd_32_4_1.pdf", width = 10, height = 8 )
-graphSGD(c(3.2,4), y, x, 4561)
-dev.off()
-pdf(file = "sgd_32_4_2.pdf", width = 10, height = 8 )
-graphSGD(c(3.2,4), y, x, 456)
-dev.off()
-
-
-
-# pdf(file = "sgd_2_1_1.pdf", width = 10, height = 8)
-# graphSGD(c(2,1), y, x, 4561)
-# dev.off()
-#
-# pdf(file = "sgd_2_1_2.pdf", width = 10, height = 8)
-# graphSGD(c(2,1), y, x, 456)
-# dev.off()
 
