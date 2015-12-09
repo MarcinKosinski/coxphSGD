@@ -24,7 +24,7 @@
 #' @note If one of the conditions is fullfiled (j denotes the step number)
 #' \itemize{
 #'  \item \eqn{||\beta_{j+1}-\beta_{j}|| <}\code{epsilon} parameter for any \eqn{j}
-#'  \item \eqn{j>} \code{\#batches} 
+#'  \item \eqn{j>max.iter} 
 #' }
 #' the estimation process is stopped.
 #' @export
@@ -43,7 +43,6 @@
 #' )
 #' }
 #' 
-
 coxphSGD <- function(formula, data, learningRates = function(x){1/x},
                     beta_0 = 0, epsilon = 1e-5, max.iter = 500 ) {
   checkArguments(formula, data, learningRates,

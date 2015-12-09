@@ -39,7 +39,7 @@ variables. See Examples.
 If one of the conditions is fullfiled (j denotes the step number)
 \itemize{
  \item \eqn{||\beta_{j+1}-\beta_{j}|| <}\code{epsilon} parameter for any \eqn{j}
- \item \eqn{j>} \code{\#batches} 
+ \item \eqn{j>max.iter} 
 }
 the estimation process is stopped.
 }
