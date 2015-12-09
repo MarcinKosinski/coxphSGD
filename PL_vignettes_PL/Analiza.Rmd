@@ -129,8 +129,8 @@ split(coxData, groups) -> coxData_split
 as.formula(paste("Surv(times, patient.vital_status) ~ ",paste(names(coxData)[-c(1092, 1093)], collapse="+"), collapse = "")) -> formulaSGD
 
 system.time({
-coxphSGD(formulaSGD, data = coxData_split) -> res
-save(res, file = "res.rda")
+coxphSGD(formulaSGD, data = coxData_split, max.iter = 100) -> res2
+save(res2, file = "res2.rda")
 })
 ```
 
