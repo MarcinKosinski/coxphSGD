@@ -48,3 +48,92 @@ oraz zostały one wykorzystane w następnym rozdziale do sprawdzenia czy występ
 \newpage
 
 \section{Analiza wpływu mutacji genów na czas życia}\label{chap:analiza}
+
+Do analizy badającej wpływ występowania mutacji genów na czas przeżycia
+wykorzystano dane kliniczne i dane o występujących u pacjentów mutacjach
+genetycznych. Starano się wykorzystać dane ze wszystkich 38 dostępnych
+kohort nowotworowych z badania \textit{The Cancer Genome Atlas} (TCGA),
+jednak nie dla wszystkich kohort umieszczono w badaniu dane o mutacjach.
+Częśc wspólną nazw dla kohort zawierających zarówno dane kliniczne oraz
+dane o mutacjach wygenerowaną dzięki wywołaniu
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{extractCohortIntersection}\NormalTok{() ->}\StringTok{ }\NormalTok{cohorts}
+\end{Highlighting}
+\end{Shaded}
+
+Następnie dla tak otrzymanych 35 kohort nowotworowych uzyskano dane o
+statusie pacjenta (śmierć bądź cenzurowanie) oraz jego czasie spędzonym
+pod obseracją dzięki funkcji
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{extractSurvival}\NormalTok{(cohorts) ->}\StringTok{ }\NormalTok{survivalData}
+\end{Highlighting}
+\end{Shaded}
+
+Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych
+pacjentów uzyskano za pomocą
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{extractMutations}\NormalTok{(cohorts, }\FloatTok{0.02}\NormalTok{) ->}\StringTok{ }\NormalTok{mutationsData }
+\end{Highlighting}
+\end{Shaded}
+
+gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2
+\% pacjentów mających zarówno dane kliniczne jak i dane o występujących
+mutacjach w genach.
+
+Dla tak otrzymanych dwóch zbiorów danych połączono dla pacjentów
+informacje kliniczne z informacjami o mutacjach dzięki przypisanym do
+pacjentów i ich próbek kodów \texttt{bcr\_patient\_barcode}, by
+ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{prepareCoxDataSplit}\NormalTok{(mutationsData,survivalData, }\DataTypeTok{groups =} \DecValTok{100}\NormalTok{) ->}\StringTok{ }\NormalTok{coxData_split}
+\end{Highlighting}
+\end{Shaded}
+
+Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a
+pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki
+pomocniczej funkcji
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{prepareForumlaSGD}\NormalTok{(coxData) ->}\StringTok{ }\NormalTok{formulaSGD}
+\end{Highlighting}
+\end{Shaded}
+
+Ostatecznie dla 6459 pacjentów, którzy posiadali informacje o
+występujących mutacjach, oraz dla których odnotowano komplet i
+poprawność danych klinicznych dotyczących statusu i obserwowanego czasu
+przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa
+z wykorzystaniem stochastycznego spadku gradientu do estymacji.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{coxData_split, }\DataTypeTok{max.iter =} \DecValTok{100}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności
+hazardu, gdyż zakładano napływającą postać danych (stąd podział danych
+na 100 grup). Dla takiej postaci pojawia się danych ciężko także mówić o
+jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności
+otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać
+istotność statystyczna otrzymanych współczynników w modelu, jednak
+założono, że współczynniki dostatecznie odległe od \(0\) można uznać za
+istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie
+oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym
+genie w stosunku do pacjentów nie posiadających mutacji w danym genie.
+Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta
+posiadającego mutację w danym genie w stosunku do pacjentów nie
+posiadających mutacji w danym genie. Wzrost proporcji hazardu można
+otrzymać dla danego genu poprzez obłożenie współczynnika funkcją
+wykładniczą o wykładniku \(e\).
+
+Wyniki estymacji dla genów zawierających największe co do modułu
+współczynniki można znaleźć w Tabeli 1

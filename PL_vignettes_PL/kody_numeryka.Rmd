@@ -659,3 +659,159 @@ ggplot() +
 dev.off()
 ```
 
+
+
+
+```{r}
+
+extractSurvival <- function(cohorts){
+  
+  survivalData <- list()
+  for(i in cohorts){
+    get(paste0(i, ".clinical"), envir = .GlobalEnv) %>%
+				select(patient.bcr_patient_barcode,
+							 patient.vital_status,
+							 patient.days_to_last_followup,
+							 patient.days_to_death ) %>%
+				mutate(bcr_patient_barcode = toupper(patient.bcr_patient_barcode),
+				       patient.vital_status = ifelse(patient.vital_status %>%
+												 as.character() =="dead",1,0),
+    		       barcode = patient.bcr_patient_barcode %>%
+					 	             as.character(),
+      		     times = ifelse( !is.na(patient.days_to_last_followup),
+                      patient.days_to_last_followup %>%
+                     	as.character() %>%
+                     	as.numeric(),
+               patient.days_to_death %>%
+                     	as.character() %>%
+                     	as.numeric() )
+					 ) %>%
+   filter(!is.na(times)) -> survivalData[[i]]
+  
+  
+  }
+  do.call(rbind,survivalData) %>%
+    select(bcr_patient_barcode, patient.vital_status, times) %>%
+    unique  
+
+}
+
+
+extractMutations <- function(cohorts, prc){
+  mutationsData <- list()
+  for(i in cohorts){
+    get(paste0(i, ".mutations"), envir = .GlobalEnv) %>%
+      select(Hugo_Symbol, bcr_patient_barcode) %>%
+      filter(nchar(bcr_patient_barcode)==15) %>%
+      filter(substr(bcr_patient_barcode, 14, 15)=="01") %>%
+      unique -> mutationsData[[i]]
+  }
+  do.call(rbind,mutationsData) %>% unique -> mutationsData
+  
+  mutationsData %>%
+    group_by(Hugo_Symbol) %>%
+    summarise(count = n()) %>%
+    arrange(desc(count)) %>%
+    mutate(count_prc = count/length(unique(mutationsData$bcr_patient_barcode))) %>%
+    filter_(paste0("count_prc > ",prc)) %>%
+    select(Hugo_Symbol) %>%
+    unlist -> topGenes
+  
+  mutationsData %>%
+    filter(Hugo_Symbol %in% topGenes) -> mutationsData_top
+  
+  
+  mutationsData_top %>%
+    dplyr::group_by(bcr_patient_barcode) %>%
+    dplyr::summarise(count = n()) %>%
+    group_by(count) %>% 
+    summarise(total = n()) %>%
+    arrange(desc(count))
+#   
+#   mutationsData_top %>%
+#     spread(Hugo_Symbol, bcr_patient_barcode) -> mutationsData_top_sp
+  
+  as.data.table(mutationsData_top) -> mutationsData_top_DT
+  dcast.data.table(mutationsData_top_DT, bcr_patient_barcode ~ Hugo_Symbol , fill = 0) %>%
+    as.data.frame -> mutationsData_top_dcasted
+  
+  mutationsData_top_dcasted[,-1][mutationsData_top_dcasted[,-1] != "0"] <- 1
+
+  mutationsData_top_dcasted -> result
+  names(result) <- gsub(names(result),pattern = "-",  replacement = "")
+  result
+}
+
+
+extractCohortIntersection <- function(){
+  
+  data(package = "RTCGA.mutations")$results[,3] %>%
+    gsub(".mutations", "", x = .) -> mutations_data
+  data(package = "RTCGA.clinical")$results[,3] %>%
+    gsub(".clinical", "", x = .) -> clinical_data
+  
+  intersect(mutations_data, clinical_data)
+}
+
+prepareCoxDataSplit <- function(mutationsData, survivalData, groups, seed = 4561){
+  mutationsData %>%
+  mutate(bcr_patient_barcode = substr(bcr_patient_barcode,1,12)) %>%
+  left_join(survivalData,
+            by = "bcr_patient_barcode") -> coxData
+
+  coxData <- coxData[, -c(1,2)]
+  
+  apply(coxData[,-c(1092, 1093)], MARGIN = 2,function(x){
+    as.numeric(as.character(x))
+  }) -> coxData[,-c(1092, 1093)]
+  
+  set.seed(seed)
+  sample(groups, replace = TRUE, size = 6459) -> groups
+  split(coxData, groups) coxData_split
+}
+
+prepareForumlaSGD <- function(coxData){
+  as.formula(paste("Surv(times, patient.vital_status) ~ ",
+                   paste(names(coxData)[-c(1092, 1093)],
+                         collapse="+"), collapse = ""))
+}
+
+```
+
+
+Do analizy badającej wpływ występowania mutacji genów na czas przeżycia wykorzystano dane kliniczne i dane o występujących u pacjentów mutacjach genetycznych. Starano się wykorzystać dane ze wszystkich 38 dostępnych kohort nowotworowych z badania \textit{The Cancer Genome Atlas} (TCGA), jednak nie dla wszystkich kohort umieszczono w badaniu dane o mutacjach. Częśc wspólną nazw dla kohort zawierających zarówno dane kliniczne oraz dane o mutacjach wygenerowaną dzięki wywołaniu 
+
+```{r}
+extractCohortIntersection() -> cohorts
+```
+
+Następnie dla tak otrzymanych 35 kohort nowotworowych uzyskano dane o statusie pacjenta (śmierć bądź cenzurowanie) oraz jego czasie spędzonym pod obseracją dzięki funkcji
+```{r}
+extractSurvival(cohorts) -> survivalData
+```
+
+Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych pacjentów uzyskano za pomocą
+```{r}
+extractMutations(cohorts, 0.02) -> mutationsData 
+```
+gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2 % pacjentów mających zarówno dane kliniczne jak i dane o występujących mutacjach w genach.
+
+Dla tak otrzymanych dwóch zbiorów danych połączono dla pacjentów informacje kliniczne z informacjami o mutacjach dzięki przypisanym do pacjentów i ich próbek kodów `bcr_patient_barcode`, by ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
+```{r}
+prepareCoxDataSplit(mutationsData,survivalData, groups = 100) -> coxData_split
+```
+
+Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki pomocniczej funkcji
+```{r}
+prepareForumlaSGD(coxData) -> formulaSGD
+```
+
+Ostatecznie dla 6459 pacjentów, którzy posiadali informacje o występujących mutacjach, oraz dla których odnotowano komplet i poprawność danych klinicznych dotyczących statusu i obserwowanego czasu przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa z wykorzystaniem stochastycznego spadku gradientu do estymacji.
+
+```{r}
+coxphSGD(formulaSGD, data = coxData_split, max.iter = 100)
+```
+
+Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności hazardu, gdyż zakładano napływającą postać danych (stąd podział danych na 100 grup). Dla takiej postaci pojawia się danych ciężko także mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać istotność statystyczna otrzymanych współczynników w modelu, jednak założono, że współczynniki dostatecznie odległe od $0$ można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Wzrost proporcji hazardu można otrzymać dla danego genu poprzez obłożenie współczynnika funkcją wykładniczą o wykładniku $e$.
+
+Wyniki estymacji dla genów zawierających największe co do modułu współczynniki można znaleźć w Tabeli 1.ź

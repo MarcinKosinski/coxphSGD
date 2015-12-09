@@ -348,3 +348,123 @@
 \includepdf[pages=-]{coxDoc8.pdf}
 %\chapter{Dokumentacja pakietu RTCGA}
 %\includepdf[pages=-]{RTCGA.pdf}
+
+\section{Analiza wpływu mutacji genów na czas życia}
+
+W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\cite{programikr}, \cite{biecek1}, \cite{gagol1}) do implementacji algorytmów, przeprowadzenia symulacji oraz wykonania analizy danych genomicznych. Do przetwarazania danych wykorzystano pakiety \texttt{dplyr} (\cite{dplyr}), \texttt{tidyr} (\cite{tidyr}), \texttt{reshape2} (\cite{reshape2}) oraz \texttt{data.table} (\cite{data.table}). Do tworzenia dokumentacji oraz struktury pakietu \texttt{coxphSGD} (\cite{kosa0}) użyto pakietów \texttt{roxygen2} (\cite{roxygen2}),\texttt{rmarkdown} (\cite{rmarkdown}), \texttt{knitr} (\cite{knitr1}, \cite{knitr2}, \cite{knitr3}), \texttt{assertthat} (\cite{assertthat}) oraz pakietu \texttt{rlp} (\cite{rlp}). Przejrzystość kodu wspierał pakiety \texttt{magrittr} (\cite{magrittr}), zaś do wizualizacji wykorzystano pakiet \texttt{ggplot2} (\cite{ggplot2}). Dane do analizy pobrane dzięki pakietowi \texttt{RTCGA} (\cite{kosa1}) oraz umieszczono je w pakietach \texttt{RTCGA.clinical} (\cite{kosa2}) oraz \texttt{RTCGA.mutations} (\cite{kosa3}). Funkcje wykorzystane w trakcie analizy danych znajdują sie poniżej.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{extractSurvival <-}\StringTok{ }\NormalTok{function(cohorts)\{}
+  
+  \NormalTok{survivalData <-}\StringTok{ }\KeywordTok{list}\NormalTok{()}
+  \NormalTok{for(i in cohorts)\{}
+    \KeywordTok{get}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(i, }\StringTok{".clinical"}\NormalTok{), }\DataTypeTok{envir =} \NormalTok{.GlobalEnv) %>%}
+\StringTok{                }\KeywordTok{select}\NormalTok{(patient.bcr_patient_barcode,}
+                             \NormalTok{patient.vital_status,}
+                             \NormalTok{patient.days_to_last_followup,}
+                             \NormalTok{patient.days_to_death ) %>%}
+\StringTok{                }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{bcr_patient_barcode =} \KeywordTok{toupper}\NormalTok{(patient.bcr_patient_barcode),}
+                       \DataTypeTok{patient.vital_status =} \KeywordTok{ifelse}\NormalTok{(patient.vital_status %>%}
+\StringTok{                                                 }\KeywordTok{as.character}\NormalTok{() ==}\StringTok{"dead"}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{),}
+                   \DataTypeTok{barcode =} \NormalTok{patient.bcr_patient_barcode %>%}
+\StringTok{                                     }\KeywordTok{as.character}\NormalTok{(),}
+                 \DataTypeTok{times =} \KeywordTok{ifelse}\NormalTok{( !}\KeywordTok{is.na}\NormalTok{(patient.days_to_last_followup),}
+                      \NormalTok{patient.days_to_last_followup %>%}
+\StringTok{                        }\KeywordTok{as.character}\NormalTok{() %>%}
+\StringTok{                        }\KeywordTok{as.numeric}\NormalTok{(),}
+               \NormalTok{patient.days_to_death %>%}
+\StringTok{                        }\KeywordTok{as.character}\NormalTok{() %>%}
+\StringTok{                        }\KeywordTok{as.numeric}\NormalTok{() )}
+                     \NormalTok{) %>%}
+\StringTok{   }\KeywordTok{filter}\NormalTok{(!}\KeywordTok{is.na}\NormalTok{(times)) ->}\StringTok{ }\NormalTok{survivalData[[i]]}
+  
+  
+  \NormalTok{\}}
+  \KeywordTok{do.call}\NormalTok{(rbind,survivalData) %>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(bcr_patient_barcode, patient.vital_status, times) %>%}
+\StringTok{    }\NormalTok{unique  }
+
+\NormalTok{\}}
+
+
+\NormalTok{extractMutations <-}\StringTok{ }\NormalTok{function(cohorts, prc)\{}
+  \NormalTok{mutationsData <-}\StringTok{ }\KeywordTok{list}\NormalTok{()}
+  \NormalTok{for(i in cohorts)\{}
+    \KeywordTok{get}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(i, }\StringTok{".mutations"}\NormalTok{), }\DataTypeTok{envir =} \NormalTok{.GlobalEnv) %>%}
+\StringTok{      }\KeywordTok{select}\NormalTok{(Hugo_Symbol, bcr_patient_barcode) %>%}
+\StringTok{      }\KeywordTok{filter}\NormalTok{(}\KeywordTok{nchar}\NormalTok{(bcr_patient_barcode)==}\DecValTok{15}\NormalTok{) %>%}
+\StringTok{      }\KeywordTok{filter}\NormalTok{(}\KeywordTok{substr}\NormalTok{(bcr_patient_barcode, }\DecValTok{14}\NormalTok{, }\DecValTok{15}\NormalTok{)==}\StringTok{"01"}\NormalTok{) %>%}
+\StringTok{      }\NormalTok{unique ->}\StringTok{ }\NormalTok{mutationsData[[i]]}
+  \NormalTok{\}}
+  \KeywordTok{do.call}\NormalTok{(rbind,mutationsData) %>%}\StringTok{ }\NormalTok{unique ->}\StringTok{ }\NormalTok{mutationsData}
+  
+  \NormalTok{mutationsData %>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(Hugo_Symbol) %>%}
+\StringTok{    }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{count =} \KeywordTok{n}\NormalTok{()) %>%}
+\StringTok{    }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(count)) %>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{count_prc =} \NormalTok{count/}\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(mutationsData$bcr_patient_barcode))) %>%}
+\StringTok{    }\KeywordTok{filter_}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"count_prc > "}\NormalTok{,prc)) %>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(Hugo_Symbol) %>%}
+\StringTok{    }\NormalTok{unlist ->}\StringTok{ }\NormalTok{topGenes}
+  
+  \NormalTok{mutationsData %>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(Hugo_Symbol %in%}\StringTok{ }\NormalTok{topGenes) ->}\StringTok{ }\NormalTok{mutationsData_top}
+  
+  
+  \NormalTok{mutationsData_top %>%}
+\StringTok{    }\NormalTok{dplyr::}\KeywordTok{group_by}\NormalTok{(bcr_patient_barcode) %>%}
+\StringTok{    }\NormalTok{dplyr::}\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{count =} \KeywordTok{n}\NormalTok{()) %>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(count) %>%}\StringTok{ }
+\StringTok{    }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{total =} \KeywordTok{n}\NormalTok{()) %>%}
+\StringTok{    }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(count))}
+\CommentTok{#   }
+\CommentTok{#   mutationsData_top %>%}
+\CommentTok{#     spread(Hugo_Symbol, bcr_patient_barcode) -> mutationsData_top_sp}
+  
+  \KeywordTok{as.data.table}\NormalTok{(mutationsData_top) ->}\StringTok{ }\NormalTok{mutationsData_top_DT}
+  \KeywordTok{dcast.data.table}\NormalTok{(mutationsData_top_DT, bcr_patient_barcode ~}\StringTok{ }\NormalTok{Hugo_Symbol , }\DataTypeTok{fill =} \DecValTok{0}\NormalTok{) %>%}
+\StringTok{    }\NormalTok{as.data.frame ->}\StringTok{ }\NormalTok{mutationsData_top_dcasted}
+  
+  \NormalTok{mutationsData_top_dcasted[,-}\DecValTok{1}\NormalTok{][mutationsData_top_dcasted[,-}\DecValTok{1}\NormalTok{] !=}\StringTok{ "0"}\NormalTok{] <-}\StringTok{ }\DecValTok{1}
+
+  \NormalTok{mutationsData_top_dcasted ->}\StringTok{ }\NormalTok{result}
+  \KeywordTok{names}\NormalTok{(result) <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\KeywordTok{names}\NormalTok{(result),}\DataTypeTok{pattern =} \StringTok{"-"}\NormalTok{,  }\DataTypeTok{replacement =} \StringTok{""}\NormalTok{)}
+  \NormalTok{result}
+\NormalTok{\}}
+
+
+\NormalTok{extractCohortIntersection <-}\StringTok{ }\NormalTok{function()\{}
+  
+  \KeywordTok{data}\NormalTok{(}\DataTypeTok{package =} \StringTok{"RTCGA.mutations"}\NormalTok{)$results[,}\DecValTok{3}\NormalTok{] %>%}
+\StringTok{    }\KeywordTok{gsub}\NormalTok{(}\StringTok{".mutations"}\NormalTok{, }\StringTok{""}\NormalTok{, }\DataTypeTok{x =} \NormalTok{.) ->}\StringTok{ }\NormalTok{mutations_data}
+  \KeywordTok{data}\NormalTok{(}\DataTypeTok{package =} \StringTok{"RTCGA.clinical"}\NormalTok{)$results[,}\DecValTok{3}\NormalTok{] %>%}
+\StringTok{    }\KeywordTok{gsub}\NormalTok{(}\StringTok{".clinical"}\NormalTok{, }\StringTok{""}\NormalTok{, }\DataTypeTok{x =} \NormalTok{.) ->}\StringTok{ }\NormalTok{clinical_data}
+  
+  \KeywordTok{intersect}\NormalTok{(mutations_data, clinical_data)}
+\NormalTok{\}}
+
+\NormalTok{prepareCoxDataSplit <-}\StringTok{ }\NormalTok{function(mutationsData, survivalData, groups, }\DataTypeTok{seed =} \DecValTok{4561}\NormalTok{)\{}
+  \NormalTok{mutationsData %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{bcr_patient_barcode =} \KeywordTok{substr}\NormalTok{(bcr_patient_barcode,}\DecValTok{1}\NormalTok{,}\DecValTok{12}\NormalTok{)) %>%}
+\StringTok{  }\KeywordTok{left_join}\NormalTok{(survivalData,}
+            \DataTypeTok{by =} \StringTok{"bcr_patient_barcode"}\NormalTok{) ->}\StringTok{ }\NormalTok{coxData}
+
+  \NormalTok{coxData <-}\StringTok{ }\NormalTok{coxData[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)]}
+  
+  \KeywordTok{apply}\NormalTok{(coxData[,-}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)], }\DataTypeTok{MARGIN =} \DecValTok{2}\NormalTok{,function(x)\{}
+    \KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{as.character}\NormalTok{(x))}
+  \NormalTok{\}) ->}\StringTok{ }\NormalTok{coxData[,-}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)]}
+  
+  \KeywordTok{set.seed}\NormalTok{(seed)}
+  \KeywordTok{sample}\NormalTok{(groups, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{size =} \DecValTok{6459}\NormalTok{) ->}\StringTok{ }\NormalTok{groups}
+  \KeywordTok{split}\NormalTok{(coxData, groups) coxData_split}
+\NormalTok{\}}
+
+\NormalTok{prepareForumlaSGD <-}\StringTok{ }\NormalTok{function(coxData)\{}
+  \KeywordTok{as.formula}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Surv(times, patient.vital_status) ~ "}\NormalTok{,}
+                   \KeywordTok{paste}\NormalTok{(}\KeywordTok{names}\NormalTok{(coxData)[-}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)],}
+                         \DataTypeTok{collapse=}\StringTok{"+"}\NormalTok{), }\DataTypeTok{collapse =} \StringTok{""}\NormalTok{))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
