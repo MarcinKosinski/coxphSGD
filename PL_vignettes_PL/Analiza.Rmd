@@ -1,0 +1,137 @@
+---
+title: "Untitled"
+author: "Marcin Kosinski"
+date: "25.10.2015"
+output:
+  pdf_document:
+    keep_tex: true
+    highlight: tango
+---
+
+```{r}
+
+
+extractSurvival <- function(cohorts){
+  
+  survivalData <- list()
+  for(i in cohorts){
+    get(paste0(i, ".clinical"), envir = .GlobalEnv) %>%
+				select(patient.bcr_patient_barcode,
+							 patient.vital_status,
+							 patient.days_to_last_followup,
+							 patient.days_to_death ) %>%
+				mutate(bcr_patient_barcode = toupper(patient.bcr_patient_barcode),
+				       patient.vital_status = ifelse(patient.vital_status %>%
+												 as.character() =="dead",1,0),
+    		       barcode = patient.bcr_patient_barcode %>%
+					 	             as.character(),
+      		     times = ifelse( !is.na(patient.days_to_last_followup),
+                      patient.days_to_last_followup %>%
+                     	as.character() %>%
+                     	as.numeric(),
+               patient.days_to_death %>%
+                     	as.character() %>%
+                     	as.numeric() )
+					 ) %>%
+   filter(!is.na(times)) -> survivalData[[i]]
+  
+  
+  }
+  do.call(rbind,survivalData) %>%
+    select(bcr_patient_barcode, patient.vital_status, times) %>%
+    unique  
+
+}
+
+
+extractMutations <- function(cohorts, prc){
+  mutationsData <- list()
+  for(i in cohorts){
+    get(paste0(i, ".mutations"), envir = .GlobalEnv) %>%
+      select(Hugo_Symbol, bcr_patient_barcode) %>%
+      filter(nchar(bcr_patient_barcode)==15) %>%
+      filter(substr(bcr_patient_barcode, 14, 15)=="01") %>%
+      unique -> mutationsData[[i]]
+  }
+  do.call(rbind,mutationsData) %>% unique -> mutationsData
+  
+  mutationsData %>%
+    group_by(Hugo_Symbol) %>%
+    summarise(count = n()) %>%
+    arrange(desc(count)) %>%
+    mutate(count_prc = count/length(unique(mutationsData$bcr_patient_barcode))) %>%
+    filter_(paste0("count_prc > ",prc)) %>%
+    select(Hugo_Symbol) %>%
+    unlist -> topGenes
+  
+  mutationsData %>%
+    filter(Hugo_Symbol %in% topGenes) -> mutationsData_top
+  
+  
+  mutationsData_top %>%
+    dplyr::group_by(bcr_patient_barcode) %>%
+    dplyr::summarise(count = n()) %>%
+    group_by(count) %>% 
+    summarise(total = n()) %>%
+    arrange(desc(count))
+#   
+#   mutationsData_top %>%
+#     spread(Hugo_Symbol, bcr_patient_barcode) -> mutationsData_top_sp
+  
+  as.data.table(mutationsData_top) -> mutationsData_top_DT
+  dcast.data.table(mutationsData_top_DT, bcr_patient_barcode ~ Hugo_Symbol , fill = 0) %>%
+    as.data.frame -> mutationsData_top_dcasted
+  
+  mutationsData_top_dcasted[,-1][mutationsData_top_dcasted[,-1] != "0"] <- 1
+
+  mutationsData_top_dcasted -> result
+  names(result) <- gsub(names(result),pattern = "-",  replacement = "")
+  result
+}
+
+```
+
+
+```{r}
+library(RTCGA)
+library(RTCGA.clinical)
+library(RTCGA.mutations)
+library(tidyr)
+library(data.table)
+library(dplyr)
+library(coxphSGD)
+data(package = "RTCGA.mutations")$results[,3] %>%
+  gsub(".mutations", "", x = .) -> mutations_data
+data(package = "RTCGA.clinical")$results[,3] %>%
+  gsub(".clinical", "", x = .) -> clinical_data
+
+intersect(mutations_data, clinical_data) -> cohorts
+
+extractSurvival(cohorts) -> survivalData
+
+extractMutations(cohorts, 0.02) -> mutationsData 
+
+mutationsData %>%
+  mutate(bcr_patient_barcode = substr(bcr_patient_barcode,1,12)) %>%
+  left_join(survivalData,
+            by = "bcr_patient_barcode") -> coxData
+
+coxData <- coxData[, -c(1,2)]
+
+apply(coxData[,-c(1092, 1093)], MARGIN = 2,function(x){
+  as.numeric(as.character(x))
+}) -> coxData[,-c(1092, 1093)]
+
+set.seed(4561)
+sample(100, replace = TRUE, size = 6459) -> groups
+split(coxData, groups) -> coxData_split
+
+as.formula(paste("Surv(times, patient.vital_status) ~ ",paste(names(coxData)[-c(1092, 1093)], collapse="+"), collapse = "")) -> formulaSGD
+
+system.time({
+coxphSGD(formulaSGD, data = coxData_split) -> res
+save(res, file = "res.rda")
+})
+```
+
+
