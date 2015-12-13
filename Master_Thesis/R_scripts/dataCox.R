@@ -18,7 +18,7 @@ dataCox <- function(N, lambda, rho, x, beta, censRate){
 
 x <- matrix(sample(0:1, size = 20000, replace = TRUE), ncol = 2)
 
-dataCox(10^4, lambda = 3, rho = 2, x, beta = c(1,3), censRate = 5) -> dCox
+dataCox(10^4, lambda = 3, rho = 2, x, beta = c(1,3), censRate = 0.1) -> dCox
 
 library(dplyr)
 dCox %>%
@@ -28,6 +28,14 @@ dCox %>%
 full_cox_loglik <- function(beta1, beta2, x1, x2, censored){
   sum(rev(censored)*(beta1*rev(x1) + beta2*rev(x2) -
                        log(cumsum(exp(beta1*rev(x1) + beta2*rev(x2))))))
+# #   sum(rev(censored)*(beta1*rev(x1) + beta2*rev(x2))) -
+# #     sum(rev(censored)*log(cumsum(exp(beta1*rev(x1)+beta2*rev(x2)))))
+#   n <- length(censored)
+#   part <- numeric(n)
+#   for(i in 1:n){
+#     part[i] <- beta1*x1[i:n]+beta2*x2[i:n] - log(sum(exp(beta1*x1[i:n]+beta2*x2[i:n])))
+#   }
+#   sum(part)
 }
 
 library(reshape2)

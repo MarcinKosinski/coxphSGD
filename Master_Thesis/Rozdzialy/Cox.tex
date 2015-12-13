@@ -13,13 +13,13 @@ W tym rozdziale zostanie przedstawiony model proporcjonalnych hazardów Coxa. G�
 
 %Analiza przeżycia to zbiór metod statystycznych badających procesy, w których interesujący jest czas, jaki upłynie do (pierwszego) wystąpienia pewnego zdarzenia.
 
-\section{Wprowadzenie do modelu Coxa i nomenklatura}
+\section{Wprowadzenie do modelu Coxa i terminologia}
 
 Analiza przeżycia, w której model Coxa znalazł największe zastosowania, polega na modelowaniu wpływu czynników na czas
 do wystąpienia pewnego zdarzenia. Zdarzeniem może być np. śmierć pacjenta, awaria urządzenia, zerwanie umowy przez klienta, odejście z pracy pracownika lub deaktywacja pewnej usługi. Analizując czasy do wystąpienia zdarzenia wykorzystuje się funkcję przeżycia bądź niosącą równoważną informację funkcję hazardu.
 
 W poniższych definicjach $T^*$ to czas do wystąpienia zdarzenia. Zakłada się, że wewnątrz każdej grupy $j=1,2,\dots, m$ wyznaczonej przez poziomy zmiennych objaśniających, czasy~$T_{j,i}^*$ dla \ $i=1,\dots,n_j$~to~niezależne~zmienne~losowe~z~tego~samego~rozkładu~o~gęstości~$f_j(t)$.
-\begin{definition}
+\begin{definition}\label{def:przezycie}
 \textbf{Funkcja przeżycia} w grupie $j$, to funkcja, która spełnia
 \begin{equation}
 S_j(t) = \mathbb{P}(T^*_{j,i} \geq t )  = 1 - F_j(t), t \in \mathbb{R}
@@ -115,7 +115,7 @@ Oznacza to, że cenzurowanie nie daje informacji o parametrach rozkładu czasów
 \section{Estymacja w modelu Coxa}
 
 Funkcja hazardu jest wykładniczą funkcją zmiennych objaśniających, nieznana jest natomiast
-postać bazowej funkcji hazardu, co bez dalszych założeń uniemożliwia estymację standardową
+postać bazowej funkcji hazardu (Definicja \ref{defi:koksik}), co bez dalszych założeń uniemożliwia estymację standardową
 metodą największej wiarygodności. Rozwiązaniem Cox’a jest maksymalizacja tylko tego fragmentu funkcji wiarygodności, który zależy jedynie od estymowanych parametrów. W modelu Coxa proporcjonalnych hazardów estymacja współczynników $\beta$ oparta jest o częściową funkcję wiarogodności, którą wprowadził Cox w 1972 r. \cite{cox}. 
 
 Dla konkretnego czasu zdarzenia $t_i$, gdzie w zbiorze obserwowanych jest K czasów zdarzeń, prawdopodobieństwo warunkowe ze względu na liczność zbioru ryzyka w czasie $t_i$, że czas zdarzenia dotyczy $i$-tej jednostki spośród wciąż obserwowanych jest równe
@@ -126,21 +126,21 @@ gdzie \textit{zbiór ryzyka} $\mathscr{R}(t_i)$, w chwili $t_i$, rozumiany jest 
 
 Chcąc estymować współczynniki metodą największej wiarogodności należy rozważyć funkcję wiarogodności, która dla niezależnego cenzurowania prawostronnego ma postać:
 \begin{equation}
-L(\beta,\varphi) = L_p(\beta)\cdot L^{*}(\beta,\varphi),
+L(\beta,\varphi) =  {}_{p}L(\beta)\cdot L^{*}(\beta,\varphi),
 \end{equation}
-gdzie, dla $\lambda(t)$ wprowadzonego w definicji (\ref{def:haz})
+gdzie, dla $\lambda(t), f(t), S(t)$ wprowadzonych w Definicjach \ref{def:haz} i \ref{def:przezycie}
 \begin{equation}
-L_p(\beta) = \prod\limits_{i=1}^{n}f(t_i;\beta)^{\delta_i}S(t_i;\beta)^{1-\delta_i}=\prod\limits_{i=1}^{n}\lambda(t_i;\beta)^{\delta_i}S(t_i;\beta)
+{}_{p}L(\beta) = \prod\limits_{i=1}^{n}f(t_i;\beta)^{\delta_i}S(t_i;\beta)^{1-\delta_i}=\prod\limits_{i=1}^{n}\lambda(t_i;\beta)^{\delta_i}S(t_i;\beta)
 \end{equation}
 to częściowa funkcja wiarogodności, a $L^{*}(\beta,\varphi)$ zależy od cenzurowania (parametr $\varphi$).
 
 Wtedy dla niezależnego cenzurowania i dla czasów zdarzeń, które nie zaszły jednocześnie \textbf{częściowa funkcja wiarogodności w modelu Coxa} ma postać:
 \begin{equation}
-L_p(\beta) = \prod\limits_{i=1}^{K}\dfrac{e^{X_i'\beta}}{\sum\limits_{l=1}^{n}Y_l(t_i)e^{X_l'\beta}},
+{}_{p}L(\beta) = \prod\limits_{i=1}^{K}\dfrac{e^{X_i'\beta}}{\sum\limits_{l=1}^{n}Y_l(t_i)e^{X_l'\beta}},
 \end{equation}
 gdzie $Y_l(t_i)$ = 1, gdy obserwacja $X_l$ jest w zbiorze ryzyka w czasie $t_i$, i $Y_l(t_i)$ = 0 w przeciwnym przypadku, $n$ to liczba obserwacji w zbiorze, a $K$ to wspomniana wyżej liczba zaobserwowanych czasów zdarzeń. Zaletą takiej postaci funkcji częściowej wiarogodności jest to, że w~jej wzorze nie występuje funkcja bazowego hazardu, zatem estymacja współczynników może odbywać się bez znajomości jej postaci.
 
-Jeśli dodatkowo cenzurowanie jest nie-informatywne, to $L_p(\beta)$ jest \textbf{pełną} funkcją wiarogodności, bowiem wówczas $$L^{*}(\beta,\varphi)\propto L^{*}(\varphi)$$ co bierze się z definicji cenzurowania nie-informatywnego (\ref{nieinf}) $$g(t;\theta, \phi) \equiv g(t;\phi).$$
+Jeśli dodatkowo cenzurowanie jest nie-informatywne, to ${}_{p}L(\beta)$ jest \textbf{pełną} funkcją wiarogodności, bowiem wówczas $$L^{*}(\beta,\varphi)\propto L^{*}(\varphi)$$ co bierze się z definicji cenzurowania nie-informatywnego (\ref{nieinf}) $$g(t;\theta, \phi) \equiv g(t;\phi).$$
 
 Ponieważ model proporcjonalnych hazardów Coxa zakłada niezależność i nie-informatywność cenzurowania zatem można uważać, że częściowa funkcja wiarogodności daje pełną informację o współczynnikach i wnioskowanie w oparciu o nią jest uzasadnione i poprawne.
 
@@ -148,14 +148,14 @@ W sytuacjach, gdy nie jest spełnione założenie nie-informatywności cenzurowa
 
 
 \subsubsection{Analityczna estymacja współczynników}
-Standardowo w celu znalezienia maximum, aby ułatwić obliczenia, można rozważaną funkcję obłożyć monotoniczną transformacją jaką jest logarytm, tak aby w konsekwencji otrzymać \textbf{częściową~funkcję~log-wiarogodności}
+Standardowo w celu znalezienia maximum, aby ułatwić obliczenia, można rozważaną funkcję obłożyć monotoniczną transformacją, np. logarytmem, tak aby w konsekwencji otrzymać \textbf{częściową~funkcję~log-wiarogodności}
 \begin{equation}
-\ell_p(\beta) = \sum\limits_{i=1}^{K}X_i'\beta - \sum\limits_{i=1}^{K}\log\Big(\sum\limits_{l\in \mathscr{R}(t_i)}^{}e^{X_l'\beta}\Big).
+{}_{p}\ell(\beta) = \sum\limits_{i=1}^{K}X_i'\beta - \sum\limits_{i=1}^{K}\log\Big(\sum\limits_{l\in \mathscr{R}(t_i)}^{}e^{X_l'\beta}\Big).
 \end{equation}
 Analityczne obliczenia dają $p$-wymiarowy wektor pochodnych, dla $k=1,\dots,p$
 \marginnote{\tiny{$X_{ik}$~to~$i$~ta \\ obserwacja \\ i $k$ ta zmienna.}}[1cm]
 \begin{equation}\label{score}
-U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-A_{ik}\Big),
+U_k(\beta)=\dfrac{\partial{}_{p}\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-A_{ik}\Big),
 \end{equation}
 gdzie czynnik
 \begin{equation}
@@ -165,7 +165,7 @@ to średnia z $X_{.k}$ ($k$-tych zmiennych) po skończonej populacji $\mathscr{R
 
 Z kolei drugie pochodne cząstkowe, jak podaje \cite{cox}, mają postać dla $k_1,k_2=1,\dots,p$
 \begin{equation}\label{grad}
-\mathscr{I}_{k_1k_2}(\beta) = - \dfrac{\partial^2L_p(\beta)}{\partial\beta_{k_1}\partial\beta_{k_2}}=\sum\limits_{i=1}^{K}C_{ik_1k_2}(\beta),
+\mathscr{I}_{k_1k_2}(\beta) = - \dfrac{\partial^2{}_{p}L(\beta)}{\partial\beta_{k_1}\partial\beta_{k_2}}=\sum\limits_{i=1}^{K}C_{ik_1k_2}(\beta),
 \end{equation}
 gdzie
 \begin{equation}
@@ -173,7 +173,7 @@ C_{ik_1k_2}(\beta)=\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk_1}X_{lk_2
 \end{equation}
 to kowariancja pomiędzy $X_{.k_1}$ ($k_1$-tymi zmiennymi) a $X_{.k_2}$ ($k_2$-tymi zmiennymi) przy tej formie ważonego próbkowania.
 
-Estymator największej wiarogodności $\beta$ można uzyskać poprzez przyrównanie (\ref{score}) do $0$, a numerycznie poprzez iteracyjne wykorzystanie (\ref{score}) oraz (\ref{grad}) w algorytmie spadku gradientu rzędu II nazywanego również algorytmem Raphsona-Newtona, który jest opisany w podrozdziale \ref{R-N}. Jest to tradycyjne i szeroko stosowane podejście do estymacji współczynników w modelu proporcjonalnych hazardów Coxa. Niniejsza praca skupia się na wykorzystaniu metody estymacji współczynników jaką jest metoda stochastycznego spadku wzdłuż gradientu, która jest szerzej opisana w następnym rozdziale w podrozdziale \ref{SGD}.
+Estymator największej wiarogodności $\beta$ można uzyskać poprzez przyrównanie (\ref{score}) do $0$, a numerycznie poprzez iteracyjne wykorzystanie (\ref{score}) oraz (\ref{grad}) w algorytmie spadku gradientu rzędu II nazywanego również algorytmem Raphsona-Newtona, który jest opisany w podrozdziale \ref{R-N}. Jest to tradycyjne i szeroko stosowane podejście do estymacji współczynników w modelu proporcjonalnych hazardów Coxa. Niniejsza praca skupia się na wykorzystaniu metody estymacji współczynników jaką jest metoda stochastycznego spadku wzdłuż gradientu, która jest szerzej opisana w następnym rozdziale \ref{numPAJ}.
 
 \newpage
 
@@ -181,7 +181,7 @@ Estymator największej wiarogodności $\beta$ można uzyskać poprzez przyrówna
 
 W celu skutecznej diagnostyki procesu estymacji w modelu Coxa, należy wiedzieć jak dane dla tego modelu można generować, aby ów model symulować dla znanych współczynników.
 
-Poniższy rozdział przedstawia metodę odwrotnych prawdopodobieństw opisaną szerzej w \cite{bender}, dzięki której można wygenerować czasy zdarzeń dla zadanej z góry funkcji hazardu i zmiennych objaśniających. Ta metoda posłuży w rozdziale \ref{rozdz4} do wygenerowania danych w celu weryfikacji jakości procesu numerycznej estymacji współczynników modelu, w sytuacji gdy wykorzystywany jest algorytm stochastycznego spadku gradientu, który jest opisany w rozdziale \ref{numPAJ}.
+Poniższy rozdział przedstawia metodę odwrotnych prawdopodobieństw opisaną szerzej w \cite{bender}, dzięki której można wygenerować czasy zdarzeń dla zadanej z góry funkcji hazardu i zmiennych objaśniających. Ta metoda posłuży w rozdziale \ref{rozdz4} do wygenerowania danych w celu weryfikacji jakości procesu numerycznej estymacji współczynników modelu, w sytuacji gdy wykorzystywany jest algorytm stochastycznego spadku gradientu.
 
 Mówiąc o funkcji przeżycia warto wprowadzić skumulowaną funkcję hazardu.
 \begin{definition}
@@ -189,23 +189,23 @@ Mówiąc o funkcji przeżycia warto wprowadzić skumulowaną funkcję hazardu.
 \begin{equation}\label{zaradzix}
 H(t) = \int\limits_{0}^{t}\lambda(u) du,
 \end{equation}
-gdzie $\lambda(u)$ to pewna funkcja hazardu, o której mówi definicja (\ref{def:haz}).
+gdzie $\lambda(u)$ to pewna funkcja hazardu, o której mówi Definicja (\ref{def:haz}).
 \end{definition}
 
-Wtedy dla zdefiniowanej w (\ref{eq:haz}) funkcji hazardu funkcja przeżycia i jej dopełnienie (dystrybuanta) dla modelu Coxa proporcjonalnych hazardów wygląda następująco
+Wtedy, dla zdefiniowanej w Definicji \ref{eq:haz} funkcji hazardu, funkcja przeżycia i jej dopełnienie (dystrybuanta) dla modelu Coxa proporcjonalnych hazardów wygląda następująco
 
 \begin{align}
-S(t|x)= & e^{-H_0(t)\cdot e^{x'\beta}} \\ 
-F(t|x) = & 1 - e^{-H_0(t)\cdot e^{x'\beta}}\label{siema}
+S(t|x)= & e^{-H_0(t)\cdot e^{x'\beta}}, \\ 
+F(t|x) = & 1 - e^{-H_0(t)\cdot e^{x'\beta}},\label{siema}
 \end{align}
-gdzie $H_0(t)$ to bazowa skumulowana funkcja hazardu.
+gdzie $H_0(t)$ to bazowa skumulowana funkcja hazardu, czyli $H_0(t) = \int\limits_{0}^{t}\lambda_0(u) du$.
 
-Niech $Y$ będzie zmienną losową o dystrybuancie zadanej w (\ref{siema}), wtedy jak wykazano w~\cite{MOOD} zmienna losowa $U=F(Y)$ pochodzi z rozkładu jednostajnego $U \sim \mathcal{U}([0,1])$. Zachodzi to również dla zmiennej losowej $1-U \sim \mathcal{U}([0,1])$. Dodatkowo, niech $T$ będzie czasem przeżycia w modelu Coxa (definicja \ref{defi:koksik}), wtedy z (\ref{siema}) wynika
+Niech $Y$ będzie zmienną losową o dystrybuancie zadanej w (\ref{siema}), wtedy zmienne losowe $U=F(Y), 1-U$ mają rozkład jednostajny $U \sim \mathcal{U}([0,1])$. Dodatkowo, niech $T$ będzie czasem przeżycia w modelu Coxa, wtedy z (\ref{siema}) wynika
 \begin{equation}
 U = e^{-H_0(T)\cdot e^{x'\beta}} \sim \mathcal{U}([0,1]).
 \end{equation}
 
-Jeżeli $\lambda_0(t) >0$ dla każdego $t$, to $H_0(t)$ jest dodatnia i można mówić o jej odwrotności, zaś czas przeżycia $T$ dla modelu Coxa może być wyrażony przez 
+Jeżeli $\lambda_0(t) >0$ dla każdego $t$, to $H_0(t)$ jest niemalejąca i ma poprawnie zdefiniowaną uogólnioną odwrotność $H_0^{-1}(t)$, zaś czas przeżycia $T$ dla modelu Coxa może być wyrażony przez 
 \begin{equation}\label{eq:czasy}
 T = H_0^{-1}(-\log(U)\cdot e^{-x'\beta}),
 \end{equation}
@@ -213,7 +213,7 @@ gdzie  $U \sim \mathcal{U}([0,1])$.
 
 \subsubsection{Przykład symulacji dla rozkładu Weibulla}\label{symWei}
 
-Równanie (\ref{eq:czasy})  jest odpowiednie do generowania czasów do zdarzenia w modelu Coxa, gdy potrafi się odpowiednio generować zmienne z rozkładu $\mathcal{U}([0,1])$. Jest to możliwe w większości pakietów statystycznych. Poniżej przedstawiony jest kod w języku $\mathcal{R}$ \cite{programikr}, dzięki któremu możliwe jest generowanie czasów zdarzeń pochodzących z rozkładu Weibulla \cite{collett}, dla którego funkcja hazardu ma postać
+Równanie (\ref{eq:czasy})  jest odpowiednie do generowania czasów do zdarzenia w modelu Coxa, gdy potrafi się odpowiednio generować zmienne z rozkładu $\mathcal{U}([0,1])$. Jest to możliwe w większości pakietów statystycznych. Poniżej przedstawiony jest kod w języku $\mathcal{R}$ \cite{programikr}, dzięki któremu możliwe jest generowanie czasów zdarzeń pochodzących z rozkładu Weibulla \cite{collett}, dla którego funkcja bazowego hazardu ma postać
 \begin{equation}
 \lambda_0(t)=\lambda\rho t^{\rho-1},
 \end{equation}
@@ -233,7 +233,6 @@ Wtedy podstawiając (\ref{asd}) do (\ref{eq:czasy}) można otrzymać
 \begin{equation}
 T = (\lambda^{-1}\cdot(-\log(U))\cdot e^{-x'\beta})^{\frac{1}{\rho}} = \Big(-\frac{\log(U)}{\lambda e^{x'\beta}}\Big)^{\frac{1}{\rho}}.
 \end{equation}
-Wynik ten oznacza, że $T$ czyli odpowiadające czasy zdarzeń pochodzą z warunkowego rozkładu Weibulla (warunkowanego przez $x$) o parametrach kształtu $\rho$ i skali $\lambda  e^{x'\beta}$.
 
 Dzięki tym rozważaniom, możliwe było stworzenie kodu generującego czasy i indykatory zdarzeń dla zadanych z góry współczynników modelu i zmiennych objaśniających. Poniższy kod i jego rezultat posłużą w rozdziale \ref{implemento} do diagnostyki procesu estymacji w modelu Coxa w przypadku wykorzystania algorytmu stochastycznego spadku gradientu.
 

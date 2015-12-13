@@ -6,13 +6,13 @@ W czasie powstawania pracy nawiązano jedynie nieznaczną wymianę informacji z 
 
 W procesie estymacji współczynników w omawianym modelu wykorzystano pochodne cząstkowe częściowej funkcji log-wiarogodności (\ref{score})
 \begin{equation*}
-U_k(\beta)=\dfrac{\partial\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\Big(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\Big)=\sum\limits_{i=1}^{n}Y_i\Big(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\Big)=\sum\limits_{i=1}^{n}U_{k_{i}}(\beta),
+U_k(\beta)=\dfrac{\partial{}_{p}\ell_k(\beta)}{\partial\beta_k}=\sum\limits_{i=1}^{K}\left(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\right)=\sum\limits_{i=1}^{n}Y_i\left(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{} e^{X_l'\beta}}\right)=\sum\limits_{i=1}^{n}U_{k,i}(\beta),
 \end{equation*}
 (dla $Y_i = 1$, gdy obserwacja nie była cenzurowana i $Y_i = 0$, gdy obserwacja była cenzurowana; $K$ to liczba zdarzeń; $n$ to liczba obserwacji) oraz wzór (\ref{sgdrownanie}), którego wersja z adekwatnymi oznaczeniami dla powyższej funkcji wygląda następująco
 \begin{equation}\label{opta}
-\beta_{k_{j+1}} = \beta_{k_{j}} - \alpha_{j}U_{k_{i}}(\beta_{k_{j}}),
+\beta_{k,j+1} = \beta_{k,j} - \alpha_{j}U_{k,i}(\beta_{k,j}),
 \end{equation}
-gdzie $j$ oznacza krok algorytmu, $i$ iteruje składniki $U_{k}$, $\alpha_j$ to długość $j$-tego kroku algorytmu, zaś $U_{k}$ to $k$-ta pochodna cząstkowa gradientu $U$ oraz $\beta_{k}$ to $k$-ta współrzędna estymowanego wektora współczynników $\beta$ o rozmiarze $p$, czyli $k=1,\dots,p$. 
+gdzie $j$ oznacza krok algorytmu, $i$ iteruje składniki $U_{k}$, $\alpha_j$ to długość $j$-tego kroku algorytmu, zaś $U_{k}$ to $k$-ta pochodna cząstkowa gradientu $U$ oraz $\beta_{k,j}$ to (dla $j$-tego kroku) $k$-ta współrzędna estymowanego wektora współczynników $\beta$ o rozmiarze $p$, czyli $k=1,\dots,p$. 
 
 Własna implementacja algorytmu w języku $\mathcal{R}$ znajduje się w podrozdziale (\ref{implemento}).
 
@@ -21,11 +21,11 @@ Własna implementacja algorytmu w języku $\mathcal{R}$ znajduje się w podrozdz
 Skupiając się na informatycznym aspekcie algorytmu można stwierdzić, że idea stochastycznego spadku gradientu polega na losowaniu składnika optymalizowanej funkcji. Jednak ze statystycznego punktu widzenia, metoda stochastycznego spadku gradientu opiera się o losowanie indeksu obserwacji ze zbioru, z którego uczony jest algorytm, zanim postanowi się w jakikolwiek sposób przedstawić konkretną funkcję wiarogodności. Zatem w celu estymacji w oparciu o stochastyczny spadek gradientu w modelu Coxa, konstruując metodę, należy najpierw losować obserwacje a następnie dopiero wyznaczać formę optymalizowanej funkcji częściowej log-wiarogodności. 
 
 Dla wielu modeli opierających się o funkcje wiarogodności te dwa punkty widzenia są równoważne, jednak dla modelu Coxa nie, gdyż niektóre składniki w funkcji log-wiarogodności są zależne od poprzednich obserwacji. W przypadku modelu ADALINE sformułowanego jak w \cite{ADALINE2}, opartego na minimalizowaniu funkcji kosztu w postaci błędu najmniejszych kwadratów, w \cite{bott2} podano postać funkcji straty oraz równanie algorytmu stochastycznego spadku gradientu jak poniżej
-$$Q_{adaline} = \frac{1}{2}(y-w'\varPhi(x))^2, \ \ \ \varPhi(x) \in \mathbb{R}^d, y \in \{-1,1\},$$ 
+$$Q(w) = \frac{1}{2}(y-w'\varPhi(x))^2, \ \ \ \varPhi(x) \in \mathbb{R}^d, y \in \{-1,1\},$$ 
 $$w \leftarrow w + \alpha_k(y_k-w'\varPhi(x_t))\varPhi(x_t),$$
 dla których widać, że w kolejnych krokach algorytmu $t$ wystarczy tylko jedna obserwacja $z_t=(x_t,y_t)$ aby poprawić oszacowanie parametru $w$.
 
-W modelu proporcjonalnych hazardów Coxa jest to bardziej skomplikowane. Dla zadanej z góry funkcji hazardu, częściowa funkcja wiarogodności odpowiada prawdopodobieństwu tego, że obserwowane zdarzenia zdarzyłyby się dokładnie w tej kolejności w jakiej się pojawiły. To prawdopodobieństwo zależy od wszystkich obserwacji w zbiorze. Niemożliwe jest wyliczenie tego poprzez obliczenie wartości funkcji częściowej wiarogodności oddzielnie dla obserwacji o numerach od 1 do 5 i oddzielnie dla obserwacji od numerach 6 do 10, a następnie przemnożeniu wyników przez siebie. Z tej przyczyny niemożliwe jest losowanie czynników optymalizowanej funkcji przy użyciu metody stochastycznego spadku gradientu do estymacji współczynników w tym modelu. Alternatywnym podejściem do tego problemu mogłoby być pamiętanie wartości licznika i mianownika dla składników częściowej funkcji log-wiarogodności dla wszystkich zaobserwowanych czasów zdarzeń i poprawianie odpowiednich składników z wykorzystaniem świeżo zaobserwowanych obserwacji. Taki zabieg jest pamięciowo oszczędniejszy niż pamiętanie wszystkich obserwacji. \textbf{Możliwe jest też losowanie podzbioru obserwacji a następnie konstruowanie funkcji wiarogodności dla zaobserwowanego zredukowanego zbioru. Właśnie ta metoda zostanie opisana w dalszej części pracy.} Taki sposób wprowadzania obserwacji do estymacji można wykorzystać w sytuacjach, gdy mamy do czynienia z nieskończonym napływem nowych obserwacji a interesują nas oszacowania estymowanych parametrów modelu $\beta_k, k=1,\dots,p$ dla obecnie zaobserwowanych i wykorzystanych obserwacji. Proces ten ma dwie zalety: nie dość, że dla nowych obserwacji model jest w stanie na bazie obecnych oszacowań parametrów dokonać predykcji proporcji hazardów, to dodatkowo po każdej porcji obserwacji aktualizuje parametry modelu.
+W modelu proporcjonalnych hazardów Coxa jest to bardziej skomplikowane. Dla zadanej z góry funkcji hazardu, częściowa funkcja wiarogodności odpowiada prawdopodobieństwu tego, że obserwowane zdarzenia zdarzyłyby się dokładnie w tej kolejności w jakiej się pojawiły. To prawdopodobieństwo zależy od wszystkich obserwacji w zbiorze. Niemożliwe jest wyliczenie tego poprzez obliczenie wartości funkcji częściowej wiarogodności oddzielnie dla obserwacji o numerach od 1 do 5 i oddzielnie dla obserwacji od numerach 6 do 10, a następnie przemnożeniu wyników przez siebie. Z tej przyczyny niemożliwe jest losowanie czynników optymalizowanej funkcji przy użyciu metody stochastycznego spadku gradientu do estymacji współczynników w tym modelu. Alternatywnym podejściem do tego problemu mogłoby być pamiętanie wartości licznika i mianownika dla składników częściowej funkcji log-wiarogodności dla wszystkich zaobserwowanych czasów zdarzeń i poprawianie odpowiednich składników z wykorzystaniem świeżo zaobserwowanych obserwacji. Taki zabieg jest pamięciowo oszczędniejszy niż pamiętanie wszystkich obserwacji. \textbf{Innym rozwiązaniem jest losowanie podzbioru obserwacji, a następnie konstruowanie funkcji wiarogodności dla zaobserwowanego zredukowanego zbioru. Właśnie ta metoda zostanie opisana w dalszej części pracy.} Taki sposób wprowadzania obserwacji do estymacji można wykorzystać w sytuacjach, gdy mamy do czynienia z nieskończonym napływem nowych obserwacji a interesują nas oszacowania estymowanych parametrów modelu $\beta_k, k=1,\dots,p$ dla obecnie zaobserwowanych i wykorzystanych obserwacji. Proces ten ma dwie zalety: nie dość, że dla nowych obserwacji model jest w stanie na bazie obecnych oszacowań parametrów dokonać predykcji proporcji hazardów, to dodatkowo po każdej porcji obserwacji aktualizuje parametry modelu.
 
 Ponieważ
 omawiane algorytmy rozwiązują problem minimalizacji badanej funkcji, zaś
@@ -34,22 +34,24 @@ maksymalizujących funkcję częściowej log-wiarogodności, zatem wzięcie do
 minimalizacji funkcji z przeciwnym znakiem doprowadzi do wykorzystania
 metod znajdujących minimum do znalezienia maksimum. 
 
-Zakładając,~że dla~\(j\)-ego kroku
+Zakładając,~że dla~\(j\)-tego kroku
 algorytmu i \(k\)-tej pochodnej cząstkowej dysponuje się zaobserwowanym podzbiorem
 \(\mathcal{B}\), częściową funkcję wiarogodności dla zaobserwowanego podzbioru obserwacji \(\mathcal{B}\) wykorzystywaną do minimalizacji można zapisać następująco
 \begin{equation}
--U^\mathcal{B}_k(\beta_j)=-\sum\limits_{i \in \mathcal{B}_\text{ind}}^{}U^\mathcal{B}_{k_{i}}(\beta_j)=-\sum\limits_{i \in \mathcal{B}_\text{ind}}^{}Y_i\Big(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}_\mathcal{B}(t_i)}^{} X_{lk} e^{X_l'\beta_j}}{\sum\limits_{l\in \mathscr{R}_\mathcal{B}(t_i)}^{} e^{X_l'\beta_j}}\Big),
+-U^\mathcal{B}_k(\beta_{.,j})=-\sum\limits_{i \in \mathcal{B}_\text{ind}}^{}U^\mathcal{B}_{k,i}(\beta_{.,j})=-\sum\limits_{i \in \mathcal{B}_\text{ind}}^{}Y_i\left(X_{ik}-\dfrac{\sum\limits_{l\in \mathscr{R}_\mathcal{B}(t_i)}^{} X_{lk} e^{X_l'\beta_{.,j}}}{\sum\limits_{l\in \mathscr{R}_\mathcal{B}(t_i)}^{} e^{X_l'\beta_{.,j}}}\right),
 \end{equation}
-gdzie indeksy obserwacji należące do zbioru \(\mathcal{B}\) definiuje się jako
+gdzie indeksy obserwacji należące do \(\mathcal{B}\) definiuje się jako
 \(\mathcal{B}_{\text{ind}} = \{i: X_i \in \mathcal{B} \}\), zaś
-\(\mathscr{R}_\mathcal{B}(t_i)\) to zbiór ryzyka dla podzbioru
-\(\mathcal{B}\) w czasie \(t_i\).
+\(\mathscr{R}_\mathcal{B}(t_i)\) to zbiór ryzyka dla zbioru
+\(\mathcal{B}\) w czasie \(t_i\), a $\beta_{.,j}$ to wektor współczynników w $j$-tym kroku.
 
 Postać powyższej funkcji nasuwa pewne obserwacje. Dla danego kroku algorytmu, obecnie wykorzystywany zaobserwowany podzbiór obserwacji \(\mathcal{B}\)
 \begin{itemize}
 \item \textit{nie powinien składać się jedynie z obserwacji cenzurowanych}. \newline \ \newline Dla podzbioru zawierającego jedynie takie obserwacje wartość pochodnej cząstkowej funkcji log-wiarogodności jest równa zero, ze względu na czynniki $Y_i$, które dla obserwacji cenzurowanych są równe zero. Zerowa wartość pochodnej cząstkowej funkcji log-wiarogodności doprowadzi do niezmienienia się optymalizowanych parametrów we wzorze (\ref{opta}), a co za tym idzie, doprowadzi do przerwania optymalizacji.
 \item \textit{nie powinien składać się jedynie z jednej obserwacji}. \newline \ \newline  
-W takim przypadku wartość pochodnej cząstkowej funkcji log-wiarogodności jest również równa zero, bez względu na to czy obserwacja była cenzurowana czy nie. Zerowa wartość pochodnej cząstkowej funkcji log-wiarogodności doprowadzi do niezmienienia się optymalizowanych parametrów we wzorze (\ref{opta}), a co za tym idzie, doprowadzi do przerwania optymalizacji.
+W takim przypadku wartość pochodnej cząstkowej funkcji log-wiarogodności jest również równa zero, bez względu na to czy obserwacja była cenzurowana czy nie, gdyż 
+$$-U_{k}^{\mathcal{B}}(\beta{.,j})=-Y_m\left(X_{mk}-\dfrac{ X_{mk} e^{X_m'\beta_{.,j}}}{ e^{X_m'\beta_{.,j}}}\right) = -Y_m\left(X_{mk}-X_{mk}\right) = -Y_m \cdot 0 = 0,$$
+dla dowolnego $m$ oznaczającego indeks jedynej obserwacji w $\mathcal{B}$, czyli $\mathcal{B}_{\text{ind}}=\{m\}$. 
 \item \textit{nie powinien zawierać tylko jednej obserwacji niecenzurowanej w zbiorze, która dodatkowo ma największy czas bycia pod obserwacją}. \newline \ \newline 
 W tej sytuacji jedyny niezerowy czynnik w całej pochodnej cząstkowej funkcji log-wiarogodności zajdzie tylko dla obserwacji niecenzurowanej, dla której zbiór ryzyka będzie zawierał tylko ją, co da ostatecznie zerową wartość pochodnej cząstkowej optymalizowanej funkcji log-wiarogodności, co doprowadzi do przerwania optymalizacji.
 \end{itemize}
@@ -60,7 +62,7 @@ Dodatkowo nie dochodzi do wykorzystania obserwacji cenzurowanych, gdy:
 Obserwacje cenzurowane niosą ze sobą mniej informacji, jednak teoria analizy przeżycia stara się je maksymalnie wykorzystać, stąd uwzględnia się ich udział w zbiorze ryzyka przy estymacji fragmentów funkcji log-wiarogodności dla obserwacji niecenzurowanych. W sytuacji, gdy wszystkie obserwacje cenzurowane mają czas obserwacji krótszy niż najmniejszy czas obserwacji dla obserwacji niecenzurowanej w podzbiorze, nie dochodzi do wykorzystania obserwacji cenzurowanych w jakikolwiek sposób przy estymacji współczynników w danym kroku algorytmu.
 \end{itemize}
 
-Mając na względzie te uwagi, w sytuacji gdy zaobserwuje się podzbiór, który spełnia jeden z wyżej wymienionych warunków, można zamiast wykorzystywać ten zbiór do estymacji można go dołączyć do kolejnego podzbioru, który ma być zaobserwowany.
+Mając na względzie te uwagi, w sytuacji gdy zaobserwuje się podzbiór, który spełnia jeden z wyżej wymienionych warunków, zamiast wykorzystywać ten zbiór do estymacji można go dołączyć do kolejnego podzbioru, który ma być zaobserwowany.
 
 \newpage
 \section{Implementacja}\label{implemento}
@@ -100,13 +102,13 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
 
                               \CommentTok{# estymacja}
 \NormalTok{i =}\StringTok{ }\DecValTok{1}                                    \CommentTok{# iterator kroku algorytmu.}
-\NormalTok{while(i <=}\StringTok{ }\NormalTok{max.iter |}\StringTok{ }\NormalTok{diff <}\StringTok{ }\NormalTok{eps) do     }
+\NormalTok{while(i <=}\StringTok{ }\NormalTok{max.iter \&}\StringTok{ }\NormalTok{diff <}\StringTok{ }\NormalTok{eps) do     }
   \NormalTok{iter =}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(i mod n ==}\StringTok{ }\DecValTok{0}\NormalTok{, n, i mod n)}\CommentTok{# wybierz kolejny podzbiór batch.}
   \NormalTok{batch =}\StringTok{ }\NormalTok{data[[iter]] }
   \NormalTok{beta_new =}\StringTok{ }\NormalTok{beta_old -}\StringTok{ }\KeywordTok{learningRates}\NormalTok{(i) *}\StringTok{ }\KeywordTok{U_Batch}\NormalTok{(batch) }
-                                         \CommentTok{# U_Batch to częściowa funkcja}
+                                         \CommentTok{# U_Batch to gradient częściowej funkcji}
                                          \CommentTok{# log-wiarogdności dla zaobserwowanego}
-                                         \CommentTok{# zbioru `batch`}
+                                         \CommentTok{# zbioru `batch`.}
   \NormalTok{diff =}\StringTok{ }\KeywordTok{euclidean_dist}\NormalTok{(beta_new, beta_old) }\CommentTok{# odległość euklidesowa}
   \NormalTok{beta_old =}\StringTok{ }\NormalTok{beta_new }
   \NormalTok{i =}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}
@@ -127,7 +129,7 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
   \NormalTok{diff <-}\StringTok{ }\NormalTok{epsilon +}\StringTok{ }\DecValTok{1}
   \NormalTok{i <-}\StringTok{ }\DecValTok{1}
   \NormalTok{beta_new <-}\StringTok{ }\KeywordTok{list}\NormalTok{()     }\CommentTok{# steps are saved in a list so that they can}
-  \NormalTok{beta_old <-}\StringTok{ }\NormalTok{beta_start }\CommentTok{# be tracked in the future}
+  \NormalTok{beta_old <-}\StringTok{ }\NormalTok{beta_start }\CommentTok{# be traced in the future}
   \CommentTok{# estimate}
   \NormalTok{while(i <=}\StringTok{ }\NormalTok{max.iter &}\StringTok{ }\NormalTok{diff >}\StringTok{ }\NormalTok{epsilon) \{}
     \NormalTok{beta_new[[i]] <-}\StringTok{ }\KeywordTok{coxphSGD_batch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{beta =} \NormalTok{beta_old,}
@@ -179,9 +181,9 @@ Dzięki przygotowanej w rozdziale \ref{symWei} funkcji \texttt{dataCox()} możli
 \NormalTok{dCox <-}\StringTok{ }\KeywordTok{dataCox}\NormalTok{(}\DecValTok{10}\NormalTok{^}\DecValTok{4}\NormalTok{, }\DataTypeTok{lambda =} \DecValTok{3}\NormalTok{, }\DataTypeTok{rho =} \DecValTok{2}\NormalTok{, x, }\DataTypeTok{beta =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{), }\DataTypeTok{censRate =} \DecValTok{5}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
-Funkcja \texttt{simulateCoxSGD()} opisana w Dodatku \ref{coxKody123} sześciokrotnie dzieli wygenerowany zbiór danych odpowiednio na 10, 30, 60, 90, 120 i 200 podzbiorów losowych długości ustawiając obserwacje w losowej kolejności, a następnie wykorzystuje funkcję \texttt{coxphSGD()} do wyznaczenia wartości współczynników w kolejnych krokach estymacji funkcji log-wiarogodności dla modelu Coxa przy pomocy metody stochastycznego spadku gradientu. Dzięki tak otrzymany współczynnikom modelu w kolejnych krokach algorytmu dla różnych podziałów zbiorów, możliwe było graficzne przedstawienie trajektorii zbieżności algorytmu w zależności od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. 
+Funkcja \texttt{simulateCoxSGD()} opisana w Dodatku \ref{coxKody123} sześciokrotnie dzieli wygenerowany zbiór danych odpowiednio na 10, 30, 60, 90, 120 i 200 podzbiorów losowych długości ustawiając obserwacje w losowej kolejności, a następnie wykorzystuje funkcję \texttt{coxphSGD()} do wyznaczenia wartości współczynników w kolejnych krokach estymacji funkcji log-wiarogodności dla modelu Coxa przy pomocy metody stochastycznego spadku gradientu. Dzięki tak otrzymanym współczynnikom modelu w kolejnych krokach algorytmu dla różnych podziałów zbiorów, możliwe było graficzne przedstawienie trajektorii zbieżności algorytmu w zależności od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. 
 
-Implementacja umożliwia ponowne wykorzystanie wszystkich zaobserwowanych podzbiorów danych w kolejnych krokach algorytmu, jeżeli nie pozostały już do wykorzystania żadne nowe podzbiory zaś zbieżność algorytmu, poza warunkiem stopu, zależna jest także od maksymalnej liczby iteracji, która gdy jest większa od liczby zaobserwowanych podzbiorów powoduje, że w trakcie procesu optymalizacji algorytm przechodzi do nowej epoki. 
+Implementacja umożliwia ponowne wykorzystanie wszystkich zaobserwowanych podzbiorów danych w kolejnych krokach algorytmu, jeżeli nie pozostały już do wykorzystania żadne nowe podzbiory zaś zbieżność algorytmu, poza warunkiem stopu, zależna jest także od maksymalnej liczby iteracji, która jest większa od liczby zaobserwowanych podzbiorów. Jednorazowe wykorzystanie wszystkich obserwacji w trakcie procesu optymalizacji nazywane jest \textit{epoką}. 
 
 Przykładowe wywołanie funkcji \texttt{simulateCoxSGD()} znajduje się poniżej
 
@@ -193,18 +195,22 @@ Przykładowe wywołanie funkcji \texttt{simulateCoxSGD()} znajduje się poniżej
 \end{Shaded}
 gdzie w tym wypadku parametr \texttt{max.iter} odpowiada za liczbę epok do wykorzystania, \texttt{learningRates} to funkcja odpowiedzialna za wyznaczenie długości kolejnych kroków algorytmu, \texttt{dCox} to dane do analizy przygotowane w postaci jaką zwraca funkcja \texttt{dataCox()}, \texttt{epsilon} to warunek stopu, zaś \texttt{beta\_0} to punkt startowy algorytmu.
 
-Na Rysunkach (\ref{rysCox}) - (\ref{rysCox4}) przedstawiono symulacje zbieżności procesu optymalizacji częściowej funkcji log-wiarogodności dla zaobserwowanego podzbioru obserwacji w modelu Coxa proporcjonalnych hazardów, z wykorzystaniem algorytmu stochastycznego spadku gradientu. Trajektorie zbieżności zależne są od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. Dodatkowo przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum. 
+Na Rysunkach \ref{rysCox} - \ref{rysCox4} przedstawiono symulacje zbieżności procesu optymalizacji częściowej funkcji log-wiarogodności dla zaobserwowanego podzbioru obserwacji w modelu Coxa proporcjonalnych hazardów, z wykorzystaniem algorytmu stochastycznego spadku gradientu. Trajektorie zbieżności zależne są od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. Dodatkowo przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum. 
 
 \newpage
 \subsubsection{Podsumowanie symulacji dla modelu proporcjonalnych hazardów Coxa}
 
 W trakcie symulacji badano jak podział całego zbioru obserwacji na podzbiory wpływa na trajektoria optymalizacji częściowej funkcji log-wiarogodności w modelu Coxa proporcjonalnych hazardów dla zaobserwowanego podzbioru. Badano również wpływ punktu początkowego, warunku stopu, liczby epok oraz konstrukcji ciągu odpowiedzialnego za długości kroków na proces optymalizacji w tym modelu. 
 
-Na Rysunkach (\ref{rysCox}) - (\ref{rysCox4}) zaprezentowano trajektoria dla punktów początkowych: $\beta_0 = (0,0), (2,2), (-1,4)$. Brano pod uwagę ciągi odpowiadające długościom kroków równe $\frac{1}{20\sqrt{t}}, \frac{1}{50\sqrt{t}}, \frac{1}{100\sqrt{t}}$, eksperymentowano z liczbą epok ustalaną na $1,5,10$ oraz sprawdzano jak zachowają się trajektoria dla warunków stopu $\epsilon=10^{-6}, \epsilon=10^{-5}$. Dla ciągów odpowiadającym długościom kroków ustalanym na $\frac{1}{20t}, \frac{1}{50t}, \frac{1}{100t}$ algorytm nie osiągał zbieżności i zatrzymywał się po maksymalnej liczbie iteracji w losowym punkcie.
+Na Rysunkach \ref{rysCox} - \ref{rysCox4} zaprezentowano trajektoria dla punktów początkowych
+ $$\beta_0 = (0,0), (2,2), (-1,4),$$
+ gdzie pod uwagę brano ciągi odpowiadające długościom kroków takie jak 
+ $$\alpha_t=\frac{1}{20\sqrt{t}}, \ \ \alpha_t = \frac{1}{50\sqrt{t}}, \ \ \alpha_t = \frac{1}{100\sqrt{t}}.$$ 
+ Eksperymentowano z liczbą epok ustalaną na $1,5,10$ oraz sprawdzano jak zachowają się trajektoria dla warunków stopu $\varepsilon=10^{-6}$ lub $\varepsilon=10^{-5}$. Dla ciągów odpowiadającym długościom kroków ustalanym na  
+ $$\alpha_t=\frac{1}{20t}, \ \ \alpha_t = \frac{1}{50t}, \ \ \alpha_t = \frac{1}{100t}$$
+   algorytm nie osiągał zbieżności i zatrzymywał się po maksymalnej liczbie iteracji w losowym punkcie znacznie odległym od optimum.
 
-Dla żadnej z symulacji algorytm nie zbiegł do punktu, w którym powinno być teoretyczne optimum. Może to wynikać z dużej liczby obserwacji cenzurowanych bądź z samej istoty losowości przy procesie generowania danych. Należy podkreślić, że dla różnych sprawdzanych wariantów procesu optymalizacji za każdym razem metoda zbiegała do tego samego punktu. Może być to optimum wynikające z postaci danych. Stochastyczny spadek gradientu nie wykorzystuje wszystkich obserwacji jednocześnie przez co trudniej zbiec do teoretycznego optimum. Warto zauważyć stabilność procesu optymalizacji dla ciągów odpowiadających za długość kroków w algorytmie, które ustawione zostały na mniejsze wartości $\frac{1}{50\sqrt{t}}, \frac{1}{100\sqrt{t}}$ (Rysunki (\ref{rysCox}) - (\ref{rysCox3})) - w przypadku ciągu o zbyt dużych wartościach początkowych ($\frac{1}{20\sqrt{t}}$) trajektoria algorytmu we wczesnej fazie procesu były dalekie od optimum (Rysunek (\ref{rysCox4})). Dzięki ukazanym warstwicom funkcji częściowej log-wiarogodności skonstruowanym na całych danych, widać, że poczynając od punktu startowego algorytm w różnych wydaniach postępuje we właściwym kierunku zbieżności i kieruje się w okolice teoretycznego optimum. Algorytm zatrzymuje się niedaleko teoretycznego optimum, jednak patrząc na rozrzedzone zagęszczenie warstwic w okolicach teoretycznego optimum, można stwierdzić, że wartości funkcji częściowej log-wiarogodności nie różnią się już na tyle, aby proces optymalizacji mógł być kontynuowany. 
-
-Warto podkreślić, że większa liczba epok i mniejszy warunek stopu powodują jedynie poprawienie optymalizacji dla wariantów, w których cały zbiór obserwacji był podzielony na największą liczbę obserwacji, a więc każdy krok algorytmu budowany był na najmniej licznych podzbiorach.
+Dla żadnej z symulacji algorytm nie zbiegł do punktu, w którym powinno być teoretyczne optimum. Może to wynikać z dużej liczby obserwacji cenzurowanych bądź z samej istoty losowości przy procesie generowania danych. Należy podkreślić, że dla różnych sprawdzanych wariantów procesu optymalizacji za każdym razem metoda zbiegała do tego samego punktu. Może być to optimum wynikające z postaci danych. Stochastyczny spadek gradientu nie wykorzystuje wszystkich obserwacji jednocześnie przez co trudniej zbiec do teoretycznego optimum. Warto zauważyć stabilność procesu optymalizacji dla ciągów odpowiadających za długość kroków w algorytmie, które ustawione zostały na mniejsze wartości $1/50\sqrt{t}, 1/100\sqrt{t}$ (Rysunki \ref{rysCox} - \ref{rysCox3}). W przypadku ciągu o zbyt dużych wartościach początkowych ($1/20\sqrt{t}$) trajektoria algorytmu we wczesnej fazie procesu były dalekie od optimum (Rysunek \ref{rysCox4}). Dzięki ukazanym warstwicom funkcji częściowej log-wiarogodności skonstruowanym na całych danych, widać, że poczynając od punktu startowego algorytm w różnych wydaniach postępuje we właściwym kierunku zbieżności i kieruje się w okolice teoretycznego optimum. Algorytm zatrzymuje się niedaleko teoretycznego optimum, jednak patrząc na rozrzedzone zagęszczenie warstwic w okolicach teoretycznego optimum, można stwierdzić, że wartości funkcji częściowej log-wiarogodności nie różnią się już na tyle, aby proces optymalizacji mógł być kontynuowany. Warto podkreślić, że większa liczba epok i mniejszy warunek stopu powodują jedynie poprawienie optymalizacji dla wariantów, w których cały zbiór obserwacji był podzielony na największą liczbę podzbiorów, a więc każdy krok algorytmu budowany był na najmniej licznych podzbiorach. W pozostałych przypadkach nie poprawia to optymalizacji. Można sądzić, że im liczniejszy zaobserwowany podzbiór tym skuteczniejsza estymacja.
 
 Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metody stochastycznego spadku gradientu w sytuacji napływających danych wygląda na stabilny i zbiega w okolice bliskie do teoretycznego optimum, niekiedy nawet dla tylko jednej epoki. Dla dobrze dobranych parametrów optymalizacji proces może być z powodzeniem wykorzystywany do znajdowania współczynników modelu. Kluczowym momentem mającym wpływ na powodzenie optymalizacji jest wybór ciągu odpowiedzialnego za dobór długości kroków w algorytmie, więc zaleca się symulacje badające różne ciągi oraz wybranie tego ciągu, który w większości przypadków daje stabilne, jednorodne współczynniki. 
 
@@ -212,16 +218,16 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_0_0_iter_1_e-6_50sqrt.pdf}
-      \caption{$\beta_0=(0,0)$, liczba epok 1, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_0_0_iter_1_e-6_50sqrt.pdf}
+      \caption{$\beta_0=(0,0)$, liczba epok 1, warunek stopu: $\varepsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_0_0_iter_5_e-6_50sqrt.pdf}
-            \caption{$\beta_0=(0,0)$, liczba epok 5, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_0_0_iter_5_e-6_50sqrt.pdf}
+            \caption{$\beta_0=(0,0)$, liczba epok 5, warunek stopu: $\varepsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
 \end{figure}
 
 
@@ -230,16 +236,16 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_2_2_iter_10_e-6_50sqrt.pdf}
-      \caption{$\beta_0=(2,2)$, liczba epok 10, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_2_2_iter_10_e-6_50sqrt.pdf}
+      \caption{$\beta_0=(2,2)$, liczba epok 10, warunek stopu: $\varepsilon=10^{-6}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_2_2_iter_5_e-5_50sqrt.pdf}
-            \caption{$\beta_0=(2,2)$, liczba epok 5, warunek stopu: $\epsilon=10^{-5}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_2_2_iter_5_e-5_50sqrt.pdf}
+            \caption{$\beta_0=(2,2)$, liczba epok 5, warunek stopu: $\varepsilon=10^{-5}$, długości kroków = $\frac{1}{50\sqrt{t}}$.}
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox2}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox2}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
 \end{figure}
 	
 	
@@ -249,16 +255,16 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_1_e-6_100sqrt.pdf}
-      \caption{$\beta_0=(-1,4)$, liczba epok 1, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{100\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_m1_4_iter_1_e-6_100sqrt.pdf}
+      \caption{$\beta_0=(-1,4)$, liczba epok 1, warunek stopu: $\varepsilon=10^{-6}$, długości kroków = $\frac{1}{100\sqrt{t}}$.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_10_e-5_100sqrt.pdf}
-            \caption{$\beta_0=(-1,4)$, liczba epok 10, warunek stopu: $\epsilon=10^{-5}$, długości kroków = $\frac{1}{100\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_m1_4_iter_10_e-5_100sqrt.pdf}
+            \caption{$\beta_0=(-1,4)$, liczba epok 10, warunek stopu: $\varepsilon=10^{-5}$, długości kroków = $\frac{1}{100\sqrt{t}}$.}
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox3}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox3}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
 \end{figure}
 
 
@@ -267,14 +273,14 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_1_e-6_20sqrt.pdf}
-      \caption{$\beta_0=(-1,4)$, liczba epok 1, warunek stopu: $\epsilon=10^{-6}$, długości kroków = $\frac{1}{20\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_m1_4_iter_1_e-6_20sqrt.pdf}
+      \caption{$\beta_0=(-1,4)$, liczba epok 1, warunek stopu: $\varepsilon=10^{-6}$, długości kroków = $\frac{1}{20\sqrt{t}}$.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=320pt]{Obrazki/b_m1_4_iter_10_e-5_20sqrt.pdf}
-            \caption{$\beta_0=(-1,4)$, liczba epok 10, warunek stopu: $\epsilon=10^{-5}$, długości kroków = $\frac{1}{20\sqrt{t}}$.}
+      \includegraphics[width=\textwidth, height=310pt]{Obrazki/b_m1_4_iter_10_e-5_20sqrt.pdf}
+            \caption{$\beta_0=(-1,4)$, liczba epok 10, warunek stopu: $\varepsilon=10^{-5}$, długości kroków = $\frac{1}{20\sqrt{t}}$.}
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox4}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox4}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
 \end{figure}
