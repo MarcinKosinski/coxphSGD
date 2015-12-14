@@ -54,14 +54,23 @@ wykorzystano dane kliniczne i dane o występujących u pacjentów mutacjach
 genetycznych. Starano się wykorzystać dane ze wszystkich 38 dostępnych
 kohort nowotworowych z badania \textit{The Cancer Genome Atlas} (TCGA),
 jednak nie dla wszystkich kohort umieszczono w badaniu dane o mutacjach.
-Część wspólną nazw dla kohort zawierających zarówno dane kliniczne oraz
+Częśc wspólną nazw dla kohort zawierających zarówno dane kliniczne oraz
 dane o mutacjach wygenerowaną dzięki wywołaniu
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{extractCohortIntersection}\NormalTok{() ->}\StringTok{ }\NormalTok{cohorts}
+\NormalTok{(}\KeywordTok{extractCohortIntersection}\NormalTok{() ->}\StringTok{ }\NormalTok{cohorts)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+ [1] "ACC"      "BLCA"     "BRCA"     "CESC"     "CHOL"     "COAD"    
+ [7] "COADREAD" "DLBC"     "ESCA"     "GBM"      "GBMLGG"   "HNSC"    
+[13] "KICH"     "KIPAN"    "KIRC"     "KIRP"     "LAML"     "LGG"     
+[19] "LIHC"     "LUAD"     "LUSC"     "OV"       "PAAD"     "PCPG"    
+[25] "PRAD"     "READ"     "SARC"     "SKCM"     "STAD"     "STES"    
+[31] "TGCT"     "THCA"     "UCEC"     "UCS"      "UVM"     
+\end{verbatim}
 
 Następnie dla tak otrzymanych 35 kohort nowotworowych uzyskano dane o
 statusie pacjenta (śmierć bądź cenzurowanie) oraz jego czasie spędzonym
@@ -69,18 +78,39 @@ pod obseracją dzięki funkcji
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{extractSurvival}\NormalTok{(cohorts) ->}\StringTok{ }\NormalTok{survivalData}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{extractSurvival}\NormalTok{(cohorts) ->}\StringTok{ }\NormalTok{survivalData)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+      bcr_patient_barcode patient.vital_status times
+ACC.1        TCGA-OR-A5J1                    1  1355
+ACC.2        TCGA-OR-A5J2                    1  1677
+ACC.3        TCGA-OR-A5J3                    0  1942
+ACC.4        TCGA-OR-A5J4                    1   423
+ACC.5        TCGA-OR-A5J5                    1   365
+ACC.6        TCGA-OR-A5J6                    0  2428
+\end{verbatim}
 
 Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych
 pacjentów uzyskano za pomocą
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{extractMutations}\NormalTok{(cohorts, }\FloatTok{0.02}\NormalTok{) ->}\StringTok{ }\NormalTok{mutationsData }
+\KeywordTok{extractMutations}\NormalTok{(cohorts, }\FloatTok{0.02}\NormalTok{) ->}\StringTok{ }\NormalTok{mutationsData}
+\NormalTok{mutationsData[}\DecValTok{1}\NormalTok{:}\DecValTok{6}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{56}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{207}\NormalTok{,}\DecValTok{801}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+  bcr_patient_barcode A2ML1 ALMS1 ATP2B2 CNTNAP4 PLEC
+1     TCGA-02-0003-01     0     1      0       0    0
+2     TCGA-02-0033-01     0     0      0       0    0
+3     TCGA-02-0047-01     0     0      0       0    0
+4     TCGA-02-0055-01     0     0      0       0    0
+5     TCGA-02-2470-01     0     0      0       0    0
+6     TCGA-02-2483-01     0     0      1       0    0
+\end{verbatim}
 
 gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2
 \% pacjentów mających zarówno dane kliniczne jak i dane o występujących
@@ -94,8 +124,15 @@ ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{prepareCoxDataSplit}\NormalTok{(mutationsData,survivalData, }\DataTypeTok{groups =} \DecValTok{100}\NormalTok{) ->}\StringTok{ }\NormalTok{coxData_split}
+\KeywordTok{head}\NormalTok{(coxData_split[[}\DecValTok{1}\NormalTok{]][}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{210}\NormalTok{,}\DecValTok{302}\NormalTok{,}\DecValTok{356}\NormalTok{,}\DecValTok{898}\NormalTok{,}\DecValTok{911}\NormalTok{,}\DecValTok{1092}\NormalTok{:}\DecValTok{1093}\NormalTok{)])}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+     COL14A1 DOCK9 FASN SEMA5A SHPRH patient.vital_status times
+81         0     0    0      0     0                    1     7
+1068       1     0    0      1     0                    1  1171
+\end{verbatim}
 
 Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a
 pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki
@@ -103,37 +140,104 @@ pomocniczej funkcji
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{prepareForumlaSGD}\NormalTok{(coxData) ->}\StringTok{ }\NormalTok{formulaSGD}
+\KeywordTok{prepareForumlaSGD}\NormalTok{(coxData_split) ->}\StringTok{ }\NormalTok{formulaSGD}
 \end{Highlighting}
 \end{Shaded}
 
-Ostatecznie dla 6459 pacjentów, którzy posiadali informacje o
+Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o
 występujących mutacjach, oraz dla których odnotowano komplet i
 poprawność danych klinicznych dotyczących statusu i obserwowanego czasu
 przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa
-z wykorzystaniem stochastycznego spadku gradientu do estymacji.
+z wykorzystaniem stochastycznego spadku gradientu do estymacji. Model
+dopasowano wielokrotnie z różnymi ciągami odpowiadającymi za długość
+kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak
+powstałych kilku modeli wybrano ten, który dla swoich współczynników
+dawał największą wartość funkcji częściowej log-wiarogodności dla
+niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie
+zaobserwowane podzbiory obserwacji.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{coxData_split, }\DataTypeTok{max.iter =} \DecValTok{100}\NormalTok{)}
+\NormalTok{coxData_split[}\DecValTok{99}\NormalTok{:}\DecValTok{100}\NormalTok{] ->}\StringTok{ }\NormalTok{testCox}
+\NormalTok{coxData_split[}\DecValTok{1}\NormalTok{:}\DecValTok{98}\NormalTok{] ->}\StringTok{ }\NormalTok{trainCox}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{) ->}\StringTok{ }\NormalTok{model98_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{) ->}\StringTok{ }\NormalTok{model196_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{) ->}\StringTok{ }\NormalTok{model392_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{,}
+         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{,}
+         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{,}
+         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model392_1_over_50sqrt_t}
 \end{Highlighting}
 \end{Shaded}
 
 Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności
 hazardu, gdyż zakładano napływającą postać danych (stąd podział danych
-na 100 grup). Dla takiej postaci pojawia się danych ciężko także mówić o
-jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności
-otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać
-istotność statystyczna otrzymanych współczynników w modelu, jednak
-założono, że współczynniki dostatecznie odległe od \(0\) można uznać za
-istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie
-oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym
-genie w stosunku do pacjentów nie posiadających mutacji w danym genie.
-Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta
+na 100 grup). Dla takiej postaci pojawiania się danych ciężko także
+mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i
+dokładności otrzymanych wpsółczynników. Nie stworzono teorii
+pozwalającej badać istotność statystyczną otrzymanych współczynników w
+modelu, jednak założono, że współczynniki dostatecznie odległe od \(0\)
+można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki
+dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w
+danym genie w stosunku do pacjentów nie posiadających mutacji w danym
+genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta
 posiadającego mutację w danym genie w stosunku do pacjentów nie
 posiadających mutacji w danym genie. Wzrost proporcji hazardu można
 otrzymać dla danego genu poprzez obłożenie współczynnika funkcją
 wykładniczą o wykładniku \(e\).
 
 Wyniki estymacji dla genów zawierających największe co do modułu
-współczynniki można znaleźć w Tabeli 1
+współczynniki można znaleźć w Tabeli \ref{tabelka}.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrr}
+  \toprule
+ & $\beta$ & $e^{\beta}$ \\ 
+  \toprule
+EGFR & 0.97 & 2.63 \\ 
+  ATP2B2 & 0.86 & 2.35 \\ 
+  NDST4 & 0.73 & 2.08 \\ 
+  TP53 & 0.71 & 2.04 \\ 
+  CHRM2 & 0.67 & 1.95 \\ 
+  C3 & 0.66 & 1.93 \\ 
+  LAMC3 & 0.61 & 1.85 \\ 
+  PCDH9 & 0.61 & 1.84 \\ 
+  LRRC4C & 0.61 & 1.84 \\ 
+  C15orf2 & 0.60 & 1.83 \\ 
+  ATG2A & 0.58 & 1.78 \\ 
+  GLI2 & 0.58 & 1.78 \\ 
+  KEAP1 & 0.57 & 1.76 \\ 
+  Unknown & 0.56 & 1.75 \\ 
+  KIAA1409 & 0.56 & 1.75 \\ 
+  LTBP2 & 0.55 & 1.73 \\ 
+  GRIA4 & 0.53 & 1.70 \\ 
+  ADAMTSL1 & 0.53 & 1.70 \\ 
+  NTRK3 & 0.52 & 1.69 \\ 
+  ZFAT & 0.52 & 1.68 \\ 
+  CDKN2A & 0.51 & 1.67 \\ 
+  TMEM132D & 0.51 & 1.67 \\ 
+  CDH9 & 0.50 & 1.65 \\ 
+  FAM5C & 0.50 & 1.65 \\ 
+  KCNA4 & 0.50 & 1.65 \\ 
+  MUC16 & 0.50 & 1.64 \\ 
+  GPR133 & 0.50 & 1.64 \\ 
+  ZNF804B & 0.49 & 1.64 \\ 
+  LRRIQ1 & 0.49 & 1.63 \\ 
+  ZMYM3 & -0.49 & 0.61 \\ 
+  CTCF & -0.52 & 0.60 \\ 
+  OTOF & -0.52 & 0.59 \\ 
+  IDH1 & -0.53 & 0.59 \\ 
+  CDH1 & -0.55 & 0.58 \\ 
+  DNAH17 & -0.59 & 0.56 \\ 
+  PLXNC1 & -0.60 & 0.55 \\ 
+  DLGAP2 & -0.61 & 0.54 \\ 
+  BCORL1 & -0.75 & 0.47 \\ 
+  FLRT2 & -1.00 & 0.37 \\ 
+  BRAF & -1.14 & 0.32 \\ 
+   \bottomrule
+\end{tabular}
+\caption{\label{tabelka}Współczynniki oraz stosunki hazardów ($e^{\beta}$) w modelu proporcjonalnych hazardów Coxa dla modelu dającego największą wartość funkcji częściowej log-wiarogodności na zbiorze testowym. }
+\end{table}

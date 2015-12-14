@@ -662,7 +662,7 @@ dev.off()
 
 
 
-```{r}
+```{r, eval = TRUE}
 
 extractSurvival <- function(cohorts){
   
@@ -761,57 +761,103 @@ prepareCoxDataSplit <- function(mutationsData, survivalData, groups, seed = 4561
 
   coxData <- coxData[, -c(1,2)]
   
+  coxData %>%
+    filter(times > 0) %>%
+    filter(!is.na(times)) -> coxData
+  
   apply(coxData[,-c(1092, 1093)], MARGIN = 2,function(x){
     as.numeric(as.character(x))
   }) -> coxData[,-c(1092, 1093)]
   
   set.seed(seed)
-  sample(groups, replace = TRUE, size = 6459) -> groups
-  split(coxData, groups) coxData_split
+  sample(groups, replace = TRUE, size = 6085) -> groups
+  split(coxData, groups) #coxData_split
 }
 
 prepareForumlaSGD <- function(coxData){
   as.formula(paste("Surv(times, patient.vital_status) ~ ",
-                   paste(names(coxData)[-c(1092, 1093)],
+                   paste(names(coxData[[1]])[-c(1092, 1093)],
                          collapse="+"), collapse = ""))
 }
 
+
+full_cox_loglik_matrix <- function(beta, x, censored){
+  order(x$times) -> order2
+  x[order2, ] -> xORD
+  censored[order2] -> censORD
+  sum(censORD*(beta%*%x[, -which(names(x)=='times')] -
+                       log(cumsum(exp(beta1*rev(x1) + beta2*rev(x2))))))
+}
+
+
+
+library(dplyr)
+library(RTCGA.clinical)
+library(RTCGA.mutations)
+library(data.table)
+library(coxphSGD)
 ```
 
 
 Do analizy badającej wpływ występowania mutacji genów na czas przeżycia wykorzystano dane kliniczne i dane o występujących u pacjentów mutacjach genetycznych. Starano się wykorzystać dane ze wszystkich 38 dostępnych kohort nowotworowych z badania \textit{The Cancer Genome Atlas} (TCGA), jednak nie dla wszystkich kohort umieszczono w badaniu dane o mutacjach. Częśc wspólną nazw dla kohort zawierających zarówno dane kliniczne oraz dane o mutacjach wygenerowaną dzięki wywołaniu 
 
-```{r}
-extractCohortIntersection() -> cohorts
+```{r, eval = TRUE}
+(extractCohortIntersection() -> cohorts)
 ```
 
 Następnie dla tak otrzymanych 35 kohort nowotworowych uzyskano dane o statusie pacjenta (śmierć bądź cenzurowanie) oraz jego czasie spędzonym pod obseracją dzięki funkcji
-```{r}
-extractSurvival(cohorts) -> survivalData
+```{r, eval = TRUE}
+head(extractSurvival(cohorts) -> survivalData)
 ```
 
 Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych pacjentów uzyskano za pomocą
-```{r}
-extractMutations(cohorts, 0.02) -> mutationsData 
+```{r, eval = TRUE}
+extractMutations(cohorts, 0.02) -> mutationsData
+mutationsData[1:6, c(1,4,56,100,207,801)]
 ```
 gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2 % pacjentów mających zarówno dane kliniczne jak i dane o występujących mutacjach w genach.
 
 Dla tak otrzymanych dwóch zbiorów danych połączono dla pacjentów informacje kliniczne z informacjami o mutacjach dzięki przypisanym do pacjentów i ich próbek kodów `bcr_patient_barcode`, by ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
-```{r}
+```{r, eval = TRUE}
 prepareCoxDataSplit(mutationsData,survivalData, groups = 100) -> coxData_split
+head(coxData_split[[1]][c(1,10), c(210,302,356,898,911,1092:1093)])
 ```
 
 Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki pomocniczej funkcji
 ```{r}
-prepareForumlaSGD(coxData) -> formulaSGD
+prepareForumlaSGD(coxData_split) -> formulaSGD
 ```
 
-Ostatecznie dla 6459 pacjentów, którzy posiadali informacje o występujących mutacjach, oraz dla których odnotowano komplet i poprawność danych klinicznych dotyczących statusu i obserwowanego czasu przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa z wykorzystaniem stochastycznego spadku gradientu do estymacji.
+Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o występujących mutacjach, oraz dla których odnotowano komplet i poprawność danych klinicznych dotyczących statusu i obserwowanego czasu przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa z wykorzystaniem stochastycznego spadku gradientu do estymacji. Model dopasowano wielokrotnie z różnymi ciągami odpowiadającymi za długość kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak powstałych kilku modeli wybrano ten, który dla swoich współczynników dawał największą wartość funkcji częściowej log-wiarogodności dla niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie zaobserwowane podzbiory obserwacji.
 
-```{r}
-coxphSGD(formulaSGD, data = coxData_split, max.iter = 100)
+```{r, eval = FALSE, echo=1:11}
+coxData_split[99:100] -> testCox
+coxData_split[1:98] -> trainCox
+coxphSGD(formulaSGD, data = trainCox, max.iter = 98) -> model98_1_over_t
+coxphSGD(formulaSGD, data = trainCox, max.iter = 196) -> model196_1_over_t
+coxphSGD(formulaSGD, data = trainCox, max.iter = 392) -> model392_1_over_t
+coxphSGD(formulaSGD, data = trainCox, max.iter = 98,
+         learningRates = 1/(50*sqrt(t))) -> model98_1_over_50sqrt_t
+coxphSGD(formulaSGD, data = trainCox, max.iter = 196,
+         learningRates = 1/(50*sqrt(t))) -> model98_1_over_50sqrt_t
+coxphSGD(formulaSGD, data = trainCox, max.iter = 392,
+         learningRates = 1/(50*sqrt(t))) -> model392_1_over_50sqrt_t
+save(model98_1_over_t, file = "model98_1_over_t.rda")
+save(model196_1_over_t, file = "model196_1_over_t.rda")
+save(model98_1_over_50sqrt_t, file = "model98_1_over_50sqrt_t.rda")
+save(model98_1_over_50sqrt_t, file = "model98_1_over_50sqrt_t.rda")
+save(model392_1_over_50sqrt_t, file = "model392_1_over_50sqrt_t.rda")
+save(model392_1_over_t, file = "model392_1_over_t.rda")
 ```
 
-Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności hazardu, gdyż zakładano napływającą postać danych (stąd podział danych na 100 grup). Dla takiej postaci pojawia się danych ciężko także mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać istotność statystyczna otrzymanych współczynników w modelu, jednak założono, że współczynniki dostatecznie odległe od $0$ można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Wzrost proporcji hazardu można otrzymać dla danego genu poprzez obłożenie współczynnika funkcją wykładniczą o wykładniku $e$.
+Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności hazardu, gdyż zakładano napływającą postać danych (stąd podział danych na 100 grup). Dla takiej postaci pojawiania się danych ciężko także mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać istotność statystyczną otrzymanych współczynników w modelu, jednak założono, że współczynniki dostatecznie odległe od $0$ można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Wzrost proporcji hazardu można otrzymać dla danego genu poprzez obłożenie współczynnika funkcją wykładniczą o wykładniku $e$.
 
-Wyniki estymacji dla genów zawierających największe co do modułu współczynniki można znaleźć w Tabeli 1.ź
+Wyniki estymacji dla genów zawierających największe co do modułu współczynniki można znaleźć w Tabeli 1.
+
+```{r, echo = FALSE}
+names(tail(sort(abs(tail(model98_1_over_t$coefficients,1)[[1]])),40)) -> top40
+tail(model98_1_over_t$coefficients,1)[[1]][which(names(tail(model98_1_over_t$coefficients,1)[[1]]) %in% top40)] -> real_top40
+data.frame(beta = sort(real_top40, decreasing = TRUE),
+           exp_beta = exp(sort(real_top40, decreasing = TRUE))) %>% xtable::xtable()
+```
+

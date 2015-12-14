@@ -351,13 +351,13 @@
 \end{Shaded}
 
 \begin{verbatim}
-  id         time status x.1 x.2
-1  1 0.1002909151      1   1   0
-2  2 0.0048879795      0   0   1
-3  3 0.0166916454      0   1   0
-4  4 0.0103259513      1   1   1
-5  5 0.0271597507      0   0   0
-6  6 0.0001979428      0   1   1
+  id       time status x.1 x.2
+1  1 0.04217186      0   0   1
+2  2 0.04583595      0   0   1
+3  3 0.03361776      0   1   1
+4  4 0.10477472      0   0   0
+5  5 0.22068183      0   0   0
+6  6 0.12595706      1   0   1
 \end{verbatim}
 
 \begin{Shaded}
@@ -859,22 +859,96 @@
 
   \NormalTok{coxData <-}\StringTok{ }\NormalTok{coxData[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)]}
   
+  \NormalTok{coxData %>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(times >}\StringTok{ }\DecValTok{0}\NormalTok{) %>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(!}\KeywordTok{is.na}\NormalTok{(times)) ->}\StringTok{ }\NormalTok{coxData}
+  
   \KeywordTok{apply}\NormalTok{(coxData[,-}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)], }\DataTypeTok{MARGIN =} \DecValTok{2}\NormalTok{,function(x)\{}
     \KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{as.character}\NormalTok{(x))}
   \NormalTok{\}) ->}\StringTok{ }\NormalTok{coxData[,-}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)]}
   
   \KeywordTok{set.seed}\NormalTok{(seed)}
-  \KeywordTok{sample}\NormalTok{(groups, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{size =} \DecValTok{6459}\NormalTok{) ->}\StringTok{ }\NormalTok{groups}
-  \KeywordTok{split}\NormalTok{(coxData, groups) coxData_split}
+  \KeywordTok{sample}\NormalTok{(groups, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{size =} \DecValTok{6085}\NormalTok{) ->}\StringTok{ }\NormalTok{groups}
+  \KeywordTok{split}\NormalTok{(coxData, groups) }\CommentTok{#coxData_split}
 \NormalTok{\}}
 
 \NormalTok{prepareForumlaSGD <-}\StringTok{ }\NormalTok{function(coxData)\{}
   \KeywordTok{as.formula}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Surv(times, patient.vital_status) ~ "}\NormalTok{,}
-                   \KeywordTok{paste}\NormalTok{(}\KeywordTok{names}\NormalTok{(coxData)[-}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)],}
+                   \KeywordTok{paste}\NormalTok{(}\KeywordTok{names}\NormalTok{(coxData[[}\DecValTok{1}\NormalTok{]])[-}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)],}
                          \DataTypeTok{collapse=}\StringTok{"+"}\NormalTok{), }\DataTypeTok{collapse =} \StringTok{""}\NormalTok{))}
 \NormalTok{\}}
+
+
+\NormalTok{full_cox_loglik_matrix <-}\StringTok{ }\NormalTok{function(beta, x, censored)\{}
+  \KeywordTok{order}\NormalTok{(x$times) ->}\StringTok{ }\NormalTok{order2}
+  \NormalTok{x[order2, ] ->}\StringTok{ }\NormalTok{xORD}
+  \NormalTok{censored[order2] ->}\StringTok{ }\NormalTok{censORD}
+  \KeywordTok{sum}\NormalTok{(censORD*(beta%*%x[, -}\KeywordTok{which}\NormalTok{(}\KeywordTok{names}\NormalTok{(x)==}\StringTok{'times'}\NormalTok{)] -}
+\StringTok{                       }\KeywordTok{log}\NormalTok{(}\KeywordTok{cumsum}\NormalTok{(}\KeywordTok{exp}\NormalTok{(beta1*}\KeywordTok{rev}\NormalTok{(x1) +}\StringTok{ }\NormalTok{beta2*}\KeywordTok{rev}\NormalTok{(x2))))))}
+\NormalTok{\}}
+
+
+
+\KeywordTok{library}\NormalTok{(dplyr)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(RTCGA.clinical)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Loading required package: RTCGA
+Loading required package: knitr
+Welcome to the RTCGA (version: 1.1.10).
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(RTCGA.mutations)}
+\KeywordTok{library}\NormalTok{(data.table)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Attaching package: 'data.table'
+
+The following objects are masked from 'package:dplyr':
+
+    between, last
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(coxphSGD)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Loading required package: survival
+
+Attaching package: 'coxphSGD'
+
+The following object is masked _by_ '.GlobalEnv':
+
+    dataCox
+\end{verbatim}
 
 Do analizy badającej wpływ występowania mutacji genów na czas przeżycia
 wykorzystano dane kliniczne i dane o występujących u pacjentów mutacjach
@@ -886,9 +960,18 @@ dane o mutacjach wygenerowaną dzięki wywołaniu
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{extractCohortIntersection}\NormalTok{() ->}\StringTok{ }\NormalTok{cohorts}
+\NormalTok{(}\KeywordTok{extractCohortIntersection}\NormalTok{() ->}\StringTok{ }\NormalTok{cohorts)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+ [1] "ACC"      "BLCA"     "BRCA"     "CESC"     "CHOL"     "COAD"    
+ [7] "COADREAD" "DLBC"     "ESCA"     "GBM"      "GBMLGG"   "HNSC"    
+[13] "KICH"     "KIPAN"    "KIRC"     "KIRP"     "LAML"     "LGG"     
+[19] "LIHC"     "LUAD"     "LUSC"     "OV"       "PAAD"     "PCPG"    
+[25] "PRAD"     "READ"     "SARC"     "SKCM"     "STAD"     "STES"    
+[31] "TGCT"     "THCA"     "UCEC"     "UCS"      "UVM"     
+\end{verbatim}
 
 Następnie dla tak otrzymanych 35 kohort nowotworowych uzyskano dane o
 statusie pacjenta (śmierć bądź cenzurowanie) oraz jego czasie spędzonym
@@ -896,18 +979,48 @@ pod obseracją dzięki funkcji
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{extractSurvival}\NormalTok{(cohorts) ->}\StringTok{ }\NormalTok{survivalData}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{extractSurvival}\NormalTok{(cohorts) ->}\StringTok{ }\NormalTok{survivalData)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+      bcr_patient_barcode patient.vital_status times
+ACC.1        TCGA-OR-A5J1                    1  1355
+ACC.2        TCGA-OR-A5J2                    1  1677
+ACC.3        TCGA-OR-A5J3                    0  1942
+ACC.4        TCGA-OR-A5J4                    1   423
+ACC.5        TCGA-OR-A5J5                    1   365
+ACC.6        TCGA-OR-A5J6                    0  2428
+\end{verbatim}
 
 Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych
 pacjentów uzyskano za pomocą
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{extractMutations}\NormalTok{(cohorts, }\FloatTok{0.02}\NormalTok{) ->}\StringTok{ }\NormalTok{mutationsData }
+\KeywordTok{extractMutations}\NormalTok{(cohorts, }\FloatTok{0.02}\NormalTok{) ->}\StringTok{ }\NormalTok{mutationsData}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+Using 'bcr_patient_barcode' as value column. Use 'value.var' to override
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mutationsData[}\DecValTok{1}\NormalTok{:}\DecValTok{6}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{56}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{207}\NormalTok{,}\DecValTok{801}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  bcr_patient_barcode A2ML1 ALMS1 ATP2B2 CNTNAP4 PLEC
+1     TCGA-02-0003-01     0     1      0       0    0
+2     TCGA-02-0033-01     0     0      0       0    0
+3     TCGA-02-0047-01     0     0      0       0    0
+4     TCGA-02-0055-01     0     0      0       0    0
+5     TCGA-02-2470-01     0     0      0       0    0
+6     TCGA-02-2483-01     0     0      1       0    0
+\end{verbatim}
 
 gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2
 \% pacjentów mających zarówno dane kliniczne jak i dane o występujących
@@ -921,8 +1034,15 @@ ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{prepareCoxDataSplit}\NormalTok{(mutationsData,survivalData, }\DataTypeTok{groups =} \DecValTok{100}\NormalTok{) ->}\StringTok{ }\NormalTok{coxData_split}
+\KeywordTok{head}\NormalTok{(coxData_split[[}\DecValTok{1}\NormalTok{]][}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{210}\NormalTok{,}\DecValTok{302}\NormalTok{,}\DecValTok{356}\NormalTok{,}\DecValTok{898}\NormalTok{,}\DecValTok{911}\NormalTok{,}\DecValTok{1092}\NormalTok{:}\DecValTok{1093}\NormalTok{)])}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+     COL14A1 DOCK9 FASN SEMA5A SHPRH patient.vital_status times
+81         0     0    0      0     0                    1     7
+1068       1     0    0      1     0                    1  1171
+\end{verbatim}
 
 Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a
 pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki
@@ -930,39 +1050,55 @@ pomocniczej funkcji
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{prepareForumlaSGD}\NormalTok{(coxData) ->}\StringTok{ }\NormalTok{formulaSGD}
+\KeywordTok{prepareForumlaSGD}\NormalTok{(coxData_split) ->}\StringTok{ }\NormalTok{formulaSGD}
 \end{Highlighting}
 \end{Shaded}
 
-Ostatecznie dla 6459 pacjentów, którzy posiadali informacje o
+Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o
 występujących mutacjach, oraz dla których odnotowano komplet i
 poprawność danych klinicznych dotyczących statusu i obserwowanego czasu
 przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa
-z wykorzystaniem stochastycznego spadku gradientu do estymacji.
+z wykorzystaniem stochastycznego spadku gradientu do estymacji. Model
+dopasowano wielokrotnie z różnymi ciągami odpowiadającymi za długość
+kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak
+powstałych kilku modeli wybrano ten, który dla swoich współczynników
+dawał największą wartość funkcji częściowej log-wiarogodności dla
+niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie
+zaobserwowane podzbiory obserwacji.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{coxData_split, }\DataTypeTok{max.iter =} \DecValTok{100}\NormalTok{)}
+\NormalTok{coxData_split[}\DecValTok{99}\NormalTok{:}\DecValTok{100}\NormalTok{] ->}\StringTok{ }\NormalTok{testCox}
+\NormalTok{coxData_split[}\DecValTok{1}\NormalTok{:}\DecValTok{98}\NormalTok{] ->}\StringTok{ }\NormalTok{trainCox}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{) ->}\StringTok{ }\NormalTok{model98_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{) ->}\StringTok{ }\NormalTok{model196_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{) ->}\StringTok{ }\NormalTok{model392_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{,}
+         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{,}
+         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{,}
+         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model392_1_over_50sqrt_t}
 \end{Highlighting}
 \end{Shaded}
 
 Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności
 hazardu, gdyż zakładano napływającą postać danych (stąd podział danych
-na 100 grup). Dla takiej postaci pojawia się danych ciężko także mówić o
-jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności
-otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać
-istotność statystyczna otrzymanych współczynników w modelu, jednak
-założono, że współczynniki dostatecznie odległe od \(0\) można uznać za
-istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie
-oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym
-genie w stosunku do pacjentów nie posiadających mutacji w danym genie.
-Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta
+na 100 grup). Dla takiej postaci pojawiania się danych ciężko także
+mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i
+dokładności otrzymanych wpsółczynników. Nie stworzono teorii
+pozwalającej badać istotność statystyczną otrzymanych współczynników w
+modelu, jednak założono, że współczynniki dostatecznie odległe od \(0\)
+można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki
+dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w
+danym genie w stosunku do pacjentów nie posiadających mutacji w danym
+genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta
 posiadającego mutację w danym genie w stosunku do pacjentów nie
 posiadających mutacji w danym genie. Wzrost proporcji hazardu można
 otrzymać dla danego genu poprzez obłożenie współczynnika funkcją
 wykładniczą o wykładniku \(e\).
 
 Wyniki estymacji dla genów zawierających największe co do modułu
-współczynniki można znaleźć w Tabeli 1.ź
+współczynniki można znaleźć w Tabeli 1.
 
 \end{document}
