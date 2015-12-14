@@ -404,7 +404,7 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ \citep{programikr, b
   \NormalTok{batchData <-}\StringTok{ }\NormalTok{batchData %>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(-times)}
   \NormalTok{scores <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(batchData[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)], }\DecValTok{1}\NormalTok{, }
                   \NormalTok{function(element) }\KeywordTok{exp}\NormalTok{(element %*%}\StringTok{ }\NormalTok{beta) )}
-  \NormalTok{distractor <-}\StringTok{ }\KeywordTok{cumsum}\NormalTok{(}\KeywordTok{log}\NormalTok{(scores))}
+  \NormalTok{distractor <-}\StringTok{ }\KeywordTok{log}\NormalTok{(}\KeywordTok{cumsum}\NormalTok{(}\NormalTok{scores))}
   
   \KeywordTok{sum}\NormalTok{((}\KeywordTok{as.vector}\NormalTok{(beta%*%}\KeywordTok{t}\NormalTok{(batchData[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)])) -}\StringTok{ }
 \StringTok{         }\NormalTok{distractor)*batchData[, }\StringTok{"patient.vital_status"}\NormalTok{])}
