@@ -33,6 +33,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr arrange
 #' @importFrom dplyr filter
+#' @import foreach
 #' @author 
 #' Marcin Kosinski, \email{m.p.kosinski@@gmail.com}
 #' @examples
@@ -55,10 +56,11 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
   # estimate
   while(i <= max.iter & diff > epsilon) {
     beta_new[[i]] <- coxphSGD_batch(formula = formula, beta = beta_old,
-        learningRate = learningRates(i), data = data[[ifelse(i%%n==0,n,i%%n)]])
+        learningRate = learningRates(i), data = data[[ifelse(i%%n==0,n,i%%n)]]) %>%
+      unlist
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
-    i <- i + 1  ; cat("iteration: ", i, "\r")
+    i <- i + 1  ; cat("\r iteration: ", i, "\r")
   }
   # return results
   list(Call = match.call(), epsilon = epsilon, learningRates = learningRates,
@@ -71,7 +73,7 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   batchData <- prepareBatch(formula = formula, data = data)
   # calculate the log-likelihood for this batch sample
   partial_sum <- list()
-  for(k in 1:nrow(batchData)) {
+  foreach(k = 1:nrow(batchData)) %do% {
     # risk set for current time/observation
     risk_set <- batchData %>% filter(times >= batchData$times[k])
     

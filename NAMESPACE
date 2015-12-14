@@ -1,6 +1,7 @@
 export(coxphSGD)
 export(dataCox)
 export(simulateCoxSGD)
+import(foreach)
 importFrom(assertthat,assert_that)
 importFrom(dplyr,arrange)
 importFrom(dplyr,bind_rows)

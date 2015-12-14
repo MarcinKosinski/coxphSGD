@@ -18,7 +18,7 @@ dataCox <- function(N, lambda, rho, x, beta, censRate){
 
 x <- matrix(sample(0:1, size = 20000, replace = TRUE), ncol = 2)
 
-dataCox(10^4, lambda = 3, rho = 2, x, beta = c(1,3), censRate = 0.1) -> dCox
+dataCox(10^4, lambda = 5, rho = 0.5, x, beta = c(-0.5,2), censRate = 0.2) -> dCox
 
 library(dplyr)
 dCox %>%
@@ -41,7 +41,7 @@ full_cox_loglik <- function(beta1, beta2, x1, x2, censored){
 library(reshape2)
 calculate_outer_cox <- function(x1, x2, censored){
   ## contours
-  outer_res <- outer(seq(-1,3, length = 100),
+  outer_res <- outer(seq(-1,1, length = 100),
                      seq(0,4, length = 100),
                      Vectorize( function(beta1,beta2){
                        full_cox_loglik(beta1, beta2, x1 = x1, x2 = x2, censored = censored)
@@ -49,7 +49,7 @@ calculate_outer_cox <- function(x1, x2, censored){
   )
   outer_res_melted <- melt(outer_res)
   outer_res_melted$Var1 <- as.factor(outer_res_melted$Var1)
-  levels(outer_res_melted$Var1) <- as.character(seq(-1,3, length = 100))
+  levels(outer_res_melted$Var1) <- as.character(seq(-1,1, length = 100))
   outer_res_melted$Var2 <- as.factor(outer_res_melted$Var2)
   levels(outer_res_melted$Var2) <- as.character(seq(0,4, length = 100))
   outer_res_melted$Var1 <- as.numeric(as.character(outer_res_melted$Var1))
