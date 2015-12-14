@@ -1,0 +1,7 @@
+  krok  model     value
+1    1 model1     0.000
+2    2 model1 -8167.065
+3    3 model1 -3741.749
+4    4 model1 -3890.731
+5    5 model1 -3874.017
+6    6 model1 -2631.841

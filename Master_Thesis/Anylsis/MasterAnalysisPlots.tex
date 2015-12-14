@@ -1,0 +1,271 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textbf{{#1}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Marcin Kosinski},
+            pdftitle={Master Analysis - Plots},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Master Analysis - Plots}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Marcin Kosinski}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{25.10.2015}
+
+
+
+\begin{document}
+
+\maketitle
+
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model_1_over_t$coefficients[}\KeywordTok{c}\NormalTok{(}\DecValTok{98}\NormalTok{, }\DecValTok{196}\NormalTok{, }\DecValTok{294}\NormalTok{, }\DecValTok{392}\NormalTok{, }\DecValTok{490}\NormalTok{)] ->}\StringTok{ }\NormalTok{coeffs_1_overt}
+\KeywordTok{do.call}\NormalTok{(rbind, coeffs_1_overt) %>%}
+\StringTok{  }\NormalTok{as.data.frame %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{epoka =} \DecValTok{1}\NormalTok{:}\DecValTok{5}\NormalTok{) %>%}
+\StringTok{  }\NormalTok{tidyr::}\KeywordTok{gather}\NormalTok{(}\DataTypeTok{key=}\NormalTok{epoka) ->gat}
+\KeywordTok{names}\NormalTok{(gat)[}\DecValTok{2}\NormalTok{]<-}\StringTok{ "gen"}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\NormalTok{gat %>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(value)) +}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{fill=}\DecValTok{4}\NormalTok{, }\DataTypeTok{col =} \DecValTok{1}\NormalTok{, }\DataTypeTok{binwidth =}  \FloatTok{0.01}\NormalTok{) +}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(epoka~.) +}
+\StringTok{  }\KeywordTok{theme_classic}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{15}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{'liczność'}\NormalTok{) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{'wartości współczynników modelu'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{'Histogramy wartości współczynników modelu po kolejnych epokach'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.5}\NormalTok{)) ->}\StringTok{ }\NormalTok{fig1}
+
+
+\NormalTok{model_1_over_50sqrt_t$coefficients[}\KeywordTok{c}\NormalTok{(}\DecValTok{98}\NormalTok{, }\DecValTok{196}\NormalTok{, }\DecValTok{294}\NormalTok{, }\DecValTok{392}\NormalTok{, }\DecValTok{490}\NormalTok{)] ->}\StringTok{ }\NormalTok{coeffs_over_50sqrt_t}
+\KeywordTok{do.call}\NormalTok{(rbind, coeffs_over_50sqrt_t) %>%}
+\StringTok{  }\NormalTok{as.data.frame %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{epoka =} \DecValTok{1}\NormalTok{:}\DecValTok{5}\NormalTok{) %>%}
+\StringTok{  }\NormalTok{tidyr::}\KeywordTok{gather}\NormalTok{(}\DataTypeTok{key=}\NormalTok{epoka) ->gat2}
+\KeywordTok{names}\NormalTok{(gat2)[}\DecValTok{2}\NormalTok{]<-}\StringTok{ "gen"}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\NormalTok{gat2 %>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(value)) +}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{fill=}\DecValTok{5}\NormalTok{, }\DataTypeTok{col =} \DecValTok{1}\NormalTok{, }\DataTypeTok{binwidth =}  \FloatTok{0.01}\NormalTok{) +}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(epoka~.) +}
+\StringTok{  }\KeywordTok{theme_classic}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{15}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{'liczność'}\NormalTok{) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{'wartości współczynników modelu'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{'Histogramy wartości współczynników modelu po kolejnych epokach'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\FloatTok{0.25}\NormalTok{,}\FloatTok{0.25}\NormalTok{)) ->}\StringTok{ }\NormalTok{fig2}
+
+\NormalTok{model_1_over_100sqrt_t$coefficients[}\KeywordTok{c}\NormalTok{(}\DecValTok{98}\NormalTok{, }\DecValTok{196}\NormalTok{, }\DecValTok{294}\NormalTok{, }\DecValTok{392}\NormalTok{, }\DecValTok{490}\NormalTok{)] ->}\StringTok{ }\NormalTok{coeffs_over_100sqrt_t}
+\KeywordTok{do.call}\NormalTok{(rbind, coeffs_over_100sqrt_t) %>%}
+\StringTok{  }\NormalTok{as.data.frame %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{epoka =} \DecValTok{1}\NormalTok{:}\DecValTok{5}\NormalTok{) %>%}
+\StringTok{  }\NormalTok{tidyr::}\KeywordTok{gather}\NormalTok{(}\DataTypeTok{key=}\NormalTok{epoka) ->gat3}
+\KeywordTok{names}\NormalTok{(gat3)[}\DecValTok{2}\NormalTok{]<-}\StringTok{ "gen"}
+\NormalTok{gat3 %>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(value)) +}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{fill=}\DecValTok{6}\NormalTok{, }\DataTypeTok{col =} \DecValTok{1}\NormalTok{, }\DataTypeTok{binwidth =}  \FloatTok{0.01}\NormalTok{) +}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(epoka~.) +}
+\StringTok{  }\KeywordTok{theme_classic}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{15}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{'liczność'}\NormalTok{) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{'wartości współczynników modelu'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{'Histogramy wartości współczynników modelu po kolejnych epokach'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\FloatTok{0.1}\NormalTok{,}\FloatTok{0.1}\NormalTok{)) ->}\StringTok{ }\NormalTok{fig3}
+
+
+
+\NormalTok{gat %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{model =} \StringTok{"model1"}\NormalTok{) %>%}
+\StringTok{  }\KeywordTok{bind_rows}\NormalTok{(gat2 %>%}
+\StringTok{              }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{model =} \StringTok{"model2"}\NormalTok{)) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{bind_rows}\NormalTok{(gat3 %>%}
+\StringTok{              }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{model =} \StringTok{"model3"}\NormalTok{)) %>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(value)) +}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{fill=}\DecValTok{4}\NormalTok{, }\DataTypeTok{col =} \DecValTok{1}\NormalTok{, }\DataTypeTok{binwidth =} \FloatTok{0.001}\NormalTok{) +}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(epoka~model) +}
+\StringTok{  }\KeywordTok{theme_classic}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{15}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{'liczność'}\NormalTok{) +}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{'wartość współczynnika modelu'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{'Histogramy wartości współczynników modelu po kolejnych epokach'}\NormalTok{) ->}\StringTok{ }\NormalTok{fig4}
+
+\KeywordTok{do.call}\NormalTok{(rbind, coeffs_over_100sqrt_t) %>%}\StringTok{ }\NormalTok{t %>%}\StringTok{  }\NormalTok{as.data.frame ->}\StringTok{ }\NormalTok{model3}
+\KeywordTok{do.call}\NormalTok{(rbind, coeffs_over_50sqrt_t) %>%}\StringTok{ }\NormalTok{t %>%}\StringTok{  }\NormalTok{as.data.frame ->}\StringTok{ }\NormalTok{model2}
+\KeywordTok{do.call}\NormalTok{(rbind, coeffs_1_overt) %>%}\StringTok{ }\NormalTok{t %>%}\StringTok{  }\NormalTok{as.data.frame ->}\StringTok{ }\NormalTok{model1}
+\KeywordTok{names}\NormalTok{(model3) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"epoka1"}\NormalTok{, }\StringTok{"epoka2"}\NormalTok{,}\StringTok{"epoka3"}\NormalTok{, }\StringTok{"epoka4"}\NormalTok{, }\StringTok{"epoka5"}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(model2) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"epoka1"}\NormalTok{, }\StringTok{"epoka2"}\NormalTok{,}\StringTok{"epoka3"}\NormalTok{, }\StringTok{"epoka4"}\NormalTok{, }\StringTok{"epoka5"}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(model1) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"epoka1"}\NormalTok{, }\StringTok{"epoka2"}\NormalTok{,}\StringTok{"epoka3"}\NormalTok{, }\StringTok{"epoka4"}\NormalTok{, }\StringTok{"epoka5"}\NormalTok{)}
+
+\KeywordTok{library}\NormalTok{(GGally)}
+\KeywordTok{ggpairs}\NormalTok{(  }\DataTypeTok{title =} \StringTok{'Różnice między współczynnikami w kolejnych epokach'}\NormalTok{,}
+          \NormalTok{model1, }
+          \DataTypeTok{upper =} \StringTok{"blank"}\NormalTok{,}
+          \DataTypeTok{lower =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{continuous =} \StringTok{"points"}\NormalTok{)}
+\NormalTok{) ->}\StringTok{ }\NormalTok{fig5 }
+\KeywordTok{do.call}\NormalTok{(rbind, model_1_over_t$coefficients) ->}\StringTok{ }\NormalTok{wspolczynniki}
+\KeywordTok{qplot}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{491}\NormalTok{,wspolczynniki[ ,}\KeywordTok{which}\NormalTok{(}\KeywordTok{colnames}\NormalTok{(wspolczynniki) ==}\StringTok{ "BRAF"}\NormalTok{)]) +}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{'Krok algorytmu'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{'Wartość współczynnika'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{20}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{'Wartości współczynnika genu BRAF'}\NormalTok{) ->}\StringTok{ }\NormalTok{fig8}
+\KeywordTok{qplot}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{491}\NormalTok{,wspolczynniki[ ,}\KeywordTok{which}\NormalTok{(}\KeywordTok{colnames}\NormalTok{(wspolczynniki) ==}\StringTok{ "EGFR"}\NormalTok{)]) +}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{'Krok algorytmu'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{'Wartość współczynnika'}\NormalTok{) +}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{20}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{'Wartości współczynnika genu EGFR'}\NormalTok{) ->}\StringTok{ }\NormalTok{fig9}
+\KeywordTok{do.call}\NormalTok{(rbind,testCox) ->}\StringTok{ }\NormalTok{testCox_binded}
+\KeywordTok{do.call}\NormalTok{(rbind,trainCox) ->}\StringTok{ }\NormalTok{trainCox_binded}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(survMisc)}
+\NormalTok{trainCox_binded %>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(patient.vital_status, times, BRAF, EGFR) %>%}
+\StringTok{  }\KeywordTok{survfit}\NormalTok{( }\KeywordTok{Surv}\NormalTok{(times, patient.vital_status) ~}\StringTok{ }\NormalTok{BRAF, }\DataTypeTok{data =} \NormalTok{.) %>%}
+\StringTok{  }\NormalTok{survMisc:::}\KeywordTok{autoplot.survfit}\NormalTok{( }\DataTypeTok{titleSize=}\DecValTok{12}\NormalTok{, }\DataTypeTok{type=}\StringTok{"CI"}\NormalTok{, }\DataTypeTok{palette =} \StringTok{"Set1"}\NormalTok{,}
+                               \DataTypeTok{alpha =} \FloatTok{0.7}\NormalTok{, }\DataTypeTok{survLineSize=}\DecValTok{2}\NormalTok{,}
+ \DataTypeTok{pX =} \FloatTok{0.3}\NormalTok{, }\DataTypeTok{sigP =}\DecValTok{3}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Przeżycie a mutacja genu BRAF"} \NormalTok{) ->}\StringTok{ }\NormalTok{km_plot}
+
+\NormalTok{xlims <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{5000}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\NormalTok{km_plot[[}\DecValTok{1}\NormalTok{]] <-}\StringTok{ }\NormalTok{km_plot[[}\DecValTok{1}\NormalTok{]] +}
+\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(xlims[}\DecValTok{1}\NormalTok{],xlims[}\DecValTok{2}\NormalTok{])) +}
+\StringTok{  }\KeywordTok{theme_light}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{22}\NormalTok{) }
+\NormalTok{km_plot[[}\DecValTok{2}\NormalTok{]] <-}\StringTok{ }\NormalTok{km_plot[[}\DecValTok{2}\NormalTok{]] +}
+\StringTok{   }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \NormalTok{xlims)+}
+\StringTok{  }\KeywordTok{theme_light}\NormalTok{(}\DataTypeTok{base_size =} \DecValTok{22}\NormalTok{) }
+\KeywordTok{pdf}\NormalTok{(}\StringTok{"BRAF.pdf"}\NormalTok{, }\DataTypeTok{width =} \DecValTok{10}\NormalTok{, }\DataTypeTok{height =} \DecValTok{8}\NormalTok{)}
+\NormalTok{survMisc::}\KeywordTok{autoplot}\NormalTok{(km_plot)}
+\KeywordTok{dev.off}\NormalTok{()}
+
+\KeywordTok{do.call}\NormalTok{(rbind,testCox) ->}\StringTok{ }\NormalTok{testCox_binded}
+\KeywordTok{do.call}\NormalTok{(rbind,model_1_over_t$coefficients)->}\StringTok{ }\NormalTok{coeffM1}
+\KeywordTok{do.call}\NormalTok{(rbind,model_1_over_50sqrt_t$coefficients)->}\StringTok{ }\NormalTok{coeffM2}
+\KeywordTok{do.call}\NormalTok{(rbind,model_1_over_100sqrt_t$coefficients)->}\StringTok{ }\NormalTok{coeffM3}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\NormalTok{coxph_loglik <-}\StringTok{ }\NormalTok{function(beta, batchData )\{}
+  \NormalTok{batchData <-}\StringTok{ }\NormalTok{batchData %>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(-times)}
+  \NormalTok{scores <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(batchData[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)], }\DecValTok{1}\NormalTok{, }
+                  \NormalTok{function(element) }\KeywordTok{exp}\NormalTok{(element %*%}\StringTok{ }\NormalTok{beta) )}
+  \NormalTok{distractor <-}\StringTok{ }\KeywordTok{cumsum}\NormalTok{(}\KeywordTok{log}\NormalTok{(scores))}
+  
+  \KeywordTok{sum}\NormalTok{((}\KeywordTok{as.vector}\NormalTok{(beta%*%}\KeywordTok{t}\NormalTok{(batchData[, -}\KeywordTok{c}\NormalTok{(}\DecValTok{1092}\NormalTok{, }\DecValTok{1093}\NormalTok{)])) -}\StringTok{ }
+\StringTok{         }\NormalTok{distractor)*batchData[, }\StringTok{"patient.vital_status"}\NormalTok{])}
+  
+\NormalTok{\}}
+
+\KeywordTok{library}\NormalTok{(pbapply)}
+\KeywordTok{pbapply}\NormalTok{(coeffM1, }\DataTypeTok{MARGIN =} \DecValTok{1}\NormalTok{, function(x)\{}
+  \KeywordTok{coxph_loglik}\NormalTok{(x, testCox_binded)}
+\NormalTok{\}) ->}\StringTok{ }\NormalTok{log_lik_M1}
+\KeywordTok{pbapply}\NormalTok{(coeffM2, }\DataTypeTok{MARGIN =} \DecValTok{1}\NormalTok{, function(x)\{}
+  \KeywordTok{coxph_loglik}\NormalTok{(x, testCox_binded)}
+\NormalTok{\}) ->}\StringTok{ }\NormalTok{log_lik_M2}
+\KeywordTok{pbapply}\NormalTok{(coeffM3, }\DataTypeTok{MARGIN =} \DecValTok{1}\NormalTok{, function(x)\{}
+  \KeywordTok{coxph_loglik}\NormalTok{(x, testCox_binded)}
+\NormalTok{\}) ->}\StringTok{ }\NormalTok{log_lik_M3}
+
+\KeywordTok{library}\NormalTok{(tidyr)}
+\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{model1 =} \NormalTok{log_lik_M1,}
+           \DataTypeTok{model2 =} \NormalTok{log_lik_M2,}
+           \DataTypeTok{model3 =} \NormalTok{log_lik_M3,}
+           \DataTypeTok{krok =} \DecValTok{1}\NormalTok{:}\DecValTok{491}\NormalTok{) %>%}
+\StringTok{  }\KeywordTok{gather}\NormalTok{(krok) ->}\StringTok{ }\NormalTok{d2viz}
+\KeywordTok{names}\NormalTok{(d2viz)[}\DecValTok{2}\NormalTok{]<-}\StringTok{"model"}
+
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{ggplot}\NormalTok{(d2viz, }\KeywordTok{aes}\NormalTok{(krok, -value, }\DataTypeTok{group =} \NormalTok{model, }\DataTypeTok{col =} \NormalTok{model)) +}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{() +}\KeywordTok{scale_color_brewer}\NormalTok{(}\DataTypeTok{palette =} \StringTok{"Set1"}\NormalTok{) +}
+\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{ylim=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{4000}\NormalTok{)) +}
+\StringTok{  }\KeywordTok{theme_light}\NormalTok{() +}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"top"}\NormalTok{) +}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Krok algorytmu"}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"log-wiarogodność"}\NormalTok{) +}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Wartości częściowej funkcji log-wiarogodności konstruowanej na zbiorze testowym }
+\StringTok{          wśród 3 badanych modeli, w kolejnych krokach algorytmu"}\NormalTok{) ->}\StringTok{ }\NormalTok{fig10}
+\end{Highlighting}
+\end{Shaded}
+
+\end{document}
