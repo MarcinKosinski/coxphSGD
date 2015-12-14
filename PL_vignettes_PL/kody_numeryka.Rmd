@@ -819,6 +819,7 @@ gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2 % pacje
 
 Dla tak otrzymanych dwóch zbiorów danych połączono dla pacjentów informacje kliniczne z informacjami o mutacjach dzięki przypisanym do pacjentów i ich próbek kodów `bcr_patient_barcode`, by ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 ```{r, eval = TRUE}
+set.seed(4561)
 prepareCoxDataSplit(mutationsData,survivalData, groups = 100) -> coxData_split
 head(coxData_split[[1]][c(1,10), c(210,302,356,898,911,1092:1093)])
 ```
@@ -837,11 +838,11 @@ coxphSGD(formulaSGD, data = trainCox, max.iter = 98) -> model98_1_over_t
 coxphSGD(formulaSGD, data = trainCox, max.iter = 196) -> model196_1_over_t
 coxphSGD(formulaSGD, data = trainCox, max.iter = 392) -> model392_1_over_t
 coxphSGD(formulaSGD, data = trainCox, max.iter = 98,
-         learningRates = 1/(50*sqrt(t))) -> model98_1_over_50sqrt_t
+         learningRates = function(t){1/(50*sqrt(t))}) -> model98_1_over_50sqrt_t
 coxphSGD(formulaSGD, data = trainCox, max.iter = 196,
-         learningRates = 1/(50*sqrt(t))) -> model98_1_over_50sqrt_t
+         learningRates = function(t){1/(50*sqrt(t))}) -> model98_1_over_50sqrt_t
 coxphSGD(formulaSGD, data = trainCox, max.iter = 392,
-         learningRates = 1/(50*sqrt(t))) -> model392_1_over_50sqrt_t
+         learningRates = function(t){1/(50*sqrt(t))}) -> model392_1_over_50sqrt_t
 save(model98_1_over_t, file = "model98_1_over_t.rda")
 save(model196_1_over_t, file = "model196_1_over_t.rda")
 save(model98_1_over_50sqrt_t, file = "model98_1_over_50sqrt_t.rda")
