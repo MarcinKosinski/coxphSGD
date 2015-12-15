@@ -352,12 +352,12 @@
 
 \begin{verbatim}
   id       time status x.1 x.2
-1  1 0.04217186      0   0   1
-2  2 0.04583595      0   0   1
-3  3 0.03361776      0   1   1
-4  4 0.10477472      0   0   0
-5  5 0.22068183      0   0   0
-6  6 0.12595706      1   0   1
+1  1 0.14019641      0   1   0
+2  2 0.08756997      0   0   0
+3  3 0.03026327      1   1   1
+4  4 0.08187382      0   1   0
+5  5 0.15379172      1   1   0
+6  6 0.01420306      0   1   0
 \end{verbatim}
 
 \begin{Shaded}
@@ -1033,6 +1033,7 @@ ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{4561}\NormalTok{)}
 \KeywordTok{prepareCoxDataSplit}\NormalTok{(mutationsData,survivalData, }\DataTypeTok{groups =} \DecValTok{100}\NormalTok{) ->}\StringTok{ }\NormalTok{coxData_split}
 \KeywordTok{head}\NormalTok{(coxData_split[[}\DecValTok{1}\NormalTok{]][}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{210}\NormalTok{,}\DecValTok{302}\NormalTok{,}\DecValTok{356}\NormalTok{,}\DecValTok{898}\NormalTok{,}\DecValTok{911}\NormalTok{,}\DecValTok{1092}\NormalTok{:}\DecValTok{1093}\NormalTok{)])}
 \end{Highlighting}
@@ -1064,21 +1065,21 @@ kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak
 powstałych kilku modeli wybrano ten, który dla swoich współczynników
 dawał największą wartość funkcji częściowej log-wiarogodności dla
 niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie
-zaobserwowane podzbiory obserwacji.
+zaobserwowane podzbiory obserwacji. Dla każdego z ciągów
+\(1/t, 1/50*\sqrt(t), 100/5*\sqrt(100)\) odpowiadających długościom
+kroków w algorytmie wyznaczono współczynniki modelu dla 5 epok, dzięki
+czemu możliwe było rozważanie postępu danego wariantu algorytmu również
+po 1, 2, 3 czy 4 epokach.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{coxData_split[}\DecValTok{99}\NormalTok{:}\DecValTok{100}\NormalTok{] ->}\StringTok{ }\NormalTok{testCox}
 \NormalTok{coxData_split[}\DecValTok{1}\NormalTok{:}\DecValTok{98}\NormalTok{] ->}\StringTok{ }\NormalTok{trainCox}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{) ->}\StringTok{ }\NormalTok{model98_1_over_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{) ->}\StringTok{ }\NormalTok{model196_1_over_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{) ->}\StringTok{ }\NormalTok{model392_1_over_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{,}
-         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{,}
-         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{,}
-         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model392_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{490}\NormalTok{) ->}\StringTok{ }\NormalTok{model_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{490}\NormalTok{,}
+         \DataTypeTok{learningRates =} \NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))\}) ->}\StringTok{ }\NormalTok{model_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{490}\NormalTok{,}
+         \DataTypeTok{learningRates =} \NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/(}\DecValTok{100}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))\}) ->}\StringTok{ }\NormalTok{model_1_over_100sqrt_t}
 \end{Highlighting}
 \end{Shaded}
 
