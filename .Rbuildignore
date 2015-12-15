@@ -5,3 +5,8 @@ thesis_part
 PL_vignettes_PL
 ^.*\.pdf$
 ^.*\.jpeg$
+.RData
+.rda
+.pdf
+^.*\.RData$
+^.*\.rda$

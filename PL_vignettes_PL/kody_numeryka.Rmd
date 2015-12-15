@@ -829,26 +829,91 @@ Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a pozosta
 prepareForumlaSGD(coxData_split) -> formulaSGD
 ```
 
-Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o występujących mutacjach, oraz dla których odnotowano komplet i poprawność danych klinicznych dotyczących statusu i obserwowanego czasu przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa z wykorzystaniem stochastycznego spadku gradientu do estymacji. Model dopasowano wielokrotnie z różnymi ciągami odpowiadającymi za długość kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak powstałych kilku modeli wybrano ten, który dla swoich współczynników dawał największą wartość funkcji częściowej log-wiarogodności dla niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie zaobserwowane podzbiory obserwacji.
+Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o występujących mutacjach, oraz dla których odnotowano komplet i poprawność danych klinicznych dotyczących statusu i obserwowanego czasu przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa z wykorzystaniem stochastycznego spadku gradientu do estymacji. Model dopasowano wielokrotnie z różnymi ciągami odpowiadającymi za długość kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak powstałych kilku modeli wybrano ten, który dla swoich współczynników dawał największą wartość funkcji częściowej log-wiarogodności dla niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie zaobserwowane podzbiory obserwacji. Dla każdego z ciągów $1/t, 1/50*\sqrt(t), 100/5*\sqrt(100)$ odpowiadających długościom kroków w algorytmie wyznaczono współczynniki modelu dla 5 epok, dzięki czemu możliwe było rozważanie postępu danego wariantu algorytmu również po 1, 2, 3 czy 4 epokach.
 
-```{r, eval = FALSE, echo=1:11}
+```{r, eval = FALSE, echo=1:7}
 coxData_split[99:100] -> testCox
 coxData_split[1:98] -> trainCox
-coxphSGD(formulaSGD, data = trainCox, max.iter = 98) -> model98_1_over_t
-coxphSGD(formulaSGD, data = trainCox, max.iter = 196) -> model196_1_over_t
-coxphSGD(formulaSGD, data = trainCox, max.iter = 392) -> model392_1_over_t
-coxphSGD(formulaSGD, data = trainCox, max.iter = 98,
-         learningRates = function(t){1/(50*sqrt(t))}) -> model98_1_over_50sqrt_t
-coxphSGD(formulaSGD, data = trainCox, max.iter = 196,
-         learningRates = function(t){1/(50*sqrt(t))}) -> model98_1_over_50sqrt_t
-coxphSGD(formulaSGD, data = trainCox, max.iter = 392,
-         learningRates = function(t){1/(50*sqrt(t))}) -> model392_1_over_50sqrt_t
-save(model98_1_over_t, file = "model98_1_over_t.rda")
-save(model196_1_over_t, file = "model196_1_over_t.rda")
-save(model98_1_over_50sqrt_t, file = "model98_1_over_50sqrt_t.rda")
-save(model98_1_over_50sqrt_t, file = "model98_1_over_50sqrt_t.rda")
-save(model392_1_over_50sqrt_t, file = "model392_1_over_50sqrt_t.rda")
-save(model392_1_over_t, file = "model392_1_over_t.rda")
+coxphSGD(formulaSGD, data = trainCox, max.iter = 490) -> model_1_over_t
+coxphSGD(formulaSGD, data = trainCox, max.iter = 490,
+         learningRates = function(t){1/(50*sqrt(t))}) -> model_1_over_50sqrt_t
+coxphSGD(formulaSGD, data = trainCox, max.iter = 490,
+         learningRates = function(t){1/(100*sqrt(t))}) -> model_1_over_100sqrt_t
+save(model_1_over_t, file = "model_1_over_t.rda")
+save(model_1_over_50sqrt_t, file = "model_1_over_50sqrt_t.rda")
+save(model_1_over_100sqrt_t, file = "model_1_over_100sqrt_t.rda")
+```
+
+```{r, echo=FALSE}
+model_1_over_t$coefficients[c(98, 196, 294, 392, 490)] -> coeffs_1_overt
+do.call(rbind, coeffs_1_overt) %>%
+  as.data.frame %>%
+  mutate(epoka = 1:5) %>%
+  tidyr::gather(key=epoka) ->gat
+names(gat)[2]<- "gen"
+library(ggplot2)
+gat %>%
+  ggplot(aes(value)) + geom_histogram(fill=4, col = 1, binwidth =  0.01) +
+  facet_grid(epoka~.) +
+  theme_dark(base_size = 15) +
+  ylab('liczność') + xlab('wartości współczynników modelu') +
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') 
+
+
+model_1_over_50sqrt_t$coefficients[c(98, 196, 294, 392, 490)] -> coeffs_over_50sqrt_t
+do.call(rbind, coeffs_over_50sqrt_t) %>%
+  as.data.frame %>%
+  mutate(epoka = 1:5) %>%
+  tidyr::gather(key=epoka) ->gat2
+names(gat2)[2]<- "gen"
+library(ggplot2)
+gat2 %>%
+  ggplot(aes(value)) + geom_histogram(fill=5, col = 1, binwidth =  0.01) +
+  facet_grid(epoka~.) +
+  theme_dark(base_size = 15) +
+  ylab('liczność') + xlab('wartości współczynników modelu') +
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') 
+
+model_1_over_100sqrt_t$coefficients[c(98, 196, 294, 392, 490)] -> coeffs_over_100sqrt_t
+do.call(rbind, coeffs_over_100sqrt_t) %>%
+  as.data.frame %>%
+  mutate(epoka = 1:5) %>%
+  tidyr::gather(key=epoka) ->gat3
+names(gat3)[2]<- "gen"
+gat3 %>%
+  ggplot(aes(value)) + geom_histogram(fill=6, col = 1, binwidth =  0.01) +
+  facet_grid(epoka~.) +
+  theme_dark(base_size = 15) +
+  ylab('liczność') + xlab('wartości współczynników modelu') +
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') 
+
+
+
+gat %>%
+  mutate(model = "model1") %>%
+  bind_rows(gat2 %>%
+              mutate(model = "model2")) %>% 
+  bind_rows(gat3 %>%
+              mutate(model = "model3")) %>% 
+  ggplot(aes(value)) + geom_histogram(fill=4, col = 1, binwidth = 0.001) +
+  facet_grid(epoka~model) +
+  theme_dark(base_size = 15) +
+  ylab('liczność') + xlab('wartość współczynnika modelu') +
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach')
+
+do.call(rbind, coeffs_over_100sqrt_t) %>% t %>%  as.data.frame -> model3
+do.call(rbind, coeffs_over_50sqrt_t) %>% t %>%  as.data.frame -> model2
+do.call(rbind, coeffs_1_overt) %>% t %>%  as.data.frame -> model1
+names(model3) <- c("epoka1", "epoka2","epoka3", "epoka4", "epoka5")
+names(model2) <- c("epoka1", "epoka2","epoka3", "epoka4", "epoka5")
+names(model1) <- c("epoka1", "epoka2","epoka3", "epoka4", "epoka5")
+
+library(GGally)
+ggpairs(  title = 'Różnice między współczynnikami w kolejnych epokach',
+  model1, alpha = 0.4, 
+  upper = "blank",
+  lower = list(continuous = "points")
+)
 ```
 
 Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności hazardu, gdyż zakładano napływającą postać danych (stąd podział danych na 100 grup). Dla takiej postaci pojawiania się danych ciężko także mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać istotność statystyczną otrzymanych współczynników w modelu, jednak założono, że współczynniki dostatecznie odległe od $0$ można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Wzrost proporcji hazardu można otrzymać dla danego genu poprzez obłożenie współczynnika funkcją wykładniczą o wykładniku $e$.
