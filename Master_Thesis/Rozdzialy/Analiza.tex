@@ -123,6 +123,7 @@ ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{4561}\NormalTok{)}
 \KeywordTok{prepareCoxDataSplit}\NormalTok{(mutationsData,survivalData, }\DataTypeTok{groups =} \DecValTok{100}\NormalTok{) ->}\StringTok{ }\NormalTok{coxData_split}
 \KeywordTok{head}\NormalTok{(coxData_split[[}\DecValTok{1}\NormalTok{]][}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{210}\NormalTok{,}\DecValTok{302}\NormalTok{,}\DecValTok{356}\NormalTok{,}\DecValTok{898}\NormalTok{,}\DecValTok{911}\NormalTok{,}\DecValTok{1092}\NormalTok{:}\DecValTok{1093}\NormalTok{)])}
 \end{Highlighting}
@@ -154,29 +155,53 @@ kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak
 powstałych kilku modeli wybrano ten, który dla swoich współczynników
 dawał największą wartość funkcji częściowej log-wiarogodności dla
 niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie
-zaobserwowane podzbiory obserwacji.
+zaobserwowane podzbiory obserwacji. Dla każdego z ciągów
+\(1/t, 1/50\sqrt{t}, 1/100\sqrt{100}\) odpowiadających długościom
+kroków w algorytmie wyznaczono współczynniki modelu dla 5 epok, dzięki
+czemu możliwe było rozważanie postępu danego wariantu algorytmu również
+po 1, 2, 3 czy 4 epokach.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{coxData_split[}\DecValTok{99}\NormalTok{:}\DecValTok{100}\NormalTok{] ->}\StringTok{ }\NormalTok{testCox}
 \NormalTok{coxData_split[}\DecValTok{1}\NormalTok{:}\DecValTok{98}\NormalTok{] ->}\StringTok{ }\NormalTok{trainCox}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{) ->}\StringTok{ }\NormalTok{model98_1_over_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{) ->}\StringTok{ }\NormalTok{model196_1_over_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{) ->}\StringTok{ }\NormalTok{model392_1_over_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{98}\NormalTok{,}
-         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{196}\NormalTok{,}
-         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model98_1_over_50sqrt_t}
-\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{392}\NormalTok{,}
-         \DataTypeTok{learningRates =} \DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))) ->}\StringTok{ }\NormalTok{model392_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{490}\NormalTok{) ->}\StringTok{ }\NormalTok{model_1_over_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{490}\NormalTok{,}
+         \DataTypeTok{learningRates =} \NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/(}\DecValTok{50}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))\}) ->}\StringTok{ }\NormalTok{model_1_over_50sqrt_t}
+\KeywordTok{coxphSGD}\NormalTok{(formulaSGD, }\DataTypeTok{data =} \NormalTok{trainCox, }\DataTypeTok{max.iter =} \DecValTok{490}\NormalTok{,}
+         \DataTypeTok{learningRates =} \NormalTok{function(t)\{}\DecValTok{1}\NormalTok{/(}\DecValTok{100}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(t))\}) ->}\StringTok{ }\NormalTok{model_1_over_100sqrt_t}
 \end{Highlighting}
 \end{Shaded}
+
+
+Po dopasowaniu modeli sporządzono wykresy przedstawiające histogramy wartości współczynników modelu po każdej epoce, w rozróżnieniu na trzy typy ciągów odpowiedzialnych za długość kroku. Histogramy przedstawiono na Rysunkach \ref{fig:hist1} - \ref{fig:hist3}, zaś na Rysunku \ref{fig:hist4} przedstawiono ich porównanie na wspólnych osiach. Największe zróżnicowanie wśród współczynników modelu można zaobserwować dla modelu \texttt{model\_1\_over\_t}, w którym ciąg odpowiadający za długość kroku algorytmu to $1/t$. W pozostałych modelach współczynniki grupują się bliżej $0$ i rzadko co do modułu są większe od $0.5$. W przypadku modelu \texttt{model\_1\_over\_t} wartości współczynników bywają co do modułu niekiedy większa od 1. Oznaczać to może, że przy takim ciągu długości kroków, algorytm jest w stanie uwypuklić wpływ genów mających istotny wpływ na czas przeżycia pacjentów poprzez wyestymowanie większych wartości wśród odpowiednich współczynników. Różnice wśród wartości współczynników pomiędzy modelami najwyraźniej widać na Rysunku \ref{fig:hist4}, gdzie w przypadku modelu \texttt{model\_1\_over\_100sqrt\_t} ($\alpha_{model3} = 1/100\sqrt{t}$) pik w okolicach zera wskazuje na to, że mało genów można uznać za istotnie mające wpływ na czas przeżycia z powodu odpowiadających im współczynnikom bliskim $0$. Nie oznacza to jednak, że w tym przypadku model jest gorszy.
+
+Zdecydowano się uznać za najlepszy ten model, który da największą wartość częściowej funkcji log-wiarogodności na testowym zbiorze wyznaczonym przez dwa ostatnie zaobserwowane podzbiory.  
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_overt_t.pdf}
+\caption{\label{fig:hist1} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/t$.}
+\ \\
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_over_50sqrt_t.pdf}
+\caption{\label{fig:hist2} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/50\sqrt{t}$.}
+\end{figure}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_overt_100sqrt_t.pdf}
+\caption{\label{fig:hist3} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/100\sqrt{t}$.}
+\ \\
+\includegraphics[width=0.95\textwidth, height = 260pt]{Obrazki/analiza/hist_together.pdf}
+\caption{\label{fig:hist4} Porównanie histogramów wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym kolejne ciągi odpowiadający za długość kroku to odpowiednio: $\alpha_{model1} = 1/t, \alpha_{model2} = 1/50\sqrt{t},  \alpha_{model3} = 1/100\sqrt{t}$.}
+\end{figure}
+
+\subsubsection{Rezultaty analizy przeżycia}
 
 Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności
 hazardu, gdyż zakładano napływającą postać danych (stąd podział danych
 na 100 grup). Dla takiej postaci pojawiania się danych ciężko także
 mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i
-dokładności otrzymanych wpsółczynników. Nie stworzono teorii
+dokładności otrzymanych współczynników. Nie stworzono teorii
 pozwalającej badać istotność statystyczną otrzymanych współczynników w
 modelu, jednak założono, że współczynniki dostatecznie odległe od \(0\)
 można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki
@@ -188,8 +213,9 @@ posiadających mutacji w danym genie. Wzrost proporcji hazardu można
 otrzymać dla danego genu poprzez obłożenie współczynnika funkcją
 wykładniczą o wykładniku \(e\).
 
+
 Wyniki estymacji dla genów zawierających największe co do modułu
-współczynniki można znaleźć w Tabeli \ref{tabelka}.
+współczynniki (pochodzące z modelu dającego największą wartość częściowej funkcji log-wiarogodności konstruowanej na bazie dwóch ostatnich zaobserwowanych podzbiorów danych) można znaleźć w Tabeli \ref{tabelka}.
 
 \begin{table}[ht]
 \centering
