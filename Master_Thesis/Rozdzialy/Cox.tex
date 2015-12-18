@@ -28,12 +28,12 @@ gdzie $F_j(t)$ to dystrybuanta rozkładu zadanego gęstością $f_j(t)$.
 \end{definition}
 \begin{definition}\label{def:haz}
 \textbf{Funkcja hazardu} to funkcja, która wyraża się wzorem
-\begin{equation}
+%\begin{equation}
 \begin{align*}
 \lambda_j(t) & =  \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h | T^* \geq t)}{h} & \ \\
  \ & = \lim\limits_{h\rightarrow 0}\dfrac{\mathbb{P}(t \leq T^* \leq t +h )}{h}\cdot\frac{1}{  \mathbb{P}(T^* \geq t)} & \ \\ \ & = \lim\limits_{h\rightarrow 0} \frac{F_j(t+h) - F_j(t) }{h}\cdot\frac{1}{S_j(t)} & =  \frac{f_j(t)}{S_j(t)}.
 \end{align*}
-\end{equation}
+%\end{equation}
 \end{definition}
 
 
@@ -236,7 +236,7 @@ T = (\lambda^{-1}\cdot(-\log(U))\cdot e^{-x'\beta})^{\frac{1}{\rho}} = \Big(-\fr
 
 Dzięki tym rozważaniom, możliwe było stworzenie kodu generującego czasy i indykatory zdarzeń dla zadanych z góry współczynników modelu i zmiennych objaśniających. Poniższy kod i jego rezultat posłużą w rozdziale \ref{implemento} do diagnostyki procesu estymacji w modelu Coxa w przypadku wykorzystania algorytmu stochastycznego spadku gradientu.
 
-\newline \ \newline
+\ \newline \ \newline 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{dataCox <-}\StringTok{ }\NormalTok{function(N, lambda, rho, x, beta, censRate)\{}
