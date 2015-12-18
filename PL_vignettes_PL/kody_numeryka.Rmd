@@ -910,10 +910,10 @@ names(model1) <- c("epoka1", "epoka2","epoka3", "epoka4", "epoka5")
 
 library(GGally)
 ggpairs(  title = 'Różnice między współczynnikami w kolejnych epokach',
-  model1, alpha = 0.4, 
+  model1, alpha = 0.4, params = c(color = "white"),
   upper = "blank",
   lower = list(continuous = "points")
-)
+) + theme_dark() 
 ```
 
 Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności hazardu, gdyż zakładano napływającą postać danych (stąd podział danych na 100 grup). Dla takiej postaci pojawiania się danych ciężko także mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać istotność statystyczną otrzymanych współczynników w modelu, jednak założono, że współczynniki dostatecznie odległe od $0$ można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Wzrost proporcji hazardu można otrzymać dla danego genu poprzez obłożenie współczynnika funkcją wykładniczą o wykładniku $e$.

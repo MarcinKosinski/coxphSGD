@@ -125,10 +125,10 @@ ggplot()+
   #                    y=outerCox$Var2,
   #                    z=outerCox$value),
   #                binwidth = 2, size = 0.5, colour = "grey50") +
-#   stat_contour(aes(x=outerCox$Var1,
-#                    y=outerCox$Var2,
-#                    z=outerCox$value),
-#                bins = 30, col = "blue") +
+  #   stat_contour(aes(x=outerCox$Var1,
+  #                    y=outerCox$Var2,
+  #                    z=outerCox$value),
+  #                bins = 30, col = "blue") +
   stat_contour(aes(x=ouTT$Var1,
                    y=ouTT$Var2,
                    z=ouTT$value),

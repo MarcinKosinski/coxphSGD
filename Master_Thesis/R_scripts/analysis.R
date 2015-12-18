@@ -37,4 +37,5 @@ pbapply(model1, MARGIN = 1, function(x){
 
 save(cum_log_lik_model1, file = "cum_log_lik_model1.rda")
 
+save(testCox_binded, file = "testCox_binded.rda")
 
