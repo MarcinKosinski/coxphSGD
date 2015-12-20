@@ -66,7 +66,7 @@
 \RequirePackage{amssymb}
 %------------------------------------------------------------------------------%
 \RequirePackage[OT4]{polski}
-\bibliographystyle{plplain}
+%\bibliographystyle{plplain}
 %------------------------------------------------------------------------------%
 \RequirePackage[unicode]{hyperref}
 \hypersetup{

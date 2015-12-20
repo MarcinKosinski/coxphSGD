@@ -76,6 +76,15 @@
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\usepackage{url}
+\usepackage[sort]{natbib}
 %------------------------------------------------------------------------------%
 \title{Estymacja w modelu Coxa metodą~stochastycznego~spadku~gradientu z~przykładami~zastosowań~w~analizie~danych z~The~Cancer~Genome~Atlas}
 \titleaux{Stochastic gradient descent method in~Cox~models~with~applications to The~Cancer~Genome~Atlas~data}
@@ -89,6 +98,12 @@
 \album{265361}
 %------------------------------------------------------------------------------%
 \begin{document}
+%\bibliographystyle{authordate1}
+%\bibliographystyle{authordate}
+\bibliographystyle{apalike}
+%\setcitestyle{numbers}
+\setcitestyle{authoryear}
+
 \maketitle
 
 \begin{center}
@@ -99,12 +114,12 @@ Praca przedstawia zastosowanie algorytmu numerycznej optymalizacji metodą stoch
 
 W pracy opisano matematyczne własności estymatorów największej wiarogodności, przedstawiono model Coxa wraz z najważniejszymi jego własnościami, scharakteryzowano algorytm stochastycznego spadku gradientu oraz jego różnice w stosunku go algorytmów spadku gradientu, zaimplementowano algorytm numerycznej optymalizacji metodą stochastycznego spadku gradientu do wyznaczenia współczynników w modelu proporcjonalnych Coxa, opartych na analitycznej metodzie wyznaczania estymatorów metodą największej wiarogodności oraz przeprowadzono analizę rzeczywistych danych genomicznych z wykorzystaniem tego algorytmu. Pracę wzbogacono o symulacje zbieżności procesu optymalizacji funkcji log-wiarogodności dla modelu regresji logistycznej, które przygotowane zostały dla algorytmów spadku gradientu rzędu I, spadku gradientu rzędu II oraz stochastycznego spadku gradientu rzędu I. Dzięki temu możliwe było zobrazowanie różnic w opisywanych metodach numerycznej optymalizacji. Dodatkowo przeprowadzono symulacje dla sztucznie wygenerowanych danych do analizy przeżycia z rozkładu Weibulla, pozwalające zobrazować proces zbieżności dla nowo wprowadzonego algorytmu numerycznej optymalizacji metodą stochastycznego spadku gradientu do wyznaczenia współczynników w modelu proporcjonalnych Coxa, opartych na analitycznej metodzie wyznaczania estymatorów metodą największej wiarogodności.
 
-Do analizy genomicznej wykorzystano środowisko statystyczne $\mathcal{R}$, a wykorzystane funkcje, zaimplementowane algorytmy i przygotowaną dokumentację do stworzonego w trakcie pracy pakietu \texttt{coxphSGD} zamieszczono w Dodatku. W analizie badano wpływ występowania mutacji w poszczególnych genach na czas przeżycia pacjentów, dla których dane kliniczne i~dane o~występowaniu mutacji zaczerpnięto z badania \textit{The Cancer Genome Atlas}. \ \\
+Do analizy genomicznej wykorzystano środowisko statystyczne $\mathcal{R}$, a wykorzystane funkcje, zaimplementowane algorytmy i przygotowaną dokumentację do stworzonego w trakcie pracy pakietu \texttt{coxphSGD} zamieszczono w Dodatku. W analizie badano wpływ występowania mutacji w poszczególnych genach na czas przeżycia pacjentów, dla których dane kliniczne i dane o~występowaniu mutacji zaczerpnięto z badania \textit{The Cancer Genome Atlas}. \ \\
 
 \begin{center}
 \textbf{Słowa kluczowe} 
 \end{center}
-model proporcjonalnych hazardów Coxa, stochastyczny spadek gradientu, estymacja metodą największej wiarogodności, częściowa funkcja wiarogodności, analiza przeżycia, pakiet statystyczny $\mathcal{R}$, symulacje trajektorii metod optymalizacji, napływające dane, nowotworzenie, \textit{The~Cancer~Genome~Atlas} \ \\
+model proporcjonalnych hazardów Coxa, stochastyczny spadek gradientu, estymacja metodą największej wiarogodności, częściowa funkcja wiarogodności, analiza przeżycia, pakiet statystyczny $\mathcal{R}$, napływające dane, nowotworzenie, \textit{The~Cancer~Genome~Atlas} \ \\
 
 \begin{center}
 \textbf{Tytuł pracy w języku angielskim} \\ \ \\ \vspace{-10pt}
@@ -138,7 +153,9 @@ Stochastic gradient descent method in Cox models with applications to \\ The~Can
 \input{Rozdzialy/Dokumentacje.tex}
 
 
-\input{Rozdzialy/Biblio.tex}
+\small\bibliography{biblioteczka}
+
+%\input{Rozdzialy/Biblio.tex}
 
 
 \makestatement
