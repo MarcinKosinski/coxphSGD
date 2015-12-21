@@ -1,3 +1,8 @@
+library(survival)
+library(coxphSGD)
+library(ggplot2)
+library(magrittr)
+library(dplyr)
 set.seed(4561)
 simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 10, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
@@ -19,6 +24,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -43,6 +51,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -67,6 +78,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -91,6 +105,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -117,6 +134,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -141,6 +161,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -169,6 +192,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -193,6 +219,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -217,6 +246,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -241,6 +273,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -267,6 +302,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -291,13 +329,16 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 
 
-set.seed(4561)
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 1, epsilon = 1e-5) -> d2ggplot
+set.seed(4562)
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 2, epsilon = 1e-5) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
 beta_0 = c(0,0)
@@ -317,6 +358,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -342,6 +386,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -367,6 +414,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -392,6 +442,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -418,6 +471,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -443,6 +499,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
