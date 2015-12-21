@@ -10,12 +10,8 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
                              \NormalTok{beta_0, epsilon) \{}
   \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.list}\NormalTok{(data) &}\StringTok{ }\KeywordTok{length}\NormalTok{(data) >}\StringTok{ }\DecValTok{0}\NormalTok{)}
   \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(data, ncol)))) ==}\StringTok{ }\DecValTok{1}\NormalTok{)}
-  \CommentTok{# + check names and types for every variables}
   \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.function}\NormalTok{(learningRates))}
-  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(epsilon))}
-  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(beta_0))}
-  
-    \CommentTok{# check length of the start parameter}
+  \KeywordTok{assert_that}\NormalTok{(}\KeywordTok{is.numeric}\NormalTok{(epsilon, beta_0))}
   \NormalTok{if (}\KeywordTok{length}\NormalTok{(beta_0) ==}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
     \NormalTok{beta_0 <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(beta_0, }\KeywordTok{as.character}\NormalTok{(formula)[}\DecValTok{3}\NormalTok{] %>%}
 \StringTok{                    }\KeywordTok{strsplit}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{+"}\NormalTok{) %>%}
@@ -61,18 +57,16 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
 \end{Shaded}
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{full_cox_loglik <-}\StringTok{ }\NormalTok{function(beta1, beta2, x1, x2, censored)\{}
-  \KeywordTok{sum}\NormalTok{(}\KeywordTok{rev}\NormalTok{(censored)*(beta1*}\KeywordTok{rev}\NormalTok{(x1) +}\StringTok{ }\NormalTok{beta2*}\KeywordTok{rev}\NormalTok{(x2) -}
-\StringTok{                       }\KeywordTok{log}\NormalTok{(}\KeywordTok{cumsum}\NormalTok{(}\KeywordTok{exp}\NormalTok{(beta1*}\KeywordTok{rev}\NormalTok{(x1) +}\StringTok{ }\NormalTok{beta2*}\KeywordTok{rev}\NormalTok{(x2))))))}
+\NormalTok{coxph_loglik <-}\StringTok{ }\NormalTok{function(beta, formula, data) \{}
+  \KeywordTok{coxph}\NormalTok{(formula, }\DataTypeTok{init=}\NormalTok{beta, }\DataTypeTok{control=}\KeywordTok{list}\NormalTok{(}\StringTok{'iter.max'}\NormalTok{=}\DecValTok{0}\NormalTok{), }\DataTypeTok{data =}\NormalTok{data)$loglik[}\DecValTok{2}\NormalTok{]}
 \NormalTok{\}}
-
-\NormalTok{calculate_outer_cox <-}\StringTok{ }\NormalTok{function(x1, x2, censored)\{}
+\NormalTok{calculate_outer_cox_3 <-}\StringTok{ }\NormalTok{function(dCox)\{}
   \NormalTok{## contours}
   \NormalTok{outer_res <-}\StringTok{ }\KeywordTok{outer}\NormalTok{(}\KeywordTok{seq}\NormalTok{(-}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{, }\DataTypeTok{length =} \DecValTok{100}\NormalTok{),}
-           \KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{4}\NormalTok{, }\DataTypeTok{length =} \DecValTok{100}\NormalTok{),}
-           \KeywordTok{Vectorize}\NormalTok{( function(beta1,beta2)\{}
-             \KeywordTok{full_cox_loglik}\NormalTok{(beta1, beta2, }\DataTypeTok{x1 =} \NormalTok{x1, }\DataTypeTok{x2 =} \NormalTok{x2, }\DataTypeTok{censored =} \NormalTok{censored)}
-           \NormalTok{\} )}
+                     \KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{4}\NormalTok{, }\DataTypeTok{length =} \DecValTok{100}\NormalTok{),}
+                     \KeywordTok{Vectorize}\NormalTok{( function(beta1,beta2)\{}
+                       \KeywordTok{coxph_loglik}\NormalTok{(}\DataTypeTok{beta=}\KeywordTok{c}\NormalTok{(beta1,beta2), }\KeywordTok{Surv}\NormalTok{(time, status)~x}\FloatTok{.1}\NormalTok{+x}\FloatTok{.2}\DecValTok{-1}\NormalTok{, dCox)}
+                     \NormalTok{\} )}
   \NormalTok{)}
   \NormalTok{outer_res_melted <-}\StringTok{ }\KeywordTok{melt}\NormalTok{(outer_res)}
   \NormalTok{outer_res_melted$Var1 <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(outer_res_melted$Var1)}
@@ -83,6 +77,10 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
   \NormalTok{outer_res_melted$Var2 <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{as.character}\NormalTok{(outer_res_melted$Var2))}
   \KeywordTok{return}\NormalTok{(outer_res_melted)}
 \NormalTok{\}}
+
+
+
+\KeywordTok{calculate_outer_cox_3}\NormalTok{(dCox) ->}\StringTok{ }\NormalTok{outerCox}
 \NormalTok{simulateCoxSGD <-}\StringTok{ }\NormalTok{function(}\DataTypeTok{dCox =} \NormalTok{dCox, }\DataTypeTok{learningRates =} \NormalTok{function(x)\{}\DecValTok{1}\NormalTok{/x\},}
                       \DataTypeTok{epsilon =} \FloatTok{1e-03}\NormalTok{, }\DataTypeTok{beta_0 =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), }\DataTypeTok{max.iter =} \DecValTok{100}\NormalTok{)\{}
 
@@ -118,12 +116,6 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
            \DataTypeTok{beta_0 =} \NormalTok{beta_0, }\DataTypeTok{max.iter =} \NormalTok{max.iter*}\DecValTok{30}\NormalTok{) ->}\StringTok{ }\NormalTok{estimates5}
 
 
-  \KeywordTok{sample}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{, }\DataTypeTok{size =} \DecValTok{10}\NormalTok{^}\DecValTok{4}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{) ->}\StringTok{ }\NormalTok{group}
-  \KeywordTok{split}\NormalTok{(dCox, group) ->}\StringTok{ }\NormalTok{dCox_splitted}
-  \KeywordTok{coxphSGD}\NormalTok{(}\KeywordTok{Surv}\NormalTok{(time, status)~x}\FloatTok{.1}\NormalTok{+x}\FloatTok{.2}\NormalTok{, }\DataTypeTok{data =} \NormalTok{dCox_splitted,}
-           \DataTypeTok{epsilon =} \NormalTok{epsilon, }\DataTypeTok{learningRates =} \NormalTok{learningRates,}
-           \DataTypeTok{beta_0 =} \NormalTok{beta_0, }\DataTypeTok{max.iter =} \NormalTok{max.iter*}\DecValTok{10}\NormalTok{) ->}\StringTok{ }\NormalTok{estimates6}
-
   \KeywordTok{t}\NormalTok{(}\KeywordTok{simplify2array}\NormalTok{(estimates$coefficients)) %>%}
 \StringTok{    }\KeywordTok{as.data.frame}\NormalTok{() ->}\StringTok{ }\NormalTok{df1}
   \KeywordTok{t}\NormalTok{(}\KeywordTok{simplify2array}\NormalTok{(estimates2$coefficients)) %>%}
@@ -134,8 +126,6 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
 \StringTok{    }\KeywordTok{as.data.frame}\NormalTok{() ->}\StringTok{ }\NormalTok{df4}
   \KeywordTok{t}\NormalTok{(}\KeywordTok{simplify2array}\NormalTok{(estimates5$coefficients)) %>%}
 \StringTok{    }\KeywordTok{as.data.frame}\NormalTok{() ->}\StringTok{ }\NormalTok{df5}
-  \KeywordTok{t}\NormalTok{(}\KeywordTok{simplify2array}\NormalTok{(estimates6$coefficients)) %>%}
-\StringTok{    }\KeywordTok{as.data.frame}\NormalTok{() ->}\StringTok{ }\NormalTok{df6}
 
   \NormalTok{df1 %>%}
 \StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{version =} \KeywordTok{paste}\NormalTok{(}\StringTok{"90 batches,"}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(df1), }\StringTok{" steps"}\NormalTok{)) %>%}
@@ -146,9 +136,7 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
 \StringTok{    }\KeywordTok{bind_rows}\NormalTok{(df4 %>%}
 \StringTok{                }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{version =} \KeywordTok{paste}\NormalTok{(}\StringTok{"200 batches,"}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(df4), }\StringTok{" steps"}\NormalTok{))) %>%}
 \StringTok{    }\KeywordTok{bind_rows}\NormalTok{(df5 %>%}
-\StringTok{                }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{version =} \KeywordTok{paste}\NormalTok{(}\StringTok{"30 batches,"}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(df5), }\StringTok{" steps"}\NormalTok{))) %>%}
-\StringTok{    }\KeywordTok{bind_rows}\NormalTok{(df6 %>%}
-\StringTok{                }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{version =} \KeywordTok{paste}\NormalTok{(}\StringTok{"10 batches,"}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(df6), }\StringTok{" steps"}\NormalTok{))) ->}\StringTok{ }\NormalTok{d2ggplot}
+\StringTok{                }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{version =} \KeywordTok{paste}\NormalTok{(}\StringTok{"30 batches,"}\NormalTok{, }\KeywordTok{nrow}\NormalTok{(df5), }\StringTok{" steps"}\NormalTok{))) ->}\StringTok{ }\NormalTok{d2ggplot}
 
   \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{d2ggplot =} \NormalTok{d2ggplot, }\DataTypeTok{est1 =} \NormalTok{estimates, }\DataTypeTok{est2 =} \NormalTok{estimates2,}
               \DataTypeTok{est3 =} \NormalTok{estimates3, }\DataTypeTok{est4 =} \NormalTok{estimates4, }\DataTypeTok{est5 =} \NormalTok{estimates5))}
@@ -175,6 +163,9 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
 \StringTok{  }\KeywordTok{scale_colour_brewer}\NormalTok{(}\DataTypeTok{palette=}\StringTok{"Dark2"}\NormalTok{, }\DataTypeTok{name =} \StringTok{'Algorithm }\CharTok{\textbackslash{}n}\StringTok{ & Steps'}\NormalTok{) +}
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{beta_0[}\DecValTok{1}\NormalTok{], }\DataTypeTok{y =} \NormalTok{beta_0[}\DecValTok{2}\NormalTok{]), }\DataTypeTok{col =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{4}\NormalTok{, }\DataTypeTok{shape =} \DecValTok{17}\NormalTok{) +}
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{solution[}\DecValTok{1}\NormalTok{], }\DataTypeTok{y =} \NormalTok{solution[}\DecValTok{2}\NormalTok{]), }\DataTypeTok{col =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{4}\NormalTok{, }\DataTypeTok{shape =} \DecValTok{15}\NormalTok{) +}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{summary}\NormalTok{(}\KeywordTok{coxph}\NormalTok{(}\KeywordTok{Surv}\NormalTok{(time, status)~x}\FloatTok{.1}\NormalTok{+x}\FloatTok{.2}\NormalTok{, }\DataTypeTok{data =} \NormalTok{dCox))$coeff[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{],}
+                 \DataTypeTok{y =} \KeywordTok{summary}\NormalTok{(}\KeywordTok{coxph}\NormalTok{(}\KeywordTok{Surv}\NormalTok{(time, status)~x}\FloatTok{.1}\NormalTok{+x}\FloatTok{.2}\NormalTok{, }\DataTypeTok{data =} \NormalTok{dCox))$coeff[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{]),}
+             \DataTypeTok{col =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{4}\NormalTok{, }\DataTypeTok{shape =} \DecValTok{13}\NormalTok{) +}
 \StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"X1"}\NormalTok{) +}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"X2"}\NormalTok{) +}
 \StringTok{  }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{col =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{ncol =} \DecValTok{3}\NormalTok{))}
 \KeywordTok{dev.off}\NormalTok{()}

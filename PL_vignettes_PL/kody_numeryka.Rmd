@@ -651,6 +651,9 @@ ggplot() +
   scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
   geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
   geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
   xlab("X1") + ylab("X2") +
   guides(col = guide_legend(ncol = 3))
 dev.off()
@@ -918,8 +921,8 @@ Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności 
 Wyniki estymacji dla genów zawierających największe co do modułu współczynniki można znaleźć w Tabeli 1.
 
 ```{r, echo = FALSE}
-names(tail(sort(abs(tail(model98_1_over_t$coefficients,1)[[1]])),40)) -> top40
-tail(model98_1_over_t$coefficients,1)[[1]][which(names(tail(model98_1_over_t$coefficients,1)[[1]]) %in% top40)] -> real_top40
+names(tail(sort(abs(tail(model_1_over_t$coefficients,1)[[1]])),40)) -> top40
+tail(model_1_over_t$coefficients,1)[[1]][which(names(tail(model_1_over_t$coefficients,1)[[1]]) %in% top40)] -> real_top40
 data.frame(beta = sort(real_top40, decreasing = TRUE),
            exp_beta = exp(sort(real_top40, decreasing = TRUE))) %>% xtable::xtable()
 ```
@@ -977,3 +980,121 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   return(beta + learningRate * U_batch)
 }
 ```
+
+
+
+
+```{r}
+coxph_loglik <- function(beta, formula, data) {
+  coxph(formula, init=beta, control=list('iter.max'=0), data =data)$loglik[2]
+}
+
+as.data.frame(t(simplify2array(model_1_over_t$coefficients[-c(1:6)]))) -> x1
+as.data.frame(t(simplify2array(model_1_over_50sqrt_t$coefficients[-c(1:6)]))) -> x2
+as.data.frame(t(simplify2array(model_1_over_100sqrt_t$coefficients[-c(1:6)]))) -> x3
+
+
+
+library(ggplot2)
+qplot(1:length(x1$EGFR), x1$EGFR)
+
+data.frame(coef = x1$BRAF,
+           iter = 1:length(x1$BRAF)) %>%
+  ggplot(aes(x = iter,
+           y = coef)) +
+  theme_dark() +
+  geom_point(col = "white") +
+  xlab('Numer iteracji') +
+  ylab('Wartość współczynnika') +
+  ggtitle('Zmiany wartości współczynnika dla genu BRAF')
+
+
+data.frame(coef = x1$EGFR,
+           iter = 1:length(x1$EGFR)) %>%
+  ggplot(aes(x = iter,
+           y = coef)) +
+  theme_dark() +
+  geom_point(col = "white") +
+  xlab('Numer iteracji') +
+  ylab('Wartość współczynnika') +
+  ggtitle('Zmiany wartości współczynnika dla genu EGFR')
+
+
+
+library(dplyr)
+bind_rows(x1, x2, x3) -> binded
+
+full_cox_loglik_matrix <- function(beta, x, censored){
+  order(x$times) -> order2
+  x[order2, ] -> xORD
+  censored[order2] -> censORD
+  sum(censORD*(beta%*%x[, -which(names(x)=='times')] -
+                       log(cumsum(exp(beta1*rev(x1) + beta2*rev(x2))))))
+}
+
+apply(binded, MARGIN = 1, function(x){
+  full_cox_loglik_matrix(unlist(x), testCox_binded[, -1092], testCox_binded[,1092]) 
+  })-> logliks_values
+
+logliks_values %>%
+  mutate(model = c(rep("model1", 485),
+                            rep("model2", 485),
+                            rep("model3", 485))) -> d2viz
+
+dim(d2viz)
+
+library(tidyr)
+gather(d2viz, model) -> d2viz_gathered
+
+dim
+
+calculate_outer_cox_3 <- function(dCox){
+  ## contours
+  outer_res <- outer(seq(-1,3, length = 100),
+                     seq(0,4, length = 100),
+                     Vectorize( function(beta1,beta2){
+                       coxph_loglik(beta=c(beta1,beta2), Surv(time, status)~x.1+x.2-1, dCox)
+                     } )
+  )
+  outer_res_melted <- melt(outer_res)
+  outer_res_melted$Var1 <- as.factor(outer_res_melted$Var1)
+  levels(outer_res_melted$Var1) <- as.character(seq(-1,3, length = 100))
+  outer_res_melted$Var2 <- as.factor(outer_res_melted$Var2)
+  levels(outer_res_melted$Var2) <- as.character(seq(0,4, length = 100))
+  outer_res_melted$Var1 <- as.numeric(as.character(outer_res_melted$Var1))
+  outer_res_melted$Var2 <- as.numeric(as.character(outer_res_melted$Var2))
+  return(outer_res_melted)
+}
+calculate_outer_cox_3(dCox) -> outerCox
+```
+
+```{r}
+ggplot() +
+  stat_contour(aes(x=outerCox$Var1,
+                   y=outerCox$Var2,
+                   z=outerCox$value),
+               bins = 40, alpha = 0.25) +
+  geom_path(aes(d2ggplot$V1, d2ggplot$V2, group = d2ggplot$version,
+                colour = d2ggplot$version), size = 1) +
+  theme_bw(base_size = 20) +
+  theme(panel.border = element_blank(),
+        legend.key = element_blank(), legend.position = "top") +
+  scale_colour_brewer(palette="Dark2", name = 'Algorithm \n & Steps') +
+  geom_point(aes(x = beta_0[1], y = beta_0[2]), col = "black", size = 4, shape = 17) +
+  geom_point(aes(x = solution[1], y = solution[2]), col = "black", size = 4, shape = 15) +
+  geom_point(aes(x = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[1,1],
+                 y = summary(coxph(Surv(time, status)~x.1+x.2, data = dCox))$coeff[2,1]),
+             col = "black", size = 4, shape = 13) +
+  xlab("X1") + ylab("X2") +
+  guides(col = guide_legend(ncol = 3))
+```
+
+
+```{r}
+source("https://bioconductor.org/biocLite.R")
+biocLite("RTCGA")
+biocLite("RTCGA.clinical")
+biocLite("RTCGA.mutations")
+browseVignettes("RTCGA")
+```
+

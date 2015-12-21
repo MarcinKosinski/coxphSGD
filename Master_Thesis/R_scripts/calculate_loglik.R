@@ -41,6 +41,9 @@ coxph_loglik(beta=c(beta1,beta2), Surv(time, status)~x.1+x.2, dCox)
 
 
 library(reshape2)
+coxph_loglik <- function(beta, formula, data) {
+  coxph(formula, init=beta, control=list('iter.max'=0), data =data)$loglik[2]
+}
 calculate_outer_cox_3 <- function(dCox){
   ## contours
   outer_res <- outer(seq(-1,3, length = 100),
@@ -58,6 +61,7 @@ calculate_outer_cox_3 <- function(dCox){
   outer_res_melted$Var2 <- as.numeric(as.character(outer_res_melted$Var2))
   return(outer_res_melted)
 }
+calculate_outer_cox_3(dCox) -> outerCox
 
 # calculate_outer_cox_4minus1 <- function(dCox){
 #   ## contours
@@ -78,7 +82,7 @@ calculate_outer_cox_3 <- function(dCox){
 # }
 
 
-calculate_outer_cox_3(dCox) -> outerCox
+
 # calculate_outer_cox_4minus1(dCox) -> ouTT2
 #
 # calculate_outer_cox <- function(x1, x2, censored){
