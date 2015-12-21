@@ -99,25 +99,19 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   # to make the algorithm more clear to read and track
   batchData <- prepareBatch(formula = formula, data = data)
   # calculate the log-likelihood for this batch sample
-  partial_sum <- list()
-  foreach(k = 1:nrow(batchData)) %do% {
-    # risk set for current time/observation
-    risk_set <- batchData %>% filter(times >= batchData$times[k])
-    
-    nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
-      element * exp(element * beta)
-    }) %>% rowSums()
-      
-    denominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
-      exp(element * beta)
-    }) %>% rowSums()
-      
-    partial_sum[[k]] <- 
-      batchData[k, "event"] * (batchData[k, -c(1,2)] - nominator/denominator)
-  }
-  do.call(rbind, partial_sum) %>%
-    colSums() -> U_batch
+#  partial_sum <- list()
+  batchData <- batchData %>% arrange(-times)
   
+  scores <- apply(batchData[, -c(1, 2)], MARGIN = 1, 
+                  function(element) {
+                    exp(element %*% beta)
+                  })
+  
+  nominator <- apply(batchData[, -c(1, 2)], 2, function(x) cumsum(scores*x))
+  denominator <- cumsum(scores)
+  partial_sum <- (batchData[, -c(1, 2)] - nominator/denominator)*batchData[, "event"]
+    
+  U_batch <- partial_sum %>% colSums()
   return(beta + learningRate * U_batch)
 }
   

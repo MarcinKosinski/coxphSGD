@@ -52,7 +52,7 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
   diff <- epsilon + 1
   i <- 1
   beta_new <- list()     # steps are saved in a list so that they can
-  beta_old <- beta_start # be tracked in the future
+  beta_old <- beta_start # be traced in the future
   # estimate
   while(i <= max.iter & diff > epsilon) {
     beta_new[[i]] <- coxphSGD_batch(formula = formula, beta = beta_old,
@@ -61,8 +61,7 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
     i <- i + 1  ; cat("\r iteration: ", i, "\r")
-  }
-  # return results
+  }  # return results
   list(Call = match.call(), epsilon = epsilon, learningRates = learningRates,
        steps = i, coefficients = c(list(beta_start), beta_new))
 }
@@ -72,25 +71,19 @@ coxphSGD_batch <- function(formula, data, learningRate, beta){
   # to make the algorithm more clear to read and track
   batchData <- prepareBatch(formula = formula, data = data)
   # calculate the log-likelihood for this batch sample
-  partial_sum <- list()
-  foreach(k = 1:nrow(batchData)) %do% {
-    # risk set for current time/observation
-    risk_set <- batchData %>% filter(times >= batchData$times[k])
-    
-    nominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
-      element * exp(element * beta)
-    }) %>% rowSums()
-      
-    denominator <- apply(risk_set[, -c(1,2)], MARGIN = 1, function(element){
-      exp(element * beta)
-    }) %>% rowSums()
-      
-    partial_sum[[k]] <- 
-      batchData[k, "event"] * (batchData[k, -c(1,2)] - nominator/denominator)
-  }
-  do.call(rbind, partial_sum) %>%
-    colSums() -> U_batch
+#  partial_sum <- list()
+  batchData <- batchData %>% arrange(-times)
   
+  scores <- apply(batchData[, -c(1, 2)], MARGIN = 1, 
+                  function(element) {
+                    exp(element %*% beta)
+                  })
+  
+  nominator <- apply(batchData[, -c(1, 2)], 2, function(x) cumsum(scores*x))
+  denominator <- cumsum(scores)
+  partial_sum <- (batchData[, -c(1, 2)] - nominator/denominator)*batchData[, "event"]
+    
+  U_batch <- partial_sum %>% colSums()
   return(beta + learningRate * U_batch)
 }
   
