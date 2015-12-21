@@ -133,12 +133,12 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
   \CommentTok{# estimate}
   \NormalTok{while(i <=}\StringTok{ }\NormalTok{max.iter &}\StringTok{ }\NormalTok{diff >}\StringTok{ }\NormalTok{epsilon) \{}
     \NormalTok{beta_new[[i]] <-}\StringTok{ }\KeywordTok{coxphSGD_batch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{beta =} \NormalTok{beta_old,}
-        \DataTypeTok{learningRate =} \KeywordTok{learningRates}\NormalTok{(i), }\DataTypeTok{data =} \NormalTok{data[[}\KeywordTok{ifelse}\NormalTok{(i%%n==}\DecValTok{0}\NormalTok{,n,i%%n)]])}
+        \DataTypeTok{learningRate =} \KeywordTok{learningRates}\NormalTok{(i), }\DataTypeTok{data =} \NormalTok{data[[}\KeywordTok{ifelse}\NormalTok{(i%%n==}\DecValTok{0}\NormalTok{,n,i%%n)]]) %>%}
+\StringTok{      }\NormalTok{unlist}
     \NormalTok{diff <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{((beta_new[[i]] -}\StringTok{ }\NormalTok{beta_old)^}\DecValTok{2}\NormalTok{))}
     \NormalTok{beta_old <-}\StringTok{ }\NormalTok{beta_new[[i]]}
-    \NormalTok{i <-}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}  
-  \NormalTok{\}}
-  \CommentTok{# return results}
+    \NormalTok{i <-}\StringTok{ }\NormalTok{i +}\StringTok{ }\DecValTok{1}  \NormalTok{; }\KeywordTok{cat}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}r}\StringTok{ iteration: "}\NormalTok{, i, }\StringTok{"}\CharTok{\textbackslash{}r}\StringTok{"}\NormalTok{)}
+  \NormalTok{\}  }\CommentTok{# return results}
   \KeywordTok{list}\NormalTok{(}\DataTypeTok{Call =} \KeywordTok{match.call}\NormalTok{(), }\DataTypeTok{epsilon =} \NormalTok{epsilon, }\DataTypeTok{learningRates =} \NormalTok{learningRates,}
        \DataTypeTok{steps =} \NormalTok{i, }\DataTypeTok{coefficients =} \KeywordTok{c}\NormalTok{(}\KeywordTok{list}\NormalTok{(beta_start), beta_new))}
 \NormalTok{\}}
@@ -149,7 +149,7 @@ Implementacja algorytmu estymacji w modelu Coxa metodą stochastycznego spadku g
   \NormalTok{batchData <-}\StringTok{ }\KeywordTok{prepareBatch}\NormalTok{(}\DataTypeTok{formula =} \NormalTok{formula, }\DataTypeTok{data =} \NormalTok{data)}
   \CommentTok{# calculate the log-likelihood for this batch sample}
   \NormalTok{partial_sum <-}\StringTok{ }\KeywordTok{list}\NormalTok{()}
-  \NormalTok{for(k in }\DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(batchData)) \{}
+  \KeywordTok{foreach}\NormalTok{(}\DataTypeTok{k =} \DecValTok{1}\NormalTok{:}\KeywordTok{nrow}\NormalTok{(batchData)) %do%}\StringTok{ }\NormalTok{\{}
     \CommentTok{# risk set for current time/observation}
     \NormalTok{risk_set <-}\StringTok{ }\NormalTok{batchData %>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(times >=}\StringTok{ }\NormalTok{batchData$times[k])}
     
@@ -195,7 +195,7 @@ Przykładowe wywołanie funkcji \texttt{simulateCoxSGD()} znajduje się poniżej
 \end{Shaded}
 gdzie w tym wypadku parametr \texttt{max.iter} odpowiada za liczbę epok do wykorzystania, \texttt{learningRates} to funkcja odpowiedzialna za wyznaczenie długości kolejnych kroków algorytmu, \texttt{dCox} to dane do analizy przygotowane w postaci jaką zwraca funkcja \texttt{dataCox()}, \texttt{epsilon} to warunek stopu, zaś \texttt{beta\_0} to punkt startowy algorytmu.
 
-Na Rysunkach \ref{rysCox} - \ref{rysCox4} przedstawiono symulacje zbieżności procesu optymalizacji częściowej funkcji log-wiarogodności dla zaobserwowanego podzbioru obserwacji w modelu Coxa proporcjonalnych hazardów, z wykorzystaniem algorytmu stochastycznego spadku gradientu. Trajektorie zbieżności zależne są od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. Dodatkowo przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum. 
+Na Rysunkach \ref{rysCox} - \ref{rysCox4} przedstawiono symulacje zbieżności procesu optymalizacji częściowej funkcji log-wiarogodności w modelu Coxa proporcjonalnych hazardów, konstruowanej jedynie dla zaobserwowanego w danym kroku podzbioru obserwacji, z wykorzystaniem algorytmu stochastycznego spadku gradientu. Trajektorie zbieżności zależne są od ustawionego punktu startowego, warunku stopu oraz wartości ciągu odpowiadającego długościom kroków w algorytmie. Dodatkowo elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone mając wszystkie zaobserwowane podzbiory połączone w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem teoretyczne maksimum, zaś gwiazdką współczynniki uzyskane za pomocą funkcji \texttt{coxph}, która znajduje rozwiązania przy pomocy algorytmu spadku gradientu rzędu II (Raphsona-Newtona).
 
 \newpage
 \subsubsection{Podsumowanie symulacji dla modelu proporcjonalnych hazardów Coxa}
@@ -212,7 +212,7 @@ Na Rysunkach \ref{rysCox} - \ref{rysCox4} zaprezentowano trajektoria dla punktó
 
 Dla żadnej z symulacji algorytm nie zbiegł do punktu, w którym powinno być teoretyczne optimum. Może to wynikać z dużej liczby obserwacji cenzurowanych bądź z samej istoty losowości przy procesie generowania danych. Należy podkreślić, że dla różnych sprawdzanych wariantów procesu optymalizacji za każdym razem metoda zbiegała do tego samego punktu. Może być to optimum wynikające z postaci danych. Stochastyczny spadek gradientu nie wykorzystuje wszystkich obserwacji jednocześnie przez co trudniej zbiec do teoretycznego optimum. Warto zauważyć stabilność procesu optymalizacji dla ciągów odpowiadających za długość kroków w algorytmie, które ustawione zostały na mniejsze wartości $1/50\sqrt{t}, 1/100\sqrt{t}$ (Rysunki \ref{rysCox} - \ref{rysCox3}). W przypadku ciągu o zbyt dużych wartościach początkowych ($1/20\sqrt{t}$) trajektoria algorytmu we wczesnej fazie procesu były dalekie od optimum (Rysunek \ref{rysCox4}). Dzięki ukazanym warstwicom funkcji częściowej log-wiarogodności skonstruowanym na całych danych, widać, że poczynając od punktu startowego algorytm w różnych wydaniach postępuje we właściwym kierunku zbieżności i kieruje się w okolice teoretycznego optimum. Algorytm zatrzymuje się niedaleko teoretycznego optimum, jednak patrząc na rozrzedzone zagęszczenie warstwic w okolicach teoretycznego optimum, można stwierdzić, że wartości funkcji częściowej log-wiarogodności nie różnią się już na tyle, aby proces optymalizacji mógł być kontynuowany. Warto podkreślić, że większa liczba epok i mniejszy warunek stopu powodują jedynie poprawienie optymalizacji dla wariantów, w których cały zbiór obserwacji był podzielony na największą liczbę podzbiorów, a więc każdy krok algorytmu budowany był na najmniej licznych podzbiorach. W pozostałych przypadkach nie poprawia to optymalizacji. Można sądzić, że im liczniejszy zaobserwowany podzbiór tym skuteczniejsza estymacja.
 
-Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metody stochastycznego spadku gradientu w sytuacji napływających danych wygląda na stabilny i zbiega w okolice bliskie do teoretycznego optimum, niekiedy nawet dla tylko jednej epoki. Dla dobrze dobranych parametrów optymalizacji proces może być z powodzeniem wykorzystywany do znajdowania współczynników modelu. Kluczowym momentem mającym wpływ na powodzenie optymalizacji jest wybór ciągu odpowiedzialnego za dobór długości kroków w algorytmie, więc zaleca się symulacje badające różne ciągi oraz wybranie tego ciągu, który w większości przypadków daje stabilne, jednorodne współczynniki. 
+Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metody stochastycznego spadku gradientu w sytuacji napływających danych wygląda na stabilny i zbiega w okolice bliskie do teoretycznego optimum, niekiedy nawet dla tylko jednej epoki. Dla dobrze dobranych parametrów optymalizacji proces może być z powodzeniem wykorzystywany do znajdowania współczynników modelu. Kluczowym momentem mającym wpływ na powodzenie optymalizacji jest wybór ciągu odpowiedzialnego za dobór długości kroków w~algorytmie, więc zaleca się symulacje badające różne ciągi oraz wybranie tego ciągu, który w~większości przypadków daje stabilne, jednorodne współczynniki. 
 
 \begin{figure}[hbt!]
   %\vspace{-10pt}
@@ -227,7 +227,7 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
+  \caption[Porównanie trajektorii estymacji w modelu Coxa, wykorzystującego metodę stochastycznego spadku gradientu, przy różnych podziałach zbioru początkowego na podzbiory.]{\label{rysCox}Porównanie trajektorii estymacji w modelu Coxa, wykorzystującego metodę stochastycznego spadku gradientu, przy różnych podziałach zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone mając wszystkie zaobserwowane podzbiory połączone w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem teoretyczne maksimum, zaś gwiazdką współczynniki uzyskane za pomocą funkcji \texttt{coxph}.}
 \end{figure}
 
 
@@ -245,7 +245,7 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox2}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox2}Porównanie trajektorii estymacji w modelu Coxa, wykorzystującego metodę stochastycznego spadku gradientu, przy różnych podziałach zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone mając wszystkie zaobserwowane podzbiory połączone w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem teoretyczne maksimum, zaś gwiazdką współczynniki uzyskane za pomocą funkcji \texttt{coxph}.}
 \end{figure}
 	
 	
@@ -264,7 +264,7 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox3}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox3}Porównanie trajektorii estymacji w modelu Coxa, wykorzystującego metodę stochastycznego spadku gradientu, przy różnych podziałach zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone mając wszystkie zaobserwowane podzbiory połączone w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem teoretyczne maksimum, zaś gwiazdką współczynniki uzyskane za pomocą funkcji \texttt{coxph}.}
 \end{figure}
 
 
@@ -282,5 +282,5 @@ Proces estymacji w modelu proporcjonalnych hazardów Coxa z wykorzystaniem metod
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox4}Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone dla wszystkich zaobserwowanych podzbiorów połączonych w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem zaś teoretyczne maksimum.}
+  \caption[Porównanie estymacji w modelu Coxa metodą stochastycznego spadku gradientu dla różnych podziałów zbioru początkowego na podzbiory.]{\label{rysCox4}Porównanie trajektorii estymacji w modelu Coxa, wykorzystującego metodę stochastycznego spadku gradientu, przy różnych podziałach zbioru początkowego na podzbiory. Elipsami przedstawiono warstwice częściowej funkcji log-wiarogodności wyliczone mając wszystkie zaobserwowane podzbiory połączone w jeden. Trójkątem zaznaczono punkt startowy algorytmu, kwadratem teoretyczne maksimum, zaś gwiazdką współczynniki uzyskane za pomocą funkcji \texttt{coxph}.}
 \end{figure}
