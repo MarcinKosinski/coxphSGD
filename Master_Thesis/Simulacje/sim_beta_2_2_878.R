@@ -4,10 +4,10 @@ library(ggplot2)
 library(magrittr)
 library(dplyr)
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 10, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 10, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_10_e-5_100sqrt_878.pdf", height = 10, width = 10)
@@ -31,10 +31,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 10, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 10, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_10_e-6_100sqrt_878.pdf", height = 10, width = 10)
@@ -58,10 +58,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 10, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 10, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_10_e-5_20sqrt_878.pdf", height = 10, width = 10)
@@ -85,10 +85,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 10, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 10, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_10_e-6_20sqrt_878.pdf", height = 10, width = 10)
@@ -114,10 +114,10 @@ dev.off()
 
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 10, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 10, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_10_e-5_50sqrt_878.pdf", height = 10, width = 10)
@@ -141,10 +141,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 10, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 10, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_10_e-6_50sqrt_878.pdf", height = 10, width = 10)
@@ -172,10 +172,10 @@ dev.off()
 
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_5_e-5_100sqrt_878.pdf", height = 10, width = 10)
@@ -199,10 +199,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 5, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_5_e-6_100sqrt_878.pdf", height = 10, width = 10)
@@ -226,10 +226,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 5, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 5, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_5_e-5_20sqrt_878.pdf", height = 10, width = 10)
@@ -253,10 +253,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 5, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 5, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_5_e-6_20sqrt_878.pdf", height = 10, width = 10)
@@ -282,10 +282,10 @@ dev.off()
 
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 5, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 5, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_5_e-5_50sqrt_878.pdf", height = 10, width = 10)
@@ -309,10 +309,10 @@ ggplot() +
   guides(col = guide_legend(ncol = 3))
 dev.off()
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 5, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 5, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_5_e-6_50sqrt_878.pdf", height = 10, width = 10)
@@ -338,10 +338,10 @@ dev.off()
 
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 1, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 1, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_1_e-5_100sqrt_878.pdf", height = 10, width = 10)
@@ -366,10 +366,10 @@ ggplot() +
 dev.off()
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 1, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, max.iter = 1, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_1_e-6_100sqrt_878.pdf", height = 10, width = 10)
@@ -394,10 +394,10 @@ ggplot() +
 dev.off()
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 1, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 1, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_1_e-5_20sqrt_878.pdf", height = 10, width = 10)
@@ -422,10 +422,10 @@ ggplot() +
 dev.off()
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 1, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(20*sqrt(x))}, max.iter = 1, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_1_e-6_20sqrt_878.pdf", height = 10, width = 10)
@@ -451,10 +451,10 @@ dev.off()
 
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 1, epsilon = 1e-5, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 1, epsilon = 1e-5, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_1_e-5_50sqrt_878.pdf", height = 10, width = 10)
@@ -479,10 +479,10 @@ ggplot() +
 dev.off()
 
 set.seed(878)
-simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 1, epsilon = 1e-6, beta_0 = c(1,2)) -> d2ggplot
+simulateCoxSGD(dCox, learningRates = function(x){1/(50*sqrt(x))}, max.iter = 1, epsilon = 1e-6, beta_0 = c(2,2)) -> d2ggplot
 d2ggplot -> backpack
 d2ggplot <- d2ggplot$d2ggplot
-beta_0 = c(1,2)
+beta_0 = c(2,2)
 solution = c(1,3)
 
 pdf(file = "b_2_2_iter_1_e-6_50sqrt_878.pdf", height = 10, width = 10)

@@ -6,9 +6,9 @@ The Cancer Genome Atlas Study
 }
 \end{flushright}
 
-Niniejszy rozdział poświęcony jest analizie danych genomicznych. W podrozdziale \ref{cha:gen} przedstawiono pokrótce genetyczne podstawy nowotworzenia, które szerzej opisane są w cytowanej literaturze. W podrozdziale \ref{chan:TCGA} opisano schemat \textit{The Cancer Genome Atlas} (TCGA), badania z którego zaczerpnięto dane do analizy biostatystycznej. Analiza przeżycia polegająca na zastosowaniu modelu Coxa, dla którego estymacja współczynników odbywa się metodą stochastycznego spadku gradientu (opisaną w rozdziale \ref{rozdz4}) zaprezentowana została wraz z~komentarzami w podrozdziale \ref{chap:analiza}. 
+Niniejszy rozdział poświęcony jest analizie danych genomicznych. W podrozdziale \ref{cha:gen} przedstawiono pokrótce genetyczne podstawy nowotworzenia, które szerzej opisane są w cytowanej literaturze. W podrozdziale \ref{chan:TCGA} opisano schemat \textit{The Cancer Genome Atlas} (TCGA), badania z którego zaczerpnięto dane do analizy biostatystycznej. Analiza przeżycia polegająca na zastosowaniu modelu Coxa, w którym estymacja współczynników odbywa się za pomocą metody stochastycznego spadku gradientu (opisana w rozdziale \ref{rozdz4}) zaprezentowana została wraz z~komentarzami w podrozdziale \ref{chap:analiza}. 
 
-W ramach analizy starano się ocenić wpływ mutacji poszczególnych genów na przeżywalność pacjentów. Celem analizy było uzyskanie odpowiedzi na pytanie czy istnieją geny, które zmutowane powodują, że ryzyko wystąpienia zdarzenia jakim jest zgon w wyniku choroby nowotworowej jest większe w grupach pacjentów bez mutacji w danym genie. Aby zweryfikować hipotezę na tak obszernych danych zdecydowano się zastosować metodę strumieniowej estymacj współczynników w modelu Coxa przy pomocy stochastycznego spadku gradientu, której stworzenie było głównym założeniem pracy, gdyż tradycyjna metoda zaimplementowana w~funkcji \texttt{coxph} w~pakiecie \texttt{survival} (\cite{survival}) nie jest przystosowana do tak dużych zbiorów danych jak te z TCGA. Z racji na zbyt dużą ilość genów (przekraczającą kilkanaście tysięcy), które mogłyby być zmutowane i wzięte do analizy jako zmienna objaśniająca czas do zdarzenia, niemożliwe byłoby wyestymowanie współczynników modelu standardową metodą.
+W ramach analizy starano się ocenić wpływ mutacji poszczególnych genów na przeżywalność pacjentów. Celem analizy było uzyskanie odpowiedzi na pytanie czy istnieją geny, które zmutowane powodują, że ryzyko wystąpienia zdarzenia jakim jest zgon w wyniku choroby nowotworowej jest większe niż u pacjentów bez mutacji w danym genie. Aby zweryfikować hipotezę na tak obszernych danych zdecydowano się zastosować metodę strumieniowej estymacj współczynników w modelu Coxa przy pomocy stochastycznego spadku gradientu, której stworzenie było głównym założeniem pracy, gdyż tradycyjna metoda zaimplementowana w~funkcji \texttt{coxph()} w~pakiecie \texttt{survival} (\cite{survival}) nie jest przystosowana do tak dużych zbiorów danych jak te z TCGA. Z racji na zbyt dużą ilość genów (przekraczającą kilkanaście tysięcy), które mogłyby być zmutowane i wzięte do analizy jako zmienna objaśniająca czas do zdarzenia, niemożliwe byłoby wyestymowanie współczynników modelu standardową metodą.
 
 Wielką zaletą modelu Coxa z estymacją przy użyciu metody stochastycznego spadku gradientu jest możliwość zastosowania go do zbiorów danych o rozmiarze zmiennych znacznie przekraczającym wymiar obserwacji. Zaprezentowana w rozdziale \ref{implemento} implementacja pozwala w skończonym czasie znaleźć współczynniki modelu odpowiadające za wpływ danych genów na śmiertelność pacjentów w chorobach nowotworowych. Jest to nie tylko zdobycz obliczeniowa ale także ważne narzędzie w analizach biostatystycznych danych dużej skali, które z~powodzeniem może zostać wykorzystywane do analizy ludzkiego genomu, tak by w przyszłości poszerzać zrozumienie procesów mutacji zachodzących w ludzkim organizmie, dzięki którym możliwe byłoby skuteczniejsze leczenie chorób nowotworowych.
 \newpage
@@ -18,14 +18,14 @@ Choroby nowotworowe stanowią drugą, po chorobach serca, przyczynę zachorowań
 \textbf{Nowotwór} jest \textit{chorobą cyklu komórkowego} i oznacza (\cite{zikula2}) \\ \ \\ \textit{nieprawidłową tkankę, która powstała z jednej komórki i rośnie jako następstwo zaburzeń dynamizmu i prawidłowego przebiegu cyklu komórkowego oraz zaburzeń różnicowania się komórki i komunikacji wewnątrzkomórkowej, międzykomórkowej i pozakomórkowej jej klonalnego potomstwa}. \\ \ \\
 Badania nad transformacją nowotworową wykazały, że nowotwory powstają jako wynik mutacji w DNA komórki somatycznej, które poprzez akumulację wywołują utratę kontroli nad proliferacją, wzrostem i różnicowaniem~(\cite{zikula5}).
 
-Proces tworzenia nowotworu (\textbf{kancerogeneza}) jest wieloczynnikowy i wielostopniowy, a~zmiany w nim nasilają się w miarę pogłębiania się niestabilności genetycznej \cite{zikula2}. Transformacja nowotworowa następuje w wyniku zmian powstałych w obrębie czterech różnych kategorii genów, które wpływają na proliferację i różnicowanie komórek \cite{zikula}. Czynniki genetyczne zaangażowane w systemy naprawy DNA, a także w~proliferację i różnicowanie komórek \cite{zikula4} dzielą się na:  
+Proces tworzenia nowotworu (\textbf{kancerogeneza}) jest wieloczynnikowy i wielostopniowy, a~zmiany w nim nasilają się w miarę pogłębiania się niestabilności genetycznej (\cite{zikula2}). Transformacja nowotworowa następuje w wyniku zmian powstałych w obrębie czterech różnych kategorii genów, które wpływają na proliferację i różnicowanie komórek (\cite{zikula}). Czynniki genetyczne zaangażowane w systemy naprawy DNA, a także w~proliferację i różnicowanie komórek (\cite{zikula4}) dzielą się na:  
 \begin{itemize}
 \item \textit{geny regulujące naprawę uszkodzonego DNA} - mechanizmy szybkiej naprawy DNA zapobiegają przed mutacjami genów odpowiedzialnyh m. in. za proliferację i różnicowanie się komórek. Geny biorące udział w naprawie DNA nie są onkogenne, natomiast mutacje w ich obrębie mogą ułatwić transformację nowotworową oraz podwyższają ryzyko utrwalenia się zmian w pozostałych grupach i dlatego mają podstawowe znaczenie dla integracji genomu.
 \item \textit{geny supresorowe} (antyonkogeny) - kontrolują cykl komórkowy. Są punktami kontrolnymi pomiędzy fazami cyklu komórkowego, zapobiegają niekontrolowanym podziałom komórkowym oraz są czynnikami negatywnej kontroli podziałów.
 \item \textit{protoonkogeny} - potencjalnie zdolne do wyzwolenia procesu transformacji nowotworowej. Uwarunkowana mutacją zmiana ich ekspresji sprawia, że przekształcają się w~onkogeny, czyli geny bezpośrednio aktywujące transformację nowotworową.
 \item \textit{geny regulujące apoptozę} (naturalny proces zaprogramowanej śmierci komórki w organizmach wielokomórkowych) - zahamowanie procesu apoptozy wskutek mutacji czynników indukujących wydłuża okres życia komórek, zwiększając tym samym populację komórek narażonych na działanie karcynogenów i prawdopodobieństwo wystąpienia mutacji w komórce.
 \end{itemize}
-Zmiany genetyczne w komórkach zachodzą pod wpływem działania czynników mutagennych, do których można zaliczyć: promieniowanie UV (czynniki fizyczne), substancje obecne w~dymie papierosowym i spalinach samochodowych, azbest, promieniowanie jonizujące, temperatura i niektóre metale ciężkie (czynniki chemiczne), wirusy, toksyny bakteryjne i pasożytnicze czy pośrednie produkty przemiany materii (czynniki biologiczne)~\cite{zikula3}.
+Zmiany genetyczne w komórkach zachodzą pod wpływem działania czynników mutagennych, do których można zaliczyć: promieniowanie UV (czynniki fizyczne), substancje obecne w~dymie papierosowym i spalinach samochodowych, azbest, promieniowanie jonizujące, temperatura i niektóre metale ciężkie (czynniki chemiczne), wirusy, toksyny bakteryjne i pasożytnicze czy pośrednie produkty przemiany materii (czynniki biologiczne)~(\cite{zikula3}).
 
 
 \section{Projekt The Cancer Genome Atlas}\label{chan:TCGA}
@@ -34,14 +34,14 @@ Do analizy wykorzystano dane z badania \textit{The Cancer Genome Atlas}~\cite{br
 
 Jak podaje \cite{patrycja}, w biologii jest znane ponad 200 różnych form nowotworu i jeszcze więcej ich podtypów. Każdy z nich wywołany jest nieprawidłowościami w DNA, które sprawiają, że komórki namnażają się w sposób niekontrolowany. Identyfikując zmiany w kompletnym zbiorze DNA (genomie) dla każdego nowotworu i wiedząc jak te zmiany wpływają na jego rozwój, możliwe będzie skuteczne zapobieganie nowotworom, wczesne ich wykrywanie~i~leczenie. 
 
-Nadrzędnym celem TCGA jest poprawienie naszej zdolności do diagnozowania, leczenia i~profilaktyki nowotworów. TCGA aby osiągnąć ten cel w sposób naukowo rygorystyczny, opracowało i~przetestowało strukturę badawczą konieczną do systematycznego badania całego spektrum zmian genomu zawartych w ponad 20 rodzajach~nowotworach.
+Nadrzędnym celem TCGA jest poprawienie naszej zdolności do diagnozowania, leczenia i~profilaktyki nowotworów. TCGA aby osiągnąć ten cel w sposób naukowo rygorystyczny, opracowało i~przetestowało strukturę badawczą konieczną do systematycznego badania całego spektrum zmian genomu zawartych w ponad 20 rodzajach~nowotworów.
 
-Dzięki projektowi TCGA społeczność naukowców walczących z rakiem może korzystać z~danych uzyskanych z sekwencjonowania komórek pochodzących z tkanek nowotworowych zebranych przez \textit{Cancer Genomics Hub} (CGHub) i \textit{Genome Data Analysis Centers}~(GDACs). Te i~wiele więcej instytucji opisanych szerzej jest w \cite{patrycja}. TCGA Genome Data Analysis Centers składają się z 7 instytucji, a jedna z nich \textit{Broad Institute, Cambridge} udostępnia dane oraz wyniki swoich analiz poprzez portal Firehose Broad GDAC (\texttt{http://gdac.broadinstitute.org/}). Portal udostępnia dane dla 38 kohort związanych z~występującym typem nowotworu. Więcej na temat kohort i danych z TCGA można znaleźć w~\cite{chin1}, \cite{chin2}, \cite{future} czy \cite{patrycja}. 
+Dzięki projektowi TCGA społeczność naukowców walczących z rakiem może korzystać z~danych uzyskanych z sekwencjonowania komórek pochodzących z tkanek nowotworowych zebranych przez \textit{Cancer Genomics Hub} (CGHub) i \textit{Genome Data Analysis Centers}~(GDACs). Te i~wiele więcej instytucji opisanych szerzej jest w \cite{patrycja}. TCGA \textit{Genome Data Analysis Centers} składają się z 7 instytucji, a jedna z nich \textit{Broad Institute, Cambridge} udostępnia dane oraz wyniki swoich analiz poprzez portal \textit{Firehose Broad GDAC} (\texttt{http://gdac.broadinstitute.org/}). Portal udostępnia dane dla 38 kohort związanych z~występującym typem nowotworu. Więcej na temat kohort i danych z TCGA można znaleźć w~\cite{chin1}, \cite{chin2}, \cite{future} czy \cite{patrycja}. 
 
-Dane z TCGA pobrano przy użyciu pakietu \texttt{RTCGA} \cite{kosa1} i umieszczono w pakietach
+Dane z TCGA pobrano przy użyciu pakietu \texttt{RTCGA} (\cite{kosa1}) i umieszczono w pakietach
 \begin{itemize}
-\item \texttt{RTCGA.clinical} \cite{kosa2}, zawierającym dane kliniczne o pacjentach,
-\item \texttt{RTCGA.mutations} \cite{kosa3}, zawierającym dane o występujących w genach mutacjach
+\item \texttt{RTCGA.clinical} (\cite{kosa2}), zawierającym dane kliniczne o pacjentach,
+\item \texttt{RTCGA.mutations} (\cite{kosa3}), zawierającym dane o występujących w genach mutacjach
 \end{itemize} 
 oraz zostały one wykorzystane w następnym rozdziale do sprawdzenia czy występowanie mutacji w danym genie ma wpływ na przeżywalność pacjentów dotkniętych nowotworem.
 
@@ -57,6 +57,14 @@ Stworzone pakiety można pobrać z repozytorium pakietów bioinformatycznych Bio
 \end{Highlighting}
 \end{Shaded}
 
+Pakiety zawierające inne dane z tego badania można zainstalować w $\mathcal{R}$ poleceniem
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{RTCGA::installTCGA}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
 \newpage
 
 \section{Analiza wpływu mutacji genów na czas życia}\label{chap:analiza}
@@ -66,7 +74,7 @@ wykorzystano dane kliniczne i dane o występujących u pacjentów mutacjach
 genetycznych. Starano się wykorzystać dane ze wszystkich 38 dostępnych
 kohort nowotworowych z badania \textit{The Cancer Genome Atlas} (TCGA),
 jednak nie dla wszystkich kohort umieszczono w badaniu dane o~mutacjach.
-Częśc wspólną nazw dla kohort zawierających komplet informacji wygenerowaną dzięki wywołaniu
+Częśc wspólną nazw kohort zawierających komplet informacji wygenerowano dzięki wywołaniu (kody źródłowe funkcji z analizy zawarte są w Dodatku \ref{dod:analiza})
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -83,9 +91,9 @@ Częśc wspólną nazw dla kohort zawierających komplet informacji wygenerowan�
 [31] "TGCT"     "THCA"     "UCEC"     "UCS"      "UVM"     
 \end{verbatim}
 
-Następnie dla tak otrzymanych 35 kohort nowotworowych uzyskano dane o
-statusie pacjenta (śmierć bądź cenzurowanie) oraz jego czasie spędzonym
-pod obseracją dzięki funkcji
+Następnie, mając tak otrzymanych 35 kohort nowotworowych uzyskano dane o
+statusie pacjenta (śmierć bądź cenzurowanie) oraz czasie spędzonym
+pod obserwacją dzięki funkcji
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -103,13 +111,12 @@ ACC.5        TCGA-OR-A5J5                    1   365
 ACC.6        TCGA-OR-A5J6                    0  2428
 \end{verbatim}
 
-Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych
-pacjentów uzyskano za pomocą
+Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych pacjentów 
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{extractMutations}\NormalTok{(cohorts, }\FloatTok{0.02}\NormalTok{) ->}\StringTok{ }\NormalTok{mutationsData}
-\NormalTok{mutationsData[}\DecValTok{1}\NormalTok{:}\DecValTok{6}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{56}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{207}\NormalTok{,}\DecValTok{801}\NormalTok{)]}
+\NormalTok{mutationsData[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{)}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{56}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{207}\NormalTok{,}\DecValTok{801}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -117,8 +124,6 @@ pacjentów uzyskano za pomocą
   bcr_patient_barcode A2ML1 ALMS1 ATP2B2 CNTNAP4 PLEC
 1     TCGA-02-0003-01     0     1      0       0    0
 2     TCGA-02-0033-01     0     0      0       0    0
-3     TCGA-02-0047-01     0     0      0       0    0
-4     TCGA-02-0055-01     0     0      0       0    0
 5     TCGA-02-2470-01     0     0      0       0    0
 6     TCGA-02-2483-01     0     0      1       0    0
 \end{verbatim}
@@ -127,8 +132,7 @@ gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2
 \% pacjentów mających zarówno dane kliniczne jak i dane o występujących
 mutacjach w genach.
 
-Dla tak otrzymanych dwóch zbiorów danych połączono dla pacjentów
-informacje kliniczne z informacjami o mutacjach dzięki przypisanym do
+Mając tak otrzymane dwa zbiory danych, połączono informacje kliniczne z informacjami o mutacjach dzięki przypisanym do
 pacjentów i ich próbek kodów \texttt{bcr\_patient\_barcode}, by
 ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 
@@ -146,7 +150,7 @@ ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 1068       1     0    0      1     0                    1  1171
 \end{verbatim}
 
-Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a
+Niezbędną formułę modelu potrzebną do sprecyzowania, które geny (a
 pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki
 pomocniczej funkcji
 
@@ -157,18 +161,17 @@ pomocniczej funkcji
 \end{Shaded}
 
 Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o
-występujących mutacjach, oraz dla których odnotowano komplet i
-poprawność danych klinicznych dotyczących statusu i obserwowanego czasu
-przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa
+występujących mutacjach, oraz wśród których odnotowano komplet i~poprawność danych klinicznych dotyczących statusu i~obserwowanego czasu
+przeżycia wyliczono współczynniki modelu proporcjonalnych hazardów Coxa,
 z wykorzystaniem stochastycznego spadku gradientu do estymacji. Model
 dopasowano wielokrotnie z różnymi ciągami odpowiadającymi za długość
-kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak
-powstałych kilku modeli wybrano ten, który dla swoich współczynników
-dawał największą wartość funkcji częściowej log-wiarogodności dla
-niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie
-zaobserwowane podzbiory obserwacji. Dla każdego z ciągów
+kroku algorytmu. Dodatkowo badano różną ilość epok w algorytmie. Mając tak
+powstałych kilka modeli wybrano ten, którego współczynniki
+dawały największą wartość funkcji częściowej log-wiarogodności skonstruowaną w oparciu o 
+niewykorzystane do uczenia obserwacje, pochodzące z 2 ostatnich
+zaobserwowanych podzbiorów. Wśród każdego z ciągów
 \(1/t, 1/50\sqrt{t}, 1/100\sqrt{t}\) odpowiadających długościom
-kroków w algorytmie wyznaczono współczynniki modelu dla 5 epok, dzięki
+kroków, wyznaczono współczynniki modelu po 5 epok, dzięki
 czemu możliwe było rozważanie postępu danego wariantu algorytmu również
 po 1, 2, 3 czy 4 epokach.
 
@@ -185,7 +188,7 @@ po 1, 2, 3 czy 4 epokach.
 \end{Shaded}
 
 
-Po dopasowaniu modeli sporządzono wykresy przedstawiające histogramy wartości współczynników modelu po każdej epoce, w rozróżnieniu na trzy typy ciągów odpowiedzialnych za długość kroku. Histogramy przedstawiono na Rysunkach \ref{fig:hist1} - \ref{fig:hist3}, zaś na Rysunku \ref{fig:hist4} przedstawiono ich porównanie na wspólnych osiach. Największe zróżnicowanie wśród współczynników modelu można zaobserwować dla modelu \texttt{model\_1\_over\_t}, w którym ciąg odpowiadający za długość kroku algorytmu to $1/t$. W pozostałych modelach współczynniki grupują się bliżej $0$ i rzadko co do modułu są większe od $0.5$. W przypadku modelu \texttt{model\_1\_over\_t} wartości współczynników bywają co do modułu niekiedy większa od 1. Oznaczać to może, że przy takim ciągu długości kroków, algorytm jest w stanie uwypuklić wpływ genów mających istotny wpływ na czas przeżycia pacjentów poprzez wyestymowanie większych wartości wśród odpowiednich współczynników. Różnice wśród wartości współczynników pomiędzy modelami najwyraźniej widać na Rysunku \ref{fig:hist4}, gdzie w przypadku modelu \texttt{model\_1\_over\_100sqrt\_t} ($\alpha_{model3} = 1/100\sqrt{t}$) pik w okolicach zera wskazuje na to, że mało genów można uznać za istotnie mające wpływ na czas przeżycia z powodu odpowiadających im współczynnikom bliskim $0$. Nie oznacza to jednak, że w tym przypadku model jest gorszy.
+Po dopasowaniu modeli sporządzono wykresy przedstawiające histogramy wartości współczynników modelu po każdej epoce, w rozróżnieniu na trzy typy ciągów odpowiedzialnych za długość kroku. Histogramy przedstawiono na Rysunkach \ref{fig:hist1} - \ref{fig:hist3}, zaś na Rysunku \ref{fig:hist4} przedstawiono ich porównanie na wspólnych osiach. Największe zróżnicowanie wśród współczynników modelu można zaobserwować w modelu \texttt{model\_1\_over\_t}, w którym ciąg odpowiadający za długość kroku algorytmu to $1/t$. W pozostałych modelach współczynniki grupują się bliżej $0$ i rzadko co do modułu są większe od $0.5$. W przypadku modelu \texttt{model\_1\_over\_t} wartości współczynników bywają co do modułu niekiedy większa od 1. Oznaczać to może, że przy takim ciągu długości kroków, algorytm jest w stanie uwypuklić wpływ genów mających istotny wpływ na czas przeżycia pacjentów poprzez wyestymowanie większych wartości wśród odpowiednich współczynników. Różnice wśród wartości współczynników pomiędzy modelami najwyraźniej widać na Rysunku \ref{fig:hist4}, gdzie w przypadku modelu \texttt{model\_1\_over\_100sqrt\_t} ($\alpha_{model3} = 1/100\sqrt{t}$) pik w okolicach zera wskazuje na to, że mało genów można uznać za istotnie mające wpływ na czas przeżycia z powodu odpowiadających im współczynnikom bliskim $0$. Nie oznacza to jednak, że w tym przypadku istnieją jakiekolwiek podstawy by uznać którykolwiek z modeli za gorszy.
 
 Zdecydowano się uznać za najlepszy ten model, który da największą wartość częściowej funkcji log-wiarogodności na testowym zbiorze wyznaczonym przez dwa ostatnie zaobserwowane podzbiory.  Do obliczenia częściowej funkcji log-wiarogodności wykorzystano istniejącą implementację z pakietu \texttt{survival}
 
