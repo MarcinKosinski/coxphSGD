@@ -42,14 +42,14 @@ Wartość funkcji hazardu w momencie $t$ traktuje się jako chwilowy potencjał 
 intensywnością umieralności (\textit{force of mortality}), umieralnością
 chwilową (\textit{instantaneous death rate}) lub chwilową
 częstością niepowodzeń (awarii) (\textit{failure rate}). Ostatniego
-określenia używa się w teorii odnowy (\cite{cox0}), w której analizuje
+określenia używa się w teorii odnowy \citep{cox0}, w której analizuje
 się awaryjność elementów przemysłowych. 
 
 
-Model proporcjonalnych hazardów Coxa (\cite{cox}) jest obecnie najczęściej stosowaną procedurą do modelowania relacji pomiędzy zmiennymi objaśniającymi a przeżyciem lub innym cenzurowanym zdarzeniem. Model ten umożliwia analizę wpływu czynników prognostycznych na przeżycie. Sir David Cox opracował model tego typu dla tabeli przeżyć i zilustrował jego zastosowanie w przypadku białaczki, ale może być on stosowany do obliczania
+Model proporcjonalnych hazardów Coxa \citep{cox} jest obecnie najczęściej stosowaną procedurą do modelowania relacji pomiędzy zmiennymi objaśniającymi a przeżyciem lub innym cenzurowanym zdarzeniem. Model ten umożliwia analizę wpływu czynników prognostycznych na przeżycie. Sir David Cox opracował model tego typu dla tabeli przeżyć i zilustrował jego zastosowanie w przypadku białaczki, ale może być on stosowany do obliczania
 przeżyć w odniesieniu do innych chorób, jak
 w przypadku przeżyć w chorobach nowotworowych lub
-kardiologicznych po transplantacji serca (\cite{norwe}). 
+kardiologicznych po transplantacji serca \citep{norwe}. 
 
 \begin{definition}\label{defi:koksik}
 \textbf{Model Coxa} zakłada postać funkcji hazardu dla i-tej obserwacji $X_i$ jako
@@ -142,7 +142,7 @@ Jeśli dodatkowo cenzurowanie jest nie-informatywne, to ${}_{p}L(\beta)$ jest \t
 
 Ponieważ model proporcjonalnych hazardów Coxa zakłada niezależność i nie-informatywność cenzurowania, można uważać, że częściowa funkcja wiarogodności daje pełną informację o~współczynnikach. Zatem wnioskowanie w oparciu o nią jest uzasadnione i poprawne.
 
-W sytuacjach, gdy nie jest spełnione założenie nie-informatywności cenzurowania i częściowa funkcja wiarogodności nie jest funkcją wiarogodności w sensie bycia proporcjonalną do prawdopodobieństwa obserwowanego zbioru, można ją traktować jako funkcję wiarogodności w~celu asymptotycznego wnioskowania (\cite{ther}).
+W sytuacjach, gdy nie jest spełnione założenie nie-informatywności cenzurowania i częściowa funkcja wiarogodności nie jest funkcją wiarogodności w sensie bycia proporcjonalną do prawdopodobieństwa obserwowanego zbioru, można ją traktować jako funkcję wiarogodności w~celu asymptotycznego wnioskowania \citep{ther}.
 
 
 \subsubsection{Analityczna estymacja współczynników}
@@ -161,7 +161,7 @@ A_{ik} = \dfrac{\sum\limits_{l\in \mathscr{R}(t_i)}^{} X_{lk} e^{X_l'\beta}}{\su
 \end{equation}
 to średnia z $X_{.k}$ ($k$-tych zmiennych) po skończonej populacji $\mathscr{R}(t_i)$, z wykorzystaniem \textit{ważonej eksponencjalnie} formy próbkowania.
 
-Z kolei drugie pochodne cząstkowe (\cite{cox}) mają postać dla $k_1,k_2=1,\dots,p$
+Z kolei drugie pochodne cząstkowe \citep{cox} mają postać dla $k_1,k_2=1,\dots,p$
 \begin{equation}\label{grad}
 \mathscr{I}_{k_1k_2}(\beta) = - \dfrac{\partial^2{}_{p}L(\beta)}{\partial\beta_{k_1}\partial\beta_{k_2}}=\sum\limits_{i=1}^{K}C_{ik_1k_2}(\beta),
 \end{equation}
@@ -209,7 +209,7 @@ gdzie  $U \sim \mathcal{U}([0,1])$.
 
 \subsubsection{Przykład symulacji dla rozkładu Weibulla}\label{symWei}
 
-Równanie (\ref{eq:czasy})  jest odpowiednie do generowania czasów do zdarzenia w modelu Coxa, gdy potrafi się odpowiednio generować zmienne z rozkładu $\mathcal{U}([0,1])$. Jest to możliwe w większości pakietów statystycznych. Poniżej przedstawiony jest kod w języku $\mathcal{R}$ \cite{programikr}, dzięki któremu możliwe jest generowanie czasów zdarzeń pochodzących z rozkładu Weibulla \cite{collett}, dla którego funkcja bazowego hazardu ma postać
+Równanie (\ref{eq:czasy})  jest odpowiednie do generowania czasów do zdarzenia w modelu Coxa, gdy potrafi się odpowiednio generować zmienne z rozkładu $\mathcal{U}([0,1])$. Jest to możliwe w większości pakietów statystycznych. Poniżej przedstawiony jest kod w języku $\mathcal{R}$ \citep{programikr}, dzięki któremu możliwe jest generowanie czasów zdarzeń pochodzących z rozkładu Weibulla \citep{collett}, dla którego funkcja bazowego hazardu ma postać
 \begin{equation}
 \lambda_0(t)=\lambda\rho t^{\rho-1},
 \end{equation}

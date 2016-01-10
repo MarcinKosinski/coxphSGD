@@ -11,12 +11,12 @@ przybliżone rozwiązania z żądaną dokładnością. Podstawową zaletą wykor
 formułowanych algorytmów, tzn. w ramach danego zagadnienia nie miało znaczenia czy było
 ono proste czy też bardzo skomplikowane (najwyżej wiązało się z większym nakładem pracy
 obliczeniowej), natomiast wadą była czasochłonność. Dlatego prawdziwy renesans metod
-numerycznych nastąpił wraz z powszechnym użyciem w pracy naukowej maszyn cyfrowych oraz komputerów (\cite{milewski}). 
+numerycznych nastąpił wraz z powszechnym użyciem w pracy naukowej maszyn cyfrowych oraz komputerów \citep{milewski}. 
 
 Dziś dziesiątki żmudnych dla człowieka operacji
 arytmetycznych wykonuje komputer, jednak złożoność obliczeniowa algorytmów uczenia maszynowego stała się krytycznym czynnikiem ograniczającym prace w sytuacjach, gdy rozważane są duże zbiory danych. Te ograniczenia spowodowały, że w modelowaniu statystycznym wielkiej skali zaczęto wykorzystywać algorytmy \textbf{stochastycznego spadku gradientu}. 
 
-W poniższym rozdziale przedstawione są klasyczne algorytmy spadku wzdłuż gradientu Cauchy'ego oraz Raphsona-Newtona. Następnie omówiony jest algorytm stochastycznego spadku wzdłuż gradientu, którego zastosowanie do estymacji współczynników w modelu Coxa jest kluczowym celem pracy. Algorytm stochastycznego spadku gradientu to metoda optymalizacji używana w sytuacjach, gdy rozważaną funkcję można zapisać jako sumę różniczkowalnych składników. Ponieważ popularne metody statystycznej estymacji, takie jak \textit{Fisher scoring}, algorytm \textit{Expectation–maximization} czy iteracyjna ważona metoda najmniejszych kwadratów (\cite{fisher3},~\cite{dempster},~\cite{greenPJ}) nie zawsze przenoszą się na zastosowania do danych dużej skali bądź danych napływających (\textit{ang. streaming data}), niekiedy algorytm stochastycznego spadku gradientu jest jedyną dostępną metodą optymalizacji numerycznej. Ponadto przedstawiono również zalety algorytmów stochastycznego spadku gradientu, które przemawiają za atrakcyjnością i popularnością tego typu rozwiązania. Omawiane pojęcia oparto o \cite{bott1}, \cite{bott2}, \cite{kotlowski} oraz \cite{fortuna}.
+W poniższym rozdziale przedstawione są klasyczne algorytmy spadku wzdłuż gradientu Cauchy'ego oraz Raphsona-Newtona. Następnie omówiony jest algorytm stochastycznego spadku wzdłuż gradientu, którego zastosowanie do estymacji współczynników w modelu Coxa jest kluczowym celem pracy. Algorytm stochastycznego spadku gradientu to metoda optymalizacji używana w sytuacjach, gdy rozważaną funkcję można zapisać jako sumę różniczkowalnych składników. Ponieważ popularne metody statystycznej estymacji, takie jak \textit{Fisher scoring}, algorytm \textit{Expectation–maximization} czy iteracyjna ważona metoda najmniejszych kwadratów \citep{fisher3,dempster,greenPJ} nie zawsze przenoszą się na zastosowania do danych dużej skali bądź danych napływających (\textit{ang. streaming data}), niekiedy algorytm stochastycznego spadku gradientu jest jedyną dostępną metodą optymalizacji numerycznej. Ponadto przedstawiono również zalety algorytmów stochastycznego spadku gradientu, które przemawiają za atrakcyjnością i popularnością tego typu rozwiązania. Omawiane pojęcia oparto o \cite{bott1,bott2}, \cite{kotlowski} oraz \cite{fortuna}.
 
 \newpage
 \section{Algorytmy spadku wzdłuż gradientu}\label{R-N}
@@ -70,7 +70,7 @@ Minimalizacja funkcji $Q(w)$:
 
 \section{Algorytm stochastycznego spadku wzdłuż gradientu I}\label{SGD}
 \vspace{-5pt}
-Stochastyczny spadek gradientu jest często stosowany do estymacji współczynników w szerokiej gamie modeli uczenia maszynowego, takich jak maszyny wektorów podpierających (\textit{ang. Support Vector Machines}), regresja logistyczna czy modele graficzne~(\cite{finkel}). W~połączeniu z algorytmem propagacji wstecznej jest standardową metodą w procesie tworzenia sztucznych sieci neuronowych. Algorytm stochastycznego spadku gradientu był używany już od 1960 przy estymacji współczynników w modelu regresji liniowej (\cite{ADALINE}) oraz był  wykorzystywany w algorytmie filtrów adaptacyjnych najmniejszych średnich kwadratów (\cite{widrow2}) (\textit{ang.~least mean squares (LMS) adaptive filter}).
+Stochastyczny spadek gradientu jest często stosowany do estymacji współczynników w szerokiej gamie modeli uczenia maszynowego, takich jak maszyny wektorów podpierających (\textit{ang. Support Vector Machines}), regresja logistyczna czy modele graficzne~\citep{finkel}. W~połączeniu z algorytmem propagacji wstecznej jest standardową metodą w procesie tworzenia sztucznych sieci neuronowych. Algorytm stochastycznego spadku gradientu był używany już od 1960 przy estymacji współczynników w modelu regresji liniowej \citep{ADALINE} oraz był  wykorzystywany w algorytmie filtrów adaptacyjnych najmniejszych średnich kwadratów \citep{widrow2} (\textit{ang.~least mean squares (LMS) adaptive filter}).
 
 Idea algorytmu stochastycznego spadku gradientu jest następująca: zamiast obliczać gradient na całej funkcji $Q(w)$, w danym kroku oblicz
 gradient tylko na pojedynczym elemencie $Q_{i}(w)$. Nazwa \textit{stochastyczny} bierze się stąd, iż oryginalnie wybiera
@@ -79,11 +79,11 @@ się $Q_{i}(w)$ losowo. W praktyce zwykle przechodzi się po całym zbiorze dany
 \subsubsection{Właściwości stochastycznego spadku wzdłuż gradientu}
 %\vspace{-5pt}
 Zbieżność algorytmu stochastycznego spadku gradientu była szeroko badana w literaturze aproksymacji stochastycznych. Aby uzyskać zbieżność zazwyczaj wymaga się, aby ciąg kroków $\alpha_k$ był malejący i spełniał warunki $\sum\nolimits_k \alpha_k = \infty$ oraz $\sum\nolimits_k \alpha_k^2 < \infty$~(\cite{bott1}).
-Twierdzenie Robbinsa-Siegmunda (\cite{robbins}) przy łagodnych warunkach zapewnia~zbieżność~prawie na pewno (\cite{bottDOD}), nawet  gdy~optymalizowana~funkcja~nie~jest~wszędzie~różniczkowalna.
+Twierdzenie Robbinsa-Siegmunda \citep{robbins} przy łagodnych warunkach zapewnia~zbieżność~prawie na pewno \citep{bottDOD}, nawet  gdy~optymalizowana~funkcja~nie~jest~wszędzie~różniczkowalna.
 
 Prędkość zbieżności stochastycznego spadku gradientu jest w rzeczywistości ograniczana przez zgrubną (\textit{ang. noisy}) aproksymacje prawdziwego gradientu. Gdy długości kroków algorytmu
 maleją zbyt wolno, wariancja estymatorów parametrów $w_k$ maleje równie wolno. Gdy kroki maleją
-zbyt szybko, wartości oczekiwane estymatorów $w_k$ potrzebują więcej czasu by osiągnąć optimum (\cite{bott1}). Pod pewnymi warunkami regularności (\cite{murata}), najlepsza prędkość zbieżności jest uzyskana dla ciągu kroków $\alpha_k\sim k^{-1}$.
+zbyt szybko, wartości oczekiwane estymatorów $w_k$ potrzebują więcej czasu by osiągnąć optimum \citep{bott1}. Pod pewnymi warunkami regularności \citep{murata}, najlepsza prędkość zbieżności jest uzyskana dla ciągu kroków $\alpha_k\sim k^{-1}$.
 
 Jak wykazano w \cite{dennis} pod pewnymi odpowiednimi warunkami regularności, gdy zainicjowany współczynnik początkowy $w_0$ jest wystarczająco blisko optimum i krok algorytmu jest odpowiednio mały, algorytm stochastycznego spadku gradientu osiąga liniową zbieżność. Oznacza to, iż przy spełnieniu założeń metody, odległości pomiędzy kolejnymi przybliżeniami a minimum funkcji $\mathbf{w^{\ast}}$ maleją liniowo: $\parallel \mathbf{w^{\ast}} - \mathbf{w_{k+1}} \parallel \leqslant c \parallel \mathbf{w^{\ast}} - \mathbf{w_k} \parallel$. Zbieżność wymaga często przejścia parokrotnie po całym
 zbiorze danych. Wady i zalety algorytmu wymienione są poniżej. Zalety~zdecydowanie przewyższają~wady.
@@ -111,7 +111,7 @@ składnik $Q_{i}$.
 
 W niniejszym podrozdziale przedstawiono graficznie różnice w wyborze kolejnych punktów w trakcie optymalizacji między omawianymi w poprzedniej części pracy algorytmami spadku wzdłuż gradientu I (Cauchy'ego), spadku wzdłuż gradientu II (Newtona-Raphsona) oraz stochastycznego spadku wzdłuż gradientu I. W celu zobrazowania przykładu na dwuwymiarowym wykresie, postanowiono ograniczyć się do modelu z jedną zmienną objaśniającą i wyrazem wolnym. Do przykładu wybrano model regresji logistycznej, z racji na prostotę przedstawienia funkcji log-wiarogodności jako sumy różniczkowalnych składników.
 
-Funkcja log-wiarogodności dla regresji logistycznej (\cite{czepiel}, \cite{dobson}) to
+Funkcja log-wiarogodności dla regresji logistycznej \citep{czepiel, dobson} to
 \begin{equation}\label{logglm}
 \ell(\beta_1,\beta_2) = \sum\limits_{i=1}^{N} Q_i(\beta_1,\beta_2), 
 \end{equation}
@@ -176,11 +176,11 @@ Poniższymi wywołaniami kodów z pakietu $\mathcal{R}$ można wygenerować 1000
 
 Tak zasymulowane dane wprowadzono do przygotowanej funkcji \texttt{logitGD()}, dzięki której można śledzić wartości ekstremum w kolejnych krokach omawianych algorytmów. Kody funkcji \texttt{logitGD()} oraz \texttt{graphSGD()} tworzącej wykresy porównujące trajektorie zbieżności różnych algorytmów spadku gradientu  dostępne są w Dodatku~\ref{kody}. Wyniki wywołań funkcji \texttt{graphSGD()} zostały umieszczone na Rysunkach \ref{fig:sc5asd} - \ref{fig:sc4asd}.
 
-Na każdym z wykresów na osi $OX$ pokazano wartości współczynnika dla zmiennej objaśniającej w kolejnych krokach poszczególnych algorytmów. Na osi $OY$ zaznaczono współczynnik wyrazu wolnego. Punkt startowy oznaczono na wykresie czarnym trójkątem, a~czarnym kwadratem zaznaczono ekstremum funkcji log-wiarogodności, wyliczone dzięki funkcji \texttt{glm()} (\cite{glmglm}), która do estymacji używa algorytmu iteracyjnej ważonej metody najmniejszych kwadratów. Ta metoda w regresji logistycznej jest równoważna algorytmowi \textit{Fisher's Scoring} (\cite{scoring1}, \cite{scoring2}), który używa obserwowanej macierzy Informacji Fishera (Definicja \ref{inf:fish}) w miejscu Hesjanu w algorytmie Newtona-Raphsona~(\ref{NJU-rap})). Trajektorie zbieżności do minimum w odrębnych algorytmach zaznaczono oddzielnymi kolorami. Dodatkowo wpisano liczbę kroków wymaganą przez algorytm do zbieżności. Przez \texttt{GDI} oznaczono algorytmu spadku gradientu rzędu I, zaś przez \texttt{GDII} rzędu II. Oznaczenie \texttt{SGD.i} odpowiada 3 algorytmom stochastycznego spadku gradientu o~różnych ciągach odpowiedzialnych za długość kroku. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{k,i} = i/\sqrt{k}$.
+Na każdym z wykresów na osi $OX$ pokazano wartości współczynnika dla zmiennej objaśniającej w kolejnych krokach poszczególnych algorytmów. Na osi $OY$ zaznaczono współczynnik wyrazu wolnego. Punkt startowy oznaczono na wykresie czarnym trójkątem, a~czarnym kwadratem zaznaczono ekstremum funkcji log-wiarogodności, wyliczone dzięki funkcji \texttt{glm()} \citep{glmglm}, która do estymacji używa algorytmu iteracyjnej ważonej metody najmniejszych kwadratów. Ta metoda w regresji logistycznej jest równoważna algorytmowi \textit{Fisher's Scoring} \citep{scoring1, scoring2}, który używa obserwowanej macierzy Informacji Fishera (Definicja \ref{inf:fish}) w miejscu Hesjanu w algorytmie Newtona-Raphsona~(\ref{NJU-rap})). Trajektorie zbieżności do minimum w odrębnych algorytmach zaznaczono oddzielnymi kolorami. Dodatkowo wpisano liczbę kroków wymaganą przez algorytm do zbieżności. Przez \texttt{GDI} oznaczono algorytmu spadku gradientu rzędu I, zaś przez \texttt{GDII} rzędu II. Oznaczenie \texttt{SGD.i} odpowiada 3 algorytmom stochastycznego spadku gradientu o~różnych ciągach odpowiedzialnych za długość kroku. Indeks $i$ odpowiada ciągowi wybranemu do wyznaczania długości kroku algorytmu na zasadzie $\alpha_{k,i} = i/\sqrt{k}$.
 
 \textbf{Warunki zbieżności}
 
-W trakcie każdej symulacji postawiono pewne warunki konieczne do zbieżności. Ustalono maksymalną liczbę iteracji na 10001, gdzie przez pierwszy krok rozumiano start z punktu startowego. Dodatkowo warunek stopu ustalono na $\varepsilon=10^{-4}$ ($\varepsilon=10^{-5}$ dla $\beta_0 = (0,0)$) oraz ustalono ciąg odpowiadający długościom kroków w algorytmie spadku gradientu rzędu I \texttt{GDI} na $\alpha_{k} = 1/1000\sqrt{k}$. Symulacje powtórzono czterokrotnie, biorąc różne punkty startu algorytmów $$\beta_0 = (0,0), (1,2), (3.5,1), (4,3.2).$$
+W trakcie każdej symulacji postawiono pewne warunki konieczne do zbieżności. Ustalono maksymalną liczbę iteracji na 10001, gdzie przez pierwszy krok rozumiano start z punktu startowego. Dodatkowo warunek stopu ustalono na $\varepsilon=10^{-5}$ oraz ustalono ciąg odpowiadający długościom kroków w algorytmie spadku gradientu rzędu I \texttt{GDI} na $\alpha_{k} = 1/1000\sqrt{k}$. Symulacje powtórzono czterokrotnie, biorąc różne punkty startu algorytmów $$\beta_0 = (0,0), (1,2), (3.5,1), (4,3.2).$$
 
 Ponieważ każda trajektoria w procesie estymacji metodą stochastycznego gradientu przy tych samych parametrów zbieżności jest inna, z racji na losową kolejność obserwacji, toteż dla każdego z czterech ustalonych punktów startowych zdecydowano się zobrazować symulację dwukrotnie, aby móc przedstawić stochastyczny aspekt tej metody. Symulacja nr 1 bazowała na losowym wzięciu punktów do algorytmów stochastycznego spadku gradientu, gdy ziarno losowania było ustawione na 4561, zaś w symulacji nr 2 ziarno ustawiono na 456.
 
@@ -193,41 +193,41 @@ Ponieważ na Rysunkach \ref{fig:scasd} - \ref{fig:sc4asd} każda z symulacji ma 
   \begin{center}
    \begin{subfigure}[h!]{0.49\textwidth}
 %     \centering
-     \includegraphics[width=\textwidth]{Obrazki/contour_00.pdf}
+     \includegraphics[width=\textwidth]{Obrazki/Numeryka/contour_00.pdf}
      \caption{$\beta_0 = (0,0)$}
    \end{subfigure}
    \begin{subfigure}[h!]{0.49\textwidth}
    %     \centering
-        \includegraphics[width=\textwidth]{Obrazki/contour_2_1.pdf}
+        \includegraphics[width=\textwidth]{Obrazki/Numeryka/contour_2_1.pdf}
         \caption{$\beta_0 = (1,2)$}
       \end{subfigure}
    \begin{subfigure}[h!]{0.49\textwidth}
       %     \centering
-           \includegraphics[width=\textwidth]{Obrazki/contour_35_1.pdf}
+           \includegraphics[width=\textwidth]{Obrazki/Numeryka/contour_35_1.pdf}
            \caption{$\beta_0 = (3.5,1)$}
                  \end{subfigure}
    \begin{subfigure}[h!]{0.49\textwidth}
          %     \centering
-              \includegraphics[width=\textwidth]{Obrazki/contour_4_32.pdf}
+              \includegraphics[width=\textwidth]{Obrazki/Numeryka/contour_4_32.pdf}
               \caption{$\beta_0 = (4,3.2)$}
             \end{subfigure}
 \end{center}
-\caption{\label{fig:sc5asd} Porównanie algorytmów spadku gradientu w modelu regresji logistycznej. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\varepsilon=10^{-4}$ ($\varepsilon=10^{-5}$, gdy $\beta_0 = (0,0)$). Trójkątem zaznaczono punkt startowy, a~kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm()}. Przez \texttt{GDI} oznaczono algorytmu spadku gradientu rzędu I, zaś przez \texttt{GDII} rzędu II. Oznaczenie \texttt{SGD.i} odpowiada 3 algorytmom stochastycznego spadku gradientu o~różnych ciągach odpowiedzialnych za długość kroku. Indeks $i$ odpowiada ciągowi wybranemu na zasadzie $\alpha_{k,i} = i/\sqrt{k}$. Ziarno losowania ustalono na 4561.}
+\caption{\label{fig:sc5asd} Porównanie algorytmów spadku gradientu w modelu regresji logistycznej. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu ustalono na $\varepsilon=10^{-5}$. Trójkątem zaznaczono punkt startowy, a~kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm()}. Przez \texttt{GDI} oznaczono algorytmu spadku gradientu rzędu I, zaś przez \texttt{GDII} rzędu II. Oznaczenie \texttt{SGD.i} odpowiada 3 algorytmom stochastycznego spadku gradientu o~różnych ciągach odpowiedzialnych za długość kroku. Indeks $i$ odpowiada ciągowi wybranemu na zasadzie $\alpha_{k,i} = i/\sqrt{k}$. Ziarno losowania ustalono na 4561.}
 \end{figure}
 
-Na kolejnych wykresach na Rysunkach \ref{fig:scasd} - \ref{fig:sc4asd} osie dopasowane są do obecnej symulacji. Ze względu na pomniejszenie zakresu osi, nie zdecydowano się na ukazanie warstwic.
+Na wykresach na Rysunkach \ref{fig:scasd} - \ref{fig:sc4asd} osie dopasowane są do obecnej symulacji. 
 
 \newpage
 
 \begin{figure}[hbt!]
   %\vspace{-10pt}
   \begin{center}
-   \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_00_1.pdf}
+   \begin{subfigure}[h!]{0.99\textwidth}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_00_1.pdf}
       \caption{$\beta_0 = (0,0)$, ziarno losowania: 4561.}
    \end{subfigure}     
-   \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_00_2.pdf}
+   \begin{subfigure}[h!]{0.99\textwidth}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_00_2.pdf}
       \caption{$\beta_0 = (0,0)$, ziarno losowania: 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}
@@ -239,15 +239,15 @@ Na kolejnych wykresach na Rysunkach \ref{fig:scasd} - \ref{fig:sc4asd} osie dopa
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_1_2_1.pdf}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_1_2_1.pdf}
       \caption{$\beta_0 = (1,2)$, ziarno losowania: 4561.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_1_2_2.pdf}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_1_2_2.pdf}
       \caption{$\beta_0 = (1,2)$, ziarno losowania: 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}
-  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (1,2)$.]{\label{fig:sc2asd}Porównanie algorytmów spadku gradientu w modelu regresji logistycznej. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu na $\varepsilon=10^{-4}$. Trójkątem zaznaczono punkt startowy, a~kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm()}. Przez \texttt{GDI} oznaczono algorytmu spadku gradientu rzędu I, zaś przez \texttt{GDII} rzędu II. Oznaczenie \texttt{SGD.i} odpowiada 3 algorytmom stochastycznego spadku gradientu o~różnych ciągach odpowiedzialnych za długość kroku. Indeks $i$ odpowiada ciągowi wybranemu na zasadzie $\alpha_{k,i} = i/\sqrt{k}$. Punkt startowy $\beta_0 = (1,2)$.}
+  \caption[Porównanie algorytmów spadku gradientu dla punktu startowego $\beta_0 = (1,2)$.]{\label{fig:sc2asd}Porównanie algorytmów spadku gradientu w modelu regresji logistycznej. Wykresy przedstawiają ścieżki zbieżności w kolejnych krokach algorytmów spadku gradientu. Ustalono maksymalną liczbę iteracji na 10001, zaś warunek stopu na $\varepsilon=10^{-5}$. Trójkątem zaznaczono punkt startowy, a~kwadratem wyestymowane rozwiązanie przy pomocy funkcji \texttt{glm()}. Przez \texttt{GDI} oznaczono algorytmu spadku gradientu rzędu I, zaś przez \texttt{GDII} rzędu II. Oznaczenie \texttt{SGD.i} odpowiada 3 algorytmom stochastycznego spadku gradientu o~różnych ciągach odpowiedzialnych za długość kroku. Indeks $i$ odpowiada ciągowi wybranemu na zasadzie $\alpha_{k,i} = i/\sqrt{k}$. Punkt startowy $\beta_0 = (1,2)$.}
 \end{figure}
 
 
@@ -255,11 +255,11 @@ Na kolejnych wykresach na Rysunkach \ref{fig:scasd} - \ref{fig:sc4asd} osie dopa
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_35_1_1.pdf}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_35_1_1.pdf}
       \caption{$\beta_0 = (3.5,1)$, ziarno losowania: 4561.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_35_1_2.pdf}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_35_1_2.pdf}
       \caption{$\beta_0 = (3.5,1)$, ziarno losowania: 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}
@@ -271,11 +271,11 @@ Na kolejnych wykresach na Rysunkach \ref{fig:scasd} - \ref{fig:sc4asd} osie dopa
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_32_4_1.pdf}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_32_4_1.pdf}
       \caption{$\beta_0 = (4,3.2)$, ziarno losowania: 4561.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.9\textwidth}
-      \includegraphics[width=\textwidth, height=270pt]{Obrazki/sgd_32_4_2.pdf}
+      \includegraphics[width=\textwidth, height=270pt]{Obrazki/Numeryka/sgd_32_4_2.pdf}
       \caption{$\beta_0 = (4,3.2)$, ziarno losowania: 456.}
    \end{subfigure}  \end{center}
   %\vspace{-10pt}

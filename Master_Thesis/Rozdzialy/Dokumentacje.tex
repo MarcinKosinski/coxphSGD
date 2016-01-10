@@ -1,6 +1,6 @@
 \chapter{Wykorzystane narzędzia, dokumentacja i kody pakietu $\mathcal{R}$ użyte w pracy}\label{docCoxSGD}
 
-W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr}, \citet{biecek1}, \citet{gagol1}) do implementacji algorytmów, przeprowadzenia symulacji oraz wykonania analizy danych genomicznych. Do przetwarazania danych wykorzystano pakiety \texttt{dplyr} (\citet{dplyr}), \texttt{tidyr} (\citet{tidyr}), \texttt{reshape2} (\citet{reshape2}) oraz \texttt{data.table} (\citet{data.table}). Do tworzenia dokumentacji oraz struktury pakietu \texttt{coxphSGD} (\citet{kosa0}) użyto pakietów \texttt{roxygen2} (\citet{roxygen2}), \texttt{rmarkdown} (\citet{rmarkdown}), \texttt{knitr} (\citet{knitr1}, \citet{knitr2}, \citet{knitr3}), \texttt{assertthat} (\citet{assertthat}) oraz pakietu \texttt{rlp} (\citet{rlp}). Zastosowanie rozproszonych obliczeń możliwe było dzięki pakietowi \texttt{foreach} (\citet{foreach}). Przejrzystość kodu wspierał pakiet \texttt{magrittr} (\citet{magrittr}), zaś do wizualizacji wykorzystano pakiet \texttt{ggplot2} (\citet{ggplot2}). Dane do analizy pobrano dzięki pakietowi \texttt{RTCGA} (\citet{kosa1}) oraz umieszczono je w pakietach \texttt{RTCGA.clinical} (\citet{kosa2}) oraz \texttt{RTCGA.mutations} (\citet{kosa3}). 
+W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ \citep{programikr, biecek1, gagol1} do implementacji algorytmów, przeprowadzenia symulacji oraz wykonania analizy danych genomicznych. Do przetwarzania danych wykorzystano pakiety \texttt{dplyr} \citep{dplyr}, \texttt{tidyr} \citep{tidyr}, \texttt{reshape2} \citep{reshape2} oraz \texttt{data.table} \citep{data.table}. Do tworzenia dokumentacji oraz struktury pakietu \texttt{coxphSGD} \citep{kosa0} użyto pakietów \texttt{roxygen2} \citep{roxygen2}, \texttt{rmarkdown} \citep{rmarkdown}, \texttt{knitr} \citep{knitr1, knitr2, knitr3}, \texttt{assertthat} \citep{assertthat} oraz pakietu \texttt{rlp} \citep{rlp}. Przejrzystość kodu wspierał pakiet \texttt{magrittr} \citep{magrittr}, zaś do tworzenia wizualizacji wykorzystano pakiet \texttt{ggplot2} \citep{ggplot2}. Dane do analizy pobrano dzięki pakietowi \texttt{RTCGA} \citep{kosa1}) oraz umieszczono je w pakietach \texttt{RTCGA.clinical} \citep{kosa2} oraz \texttt{RTCGA.mutations} \citep{kosa3}. 
 
 \section{Model proporcjonalnych hazardów Coxa}\label{coxKody123}
 
@@ -149,7 +149,10 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
 \NormalTok{beta_0 =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{)}
 \NormalTok{solution =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)}
 
+
+
 \KeywordTok{pdf}\NormalTok{(}\DataTypeTok{file =} \StringTok{"b_0_0_iter_10_e-5_100sqrt_878.pdf"}\NormalTok{, }\DataTypeTok{width =} \DecValTok{10}\NormalTok{, }\DataTypeTok{height =} \DecValTok{10}\NormalTok{)}
+
 \KeywordTok{ggplot}\NormalTok{() +}
 \StringTok{  }\KeywordTok{stat_contour}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{outerCox$Var1,}
                    \DataTypeTok{y=}\NormalTok{outerCox$Var2,}
@@ -168,6 +171,7 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
              \DataTypeTok{col =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{4}\NormalTok{, }\DataTypeTok{shape =} \DecValTok{13}\NormalTok{) +}
 \StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"X1"}\NormalTok{) +}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"X2"}\NormalTok{) +}
 \StringTok{  }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{col =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{ncol =} \DecValTok{3}\NormalTok{))}
+
 \KeywordTok{dev.off}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
@@ -320,7 +324,7 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
 \NormalTok{\}}
 
 \NormalTok{updateWeightsGDI <-}\StringTok{ }\NormalTok{function(y, x, w_old)\{}
-  \CommentTok{#(1/length(y))*c(sum(y-p(w_old, x)), sum(x*(y-p(w_old, x))))}
+
   \KeywordTok{c}\NormalTok{(}\KeywordTok{sum}\NormalTok{(y-}\KeywordTok{p}\NormalTok{(w_old, x)), }\KeywordTok{sum}\NormalTok{(x*(y-}\KeywordTok{p}\NormalTok{(w_old, x))))}
 \NormalTok{\}}
 
@@ -354,7 +358,7 @@ W pracy wykorzystano środowisko statystyczne $\mathcal{R}$ (\citet{programikr},
 
 
 \NormalTok{global_loglog <-}\StringTok{ }\NormalTok{function(beta1, beta2, xX, yY)\{}
-  \KeywordTok{sum}\NormalTok{(yY*(beta1+beta2*xX)-}\KeywordTok{log}\NormalTok{(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(beta1+beta2*xX)))}
+  \KeywordTok{sum}\NormalTok{(yY*(beta2+beta1*xX)-}\KeywordTok{log}\NormalTok{(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(beta2+beta1*xX)))}
 \NormalTok{\}}
 
 

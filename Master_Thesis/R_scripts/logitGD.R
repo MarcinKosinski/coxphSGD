@@ -63,7 +63,7 @@ y <- rbinom(10000,1,pr)
 
 
 global_loglog <- function(beta1, beta2, xX, yY){
-  sum(yY*(beta1+beta2*xX)-log(1+exp(beta1+beta2*xX)))
+  sum(yY*(beta2+beta1*xX)-log(1+exp(beta2+beta1*xX)))
 }
 
 
@@ -92,26 +92,27 @@ calculate_outer <- function(x, y){
 
 
 library(ggplot2); library(ggthemes); library(reshape2)
-graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)){
+graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y),
+                     eps = 10e-5){
   set.seed(seed)
 
   beta <- rev(beta)
 
-  logitGD(y, x, optim.method = "GDI",beta_0 = beta,
-          eps = 10e-4, max.iter = 10000, alpha = function(t){1/(1000*sqrt(t))})$steps -> GDI.S
+  logitGD(y, x, optim.method = "GDI", beta_0 = beta,
+          eps = eps, max.iter = 10000, alpha = function(t){1/(1000*sqrt(t))})$steps -> GDI.S
 
   logitGD(y, x, optim.method = "GDII", beta_0 = beta,
-          eps = 10e-4, max.iter = 5000)$steps -> GDII
+          eps = eps, max.iter = 5000)$steps -> GDII
 
   ind2 <- sample(length(y))
   logitGD(y[ind2], x[ind2], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-4, alpha = function(t){1/sqrt(t)})$steps -> SGDI.1.S
+          max.iter = 10000, eps = eps, alpha = function(t){1/sqrt(t)})$steps -> SGDI.1.S
   ind3 <- sample(length(y))
   logitGD(y[ind3], x[ind3], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-4, alpha = function(t){5/sqrt(t)})$steps -> SGDI.5.S
+          max.iter = 10000, eps = eps, alpha = function(t){5/sqrt(t)})$steps -> SGDI.5.S
   ind4 <- sample(length(y))
   logitGD(y[ind4], x[ind4], optim.method = "SGDI", beta_0 = beta,
-          max.iter = 10000, eps = 10e-4, alpha = function(t){6/sqrt(t)})$steps -> SGDI.6.S
+          max.iter = 10000, eps = eps, alpha = function(t){6/sqrt(t)})$steps -> SGDI.6.S
 
   do.call(rbind, c(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S)) -> coeffs
   unlist(lapply(list(GDI.S, GDII, SGDI.1.S, SGDI.5.S, SGDI.6.S), length)) -> algorithm
@@ -130,10 +131,10 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
 
 
   ggplot()+
-#     stat_contour(aes(x=outerBounds$Var1,
-#                      y=outerBounds$Var2,
-#                      z=outerBounds$value+900),
-#                  alpha = 0.25) +
+    stat_contour(aes(x=outerBounds$Var1,
+                     y=outerBounds$Var2,
+                     z=outerBounds$value+900),
+                 alpha = 0.25, bins = 150) +
     geom_path(aes(x = data2viz$X,
                   y = data2viz$Intercept,
                   col = data2viz$algorithm,
@@ -154,4 +155,60 @@ graphSGD <- function(beta, y, x, seed = 4561, outerBounds = calculate_outer(x,y)
 }
 
 
+pdf("contour_00.pdf", width = 10, height = 8)
+pl_g
+dev.off()
+
+pdf("contour_2_1.pdf", width = 10, height = 8)
+pl_g
+dev.off()
+
+pdf("contour_35_1.pdf", width = 10, height = 8)
+pl_g
+dev.off()
+
+
+pdf("contour_4_32.pdf", width = 10, height = 8)
+pl_g
+dev.off()
+
+
+pdf("sgd_00_1.pdf", width = 10, height = 8)
+pl_g
+dev.off()
+
+
+pdf("sgd_00_2.pdf", width = 10, height = 8)
+pl_g + coord_cartesian(ylim=c(0,5), xlim=c(0,4))
+dev.off()
+
+
+pdf("sgd_1_2_1.pdf", width = 10, height = 8)
+pl_g + coord_cartesian(ylim=c(1,4), xlim=c(1,4))
+dev.off()
+
+
+pdf("sgd_1_2_2.pdf", width = 10, height = 8)
+pl_g + coord_cartesian(ylim=c(1,4), xlim=c(1,4))
+dev.off()
+
+
+pdf("sgd_35_1_1.pdf", width = 10, height = 8)
+pl_g + coord_cartesian(ylim=c(1,3), xlim=c(2.5,4.5))
+dev.off()
+
+
+pdf("sgd_35_1_2.pdf", width = 10, height = 8)
+pl_g + coord_cartesian(ylim=c(1,3), xlim=c(2.5,4.5))
+dev.off()
+
+
+pdf("sgd_32_4_1.pdf", width = 10, height = 8)
+pl_g  + coord_cartesian(ylim=c(0,5), xlim=c(0,4))
+dev.off()
+
+
+pdf("sgd_32_4_2.pdf", width = 10, height = 8)
+pl_g + coord_cartesian(ylim=c(0,5), xlim=c(0,4))
+dev.off()
 
