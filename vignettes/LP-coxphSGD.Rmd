@@ -288,43 +288,48 @@ calculate_outer_cox <- function(x1, x2, censored){
 simulateCoxSGD <- function(dCox = dCox, learningRates = function(x){1/x},
                       epsilon = 1e-03, beta_0 = c(0,0), max.iter = 100){
 
+  # podziel na pozdzbiory
   sample(1:90, size = 10^4, replace = TRUE) -> group
+
   split(dCox, group) -> dCox_splitted
-  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
-           epsilon = epsilon, learningRates = learningRates, 
-           beta_0 = beta_0, max.iter = max.iter*90) -> estimates
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted, epsilon = epsilon,
+           learningRates = learningRates, beta_0 = beta_0, max.iter = max.iter*90) -> estimates
+
+
 
   sample(1:60, size = 10^4, replace = TRUE) -> group
+
   split(dCox, group) -> dCox_splitted
-  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
-           epsilon = epsilon, learningRates = learningRates,
-           beta_0 = beta_0, max.iter = max.iter*60) -> estimates2
+
+
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted, epsilon = epsilon,
+           learningRates = learningRates, beta_0 = beta_0, max.iter = max.iter*60) -> estimates2
+
+
 
   sample(1:120, size = 10^4, replace = TRUE) -> group
+
   split(dCox, group) -> dCox_splitted
-  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
-           epsilon = epsilon, learningRates = learningRates,
-           beta_0 = beta_0, max.iter = max.iter*120) -> estimates3
+
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted, epsilon = epsilon,
+           learningRates = learningRates, beta_0 = beta_0, max.iter = max.iter*120) -> estimates3
+
 
   sample(1:200, size = 10^4, replace = TRUE) -> group
+
   split(dCox, group) -> dCox_splitted
-  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
-           epsilon = epsilon, learningRates = learningRates,
-           beta_0 = beta_0, max.iter = max.iter*200) -> estimates4
+
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted, epsilon = epsilon,
+           learningRates = learningRates, beta_0 = beta_0, max.iter = max.iter*200) -> estimates4
 
 
   sample(1:30, size = 10^4, replace = TRUE) -> group
-  split(dCox, group) -> dCox_splitted
-  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
-           epsilon = epsilon, learningRates = learningRates,
-           beta_0 = beta_0, max.iter = max.iter*30) -> estimates5
 
-
-  sample(1:10, size = 10^4, replace = TRUE) -> group
   split(dCox, group) -> dCox_splitted
-  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted,
-           epsilon = epsilon, learningRates = learningRates,
-           beta_0 = beta_0, max.iter = max.iter*10) -> estimates6
+
+  coxphSGD(Surv(time, status)~x.1+x.2, data = dCox_splitted, epsilon = epsilon,
+           learningRates = learningRates, beta_0 = beta_0, max.iter = max.iter*30) -> estimates5
+
 
   t(simplify2array(estimates$coefficients)) %>%
     as.data.frame() -> df1
@@ -336,8 +341,6 @@ simulateCoxSGD <- function(dCox = dCox, learningRates = function(x){1/x},
     as.data.frame() -> df4
   t(simplify2array(estimates5$coefficients)) %>%
     as.data.frame() -> df5
-  t(simplify2array(estimates6$coefficients)) %>%
-    as.data.frame() -> df6
 
   df1 %>%
     mutate(version = paste("90 batches,", nrow(df1), " steps")) %>%
@@ -348,9 +351,7 @@ simulateCoxSGD <- function(dCox = dCox, learningRates = function(x){1/x},
     bind_rows(df4 %>%
                 mutate(version = paste("200 batches,", nrow(df4), " steps"))) %>%
     bind_rows(df5 %>%
-                mutate(version = paste("30 batches,", nrow(df5), " steps"))) %>%
-    bind_rows(df6 %>%
-                mutate(version = paste("10 batches,", nrow(df6), " steps"))) -> d2ggplot
+                mutate(version = paste("30 batches,", nrow(df5), " steps")))  -> d2ggplot
 
   return(list(d2ggplot = d2ggplot, est1 = estimates, est2 = estimates2,
               est3 = estimates3, est4 = estimates4, est5 = estimates5))
