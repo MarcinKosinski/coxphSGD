@@ -1,0 +1,7 @@
+      bcr_patient_barcode patient.vital_status times
+ACC.1        TCGA-OR-A5J1                    1  1355
+ACC.2        TCGA-OR-A5J2                    1  1677
+ACC.3        TCGA-OR-A5J3                    0  1942
+ACC.4        TCGA-OR-A5J4                    1   423
+ACC.5        TCGA-OR-A5J5                    1   365
+ACC.6        TCGA-OR-A5J6                    0  2428

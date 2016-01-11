@@ -1,0 +1,574 @@
+  bcr_patient_barcode . A2M A2ML1 ABCA1 ABCA10 ABCA12 ABCA13 ABCA3 ABCA4 ABCA6 ABCA7
+1     TCGA-02-0003-01 0   0     0     0      0      0      0     0     0     0     0
+2     TCGA-02-0033-01 0   0     0     0      0      0      0     0     0     0     0
+3     TCGA-02-0047-01 0   0     0     0      0      0      0     0     0     0     0
+4     TCGA-02-0055-01 0   0     0     0      0      0      0     0     0     0     0
+5     TCGA-02-2470-01 0   0     0     0      0      0      0     0     0     0     0
+6     TCGA-02-2483-01 0   0     0     0      0      0      0     0     0     0     0
+  ABCA8 ABCA9 ABCB1 ABCB4 ABCB5 ABCC11 ABCC12 ABCC8 ABCC9 ACACA ACACB ACAN ACTN2 ADAM29
+1     0     0     0     0     0      0      0     0     0     0     0    0     0      0
+2     0     0     0     0     0      0      0     0     0     0     0    0     0      0
+3     0     0     0     0     0      0      0     0     0     0     0    0     0      0
+4     0     0     0     0     0      0      0     0     0     0     0    0     0      0
+5     0     0     0     0     0      0      0     0     0     0     0    0     0      0
+6     0     1     0     0     0      0      0     0     0     0     0    0     0      0
+  ADAM6 ADAMTS12 ADAMTS16 ADAMTS18 ADAMTS19 ADAMTS2 ADAMTS20 ADAMTS3 ADAMTS5 ADAMTS7
+1     0        0        0        0        0       0        0       0       0       0
+2     0        0        0        0        0       0        0       0       0       0
+3     0        0        0        0        0       1        0       0       0       1
+4     0        0        0        0        0       0        0       0       0       0
+5     0        0        0        0        0       0        0       0       0       0
+6     0        0        0        0        0       0        0       1       0       0
+  ADAMTS9 ADAMTSL1 ADAMTSL3 ADCY1 ADCY10 ADCY2 ADCY8 ADCY9 AFF2 AFF3 AGBL1 AHCTF1 AHNAK
+1       0        0        0     0      0     0     0     0    0    0     0      0     0
+2       0        0        0     0      0     0     0     0    0    0     0      0     0
+3       0        0        0     0      0     0     0     0    0    0     0      0     0
+4       0        0        0     0      0     0     0     0    0    0     0      0     0
+5       0        0        0     0      0     0     0     0    0    0     0      0     0
+6       0        0        0     0      0     0     0     0    1    0     0      0     0
+  AHNAK2 AIM1 AKAP13 AKAP6 AKAP9 ALK ALMS1 ALPK2 ALPK3 ANK1 ANK2 ANK3 ANKRD11 ANKRD12
+1      0    0      0     1     0   0     1     0     0    0    0    0       0       0
+2      0    0      0     0     0   0     0     0     0    0    0    0       0       0
+3      0    0      0     0     0   0     0     0     0    0    0    0       0       0
+4      0    0      0     0     0   0     0     0     0    0    0    0       0       0
+5      0    0      0     0     0   0     0     0     0    0    0    0       0       0
+6      0    0      0     0     0   0     0     0     0    0    0    0       0       0
+  ANKRD17 ANKRD30A ANKRD50 ANKS1B ANO4 APC APOB AR ARAP2 ARFGEF1 ARFGEF2 ARHGAP21
+1       0        0       0      0    0   0    0  0     0       0       0        0
+2       0        0       0      0    0   0    0  0     0       0       0        0
+3       0        0       0      0    0   0    0  0     0       0       0        0
+4       0        0       0      0    0   0    0  0     0       0       0        0
+5       0        0       0      0    0   0    0  0     0       0       0        0
+6       0        0       0      0    0   0    1  0     0       0       0        0
+  ARHGAP31 ARHGAP32 ARHGAP5 ARHGEF11 ARID1A ARID1B ARID2 ASCC3 ASH1L ASPM ASTN1 ASTN2
+1        0        0       0        0      0      0     0     0     0    0     0     0
+2        0        0       0        0      0      0     0     0     0    0     0     0
+3        0        0       0        0      0      0     0     0     0    0     0     0
+4        0        0       0        0      0      0     0     0     0    0     0     0
+5        0        0       0        0      0      0     0     0     0    0     0     0
+6        0        0       0        0      0      0     0     0     0    0     0     0
+  ASXL1 ASXL3 ATAD2 ATG2A ATG2B ATM ATP10A ATP10B ATP10D ATP13A4 ATP1A2 ATP1A4 ATP2B2
+1     0     0     0     0     0   0      0      0      0       0      0      0      0
+2     0     0     0     0     0   0      0      0      0       0      0      0      0
+3     0     0     0     0     0   0      0      0      0       0      0      0      0
+4     1     0     0     0     0   0      0      0      0       0      0      0      0
+5     0     0     0     0     0   0      0      0      0       0      0      0      0
+6     0     0     0     0     0   0      0      0      0       0      0      0      1
+  ATP2B3 ATP8A2 ATP8B4 ATR ATRNL1 ATRX AUTS2 BAI1 BAI3 BAP1 BAZ2B BCLAF1 BCOR BCORL1
+1      0      0      0   0      0    0     1    0    0    0     0      0    0      0
+2      0      0      0   0      0    0     0    0    0    0     0      0    0      0
+3      0      0      0   0      0    0     0    0    0    0     0      0    0      0
+4      0      0      0   0      0    0     0    0    0    0     0      0    0      0
+5      0      0      0   0      0    0     0    0    0    0     0      0    0      0
+6      0      0      0   0      0    1     0    0    0    0     0      0    0      0
+  BDP1 BIRC6 BNC2 BPTF BRAF BRCA1 BRCA2 BRWD1 BRWD3 BSN BTBD11 BZRAP1 C12orf51 C15orf2
+1    0     0    0    0    0     0     0     0     0   0      1      0        0       0
+2    0     0    0    0    0     0     0     0     0   0      0      1        0       0
+3    0     0    0    0    1     0     0     0     0   0      0      0        0       0
+4    0     0    0    0    0     0     0     0     0   0      0      0        0       0
+5    0     0    0    0    0     0     0     0     0   0      0      0        0       0
+6    0     0    0    0    0     0     0     0     0   0      0      0        0       0
+  C1orf173 C20orf26 C2CD3 C2orf16 C3 C5orf42 C6 CABIN1 CACNA1A CACNA1B CACNA1C CACNA1D
+1        0        0     0       0  0       0  0      0       0       0       0       0
+2        0        0     0       0  0       0  0      0       0       0       0       0
+3        0        0     0       0  0       0  0      0       0       0       0       0
+4        0        0     0       0  0       0  0      0       0       0       0       0
+5        0        0     0       0  0       0  0      0       0       0       0       0
+6        0        0     0       0  1       0  0      0       0       0       0       0
+  CACNA1E CACNA1F CACNA1G CACNA1H CACNA1I CACNA1S CACNA2D1 CAD CADPS CAMTA1 CARD11 CASR
+1       0       0       0       0       0       0        0   0     0      0      0    0
+2       0       0       0       0       0       0        0   0     0      0      0    0
+3       0       0       0       0       0       0        0   0     0      0      0    0
+4       0       0       0       0       0       0        0   0     0      0      0    0
+5       0       0       0       0       0       0        0   0     0      0      0    0
+6       0       0       0       0       0       0        0   0     0      0      0    0
+  CASZ1 CCDC108 CCDC141 CCDC88A CCNB3 CD163 CD163L1 CDC27 CDH1 CDH10 CDH11 CDH12 CDH18
+1     0       0       0       0     0     0       0     0    0     0     0     0     0
+2     0       0       0       0     0     0       0     0    0     0     0     0     0
+3     0       0       0       0     0     0       0     0    0     0     0     0     0
+4     0       0       0       0     0     0       0     0    0     0     0     0     0
+5     0       0       0       0     0     0       0     0    0     0     0     0     0
+6     0       0       0       0     0     0       0     0    0     0     0     0     0
+  CDH23 CDH4 CDH7 CDH8 CDH9 CDK12 CDK5RAP2 CDKN2A CELSR1 CELSR2 CELSR3 CENPE CENPF
+1     0    0    0    0    0     0        0      0      0      0      0     0     0
+2     0    0    0    0    0     0        0      0      0      0      0     0     0
+3     0    0    0    0    0     0        0      0      1      0      0     0     0
+4     0    0    0    0    0     0        0      0      0      0      0     0     1
+5     0    0    0    0    0     0        0      0      0      0      0     0     0
+6     0    0    0    0    0     0        0      0      0      0      0     0     0
+  CEP192 CEP250 CEP290 CEP350 CFH CFTR CHD2 CHD3 CHD4 CHD5 CHD6 CHD7 CHD8 CHD9 CHL1
+1      0      0      0      0   0    0    0    0    0    0    0    0    0    0    0
+2      0      0      0      0   0    0    0    0    0    0    0    0    0    0    0
+3      0      0      0      0   0    0    0    0    0    0    0    0    0    0    0
+4      0      0      0      0   0    0    0    0    0    0    0    0    0    0    0
+5      0      0      0      0   0    0    0    0    0    0    0    0    0    0    0
+6      0      0      0      0   0    0    0    0    0    0    0    0    0    0    1
+  CHRM2 CIC CIT CLSTN2 CMYA5 CNOT1 CNTLN CNTN1 CNTN3 CNTN4 CNTN5 CNTN6 CNTNAP2 CNTNAP4
+1     0   0   0      0     0     0     0     0     0     0     0     0       0       0
+2     0   0   0      0     0     0     0     0     0     0     0     0       0       0
+3     0   0   0      0     0     0     0     0     0     0     0     0       0       0
+4     0   0   0      0     0     0     0     0     0     0     0     0       0       0
+5     0   0   0      0     0     0     0     0     0     0     0     0       1       0
+6     0   0   0      0     0     0     0     0     0     0     0     0       0       0
+  CNTNAP5 COL11A1 COL11A2 COL12A1 COL14A1 COL15A1 COL17A1 COL18A1 COL19A1 COL1A2 COL22A1
+1       0       0       0       0       0       0       0       0       0      0       0
+2       0       0       0       0       0       0       0       0       0      0       0
+3       0       0       0       0       0       0       0       0       0      0       0
+4       0       1       0       0       0       0       0       0       0      0       0
+5       0       0       0       0       0       0       0       0       0      0       0
+6       0       0       0       0       0       0       0       1       0      0       0
+  COL24A1 COL27A1 COL3A1 COL4A1 COL4A2 COL4A4 COL4A5 COL4A6 COL5A1 COL5A2 COL5A3 COL6A2
+1       0       0      0      0      0      0      0      0      0      0      0      0
+2       0       0      0      0      0      0      0      0      0      0      0      0
+3       0       0      0      0      0      1      0      0      0      0      0      0
+4       0       0      0      0      0      0      0      0      0      0      0      0
+5       0       0      0      0      0      0      0      0      0      0      0      0
+6       0       0      0      0      0      0      0      0      0      0      0      0
+  COL6A3 COL6A5 COL6A6 COL7A1 COL9A1 CPAMD8 CPS1 CR1 CR2 CRB1 CREBBP CROCC CROCCP2 CSMD1
+1      0      0      0      0      0      0    0   0   0    0      0     0       0     0
+2      0      0      0      0      0      0    0   0   0    0      0     0       0     0
+3      0      0      0      0      0      0    0   0   0    0      1     0       0     0
+4      1      0      0      0      0      0    0   0   0    0      0     0       0     0
+5      0      0      0      0      0      0    0   0   0    0      0     0       0     0
+6      0      0      0      0      0      0    0   0   0    0      0     0       0     0
+  CSMD2 CSMD3 CSPG4 CTCF CTNNA2 CTNNA3 CTNNB1 CTNND2 CTTNBP2 CUBN CUL9 CUX1 CUX2 CYLC1
+1     0     0     0    0      0      0      0      0       0    0    0    0    0     0
+2     0     0     0    0      0      0      0      0       0    0    0    0    0     0
+3     0     0     0    0      0      0      0      0       0    0    0    0    0     0
+4     0     0     0    0      0      0      0      0       0    0    0    0    0     0
+5     0     0     0    0      0      0      0      0       0    0    0    0    0     0
+6     0     0     0    0      0      0      0      0       0    0    0    0    0     0
+  DAPK1 DBC1 DCAF4L2 DCC DCHS1 DCHS2 DCLK1 DEPDC5 DGKI DICER1 DIDO1 DIP2A DIP2C DISP1
+1     0    0       0   0     0     0     0      0    0      0     0     0     0     0
+2     0    0       0   0     0     0     0      0    0      0     0     0     0     0
+3     0    0       0   0     0     0     0      0    0      0     0     0     0     0
+4     0    0       0   0     0     0     0      0    0      0     0     0     0     0
+5     0    0       0   0     0     1     0      0    0      0     0     0     0     0
+6     0    0       0   0     0     0     0      0    0      0     0     0     0     0
+  DLC1 DLEC1 DLG2 DLG5 DLGAP2 DMBT1 DMD DMXL1 DMXL2 DNAH1 DNAH10 DNAH11 DNAH17 DNAH2
+1    0     0    0    0      0     0   0     0     0     0      0      0      0     0
+2    0     0    0    0      0     0   0     0     0     0      0      0      0     0
+3    0     0    0    0      0     0   0     0     0     0      0      0      0     0
+4    0     0    0    0      0     0   0     0     0     0      0      0      0     0
+5    0     0    0    0      0     0   0     0     0     0      0      0      0     0
+6    0     0    0    0      0     0   0     0     0     0      0      0      0     0
+  DNAH3 DNAH5 DNAH6 DNAH7 DNAH8 DNAH9 DNAJC13 DNHD1 DOCK1 DOCK10 DOCK11 DOCK2 DOCK3
+1     0     1     0     0     0     0       0     0     0      0      0     0     0
+2     0     0     0     0     0     0       0     0     0      0      0     0     0
+3     0     0     0     0     0     0       0     0     0      0      0     0     0
+4     0     0     0     0     0     0       0     0     0      0      0     0     0
+5     0     0     0     0     0     0       0     0     0      0      0     0     0
+6     0     0     0     0     0     0       0     0     0      0      0     0     0
+  DOCK4 DOCK5 DOCK7 DOCK8 DOCK9 DOPEY1 DOPEY2 DPP10 DPP6 DPYD DSCAM DSCAML1 DSEL DSP
+1     0     0     0     0     0      0      0     0    0    0     0       0    0   0
+2     0     0     0     0     0      0      0     0    0    0     0       0    0   0
+3     0     0     0     0     0      0      0     0    0    0     0       0    0   0
+4     0     0     0     0     0      0      0     0    0    0     0       0    0   0
+5     0     0     0     0     0      0      0     0    0    0     0       0    0   0
+6     0     0     0     0     0      0      0     0    0    0     0       0    0   0
+  DSPP DST DUOX2 DUSP27 DYNC1H1 DYNC2H1 DYSF EFCAB6 EGFLAM EGFR EIF4G1 EIF4G3 ELMO1
+1    0   0     0      0       0       0    0      0      0    1      0      0     1
+2    0   0     0      0       0       0    0      0      0    0      0      0     0
+3    0   0     0      0       0       0    0      0      0    0      0      0     0
+4    0   0     0      0       0       0    0      0      0    0      0      0     0
+5    0   0     0      0       0       0    0      0      0    0      0      0     0
+6    0   0     0      0       0       0    0      0      0    0      0      0     0
+  ELTD1 ENPEP EP300 EP400 EPB41L3 EPHA3 EPHA5 EPHA6 EPHA7 EPHA8 EPHB1 EPHB6 EPPK1 ERBB2
+1     0     0     0     0       0     0     0     0     1     0     0     0     0     0
+2     0     0     0     0       0     0     0     0     0     0     0     0     0     0
+3     0     0     0     0       0     0     1     0     0     0     0     0     0     0
+4     0     0     0     0       0     0     0     0     0     0     0     0     0     0
+5     0     0     0     0       0     0     0     0     0     0     0     0     0     0
+6     0     0     1     0       0     0     0     0     0     0     0     0     0     0
+  ERBB3 ERBB4 ERCC6 ESPL1 EVC2 EVPL EXPH5 EYS F5 F8 FAM135B FAM47A FAM47B FAM47C FAM5B
+1     0     0     0     0    0    0     0   0  0  0       0      0      0      0     0
+2     0     0     0     0    0    0     0   0  0  0       0      0      0      0     0
+3     0     0     0     0    0    0     1   0  0  0       0      0      0      0     0
+4     0     0     0     0    0    0     0   0  0  1       0      0      0      0     0
+5     0     0     0     0    0    0     0   0  0  0       0      0      0      0     0
+6     0     0     0     0    0    0     0   0  0  0       0      0      0      0     0
+  FAM5C FANCM FASN FAT1 FAT2 FAT3 FAT4 FBN1 FBN2 FBN3 FBXW7 FCGBP FCRL5 FER1L6 FGD5
+1     0     0    0    0    0    1    0    0    0    0     0     0     0      0    0
+2     0     0    0    0    0    0    0    0    0    0     0     0     0      0    0
+3     0     0    0    0    0    1    0    0    0    0     0     0     0      0    0
+4     0     0    0    0    0    0    1    0    0    0     0     0     0      0    1
+5     0     0    0    0    0    0    0    0    0    0     0     0     0      0    0
+6     0     0    0    0    0    0    0    0    0    0     0     0     0      0    0
+  FHOD3 FLG FLG2 FLNA FLNB FLNC FLRT2 FLT1 FLT4 FMN2 FN1 FNDC1 FOLH1 FRAS1 FREM1 FREM2
+1     0   0    0    0    0    0     0    0    0    0   0     0     0     0     0     0
+2     0   0    0    0    1    0     0    0    0    0   0     0     0     0     0     0
+3     0   0    0    0    0    0     0    0    0    0   0     0     0     0     0     0
+4     0   0    0    0    0    0     0    0    0    0   0     0     0     0     0     0
+5     0   0    0    0    0    0     0    0    0    0   0     0     0     0     0     0
+6     0   0    0    0    0    0     0    0    0    0   0     0     0     0     0     0
+  FRG1B FRMPD1 FRMPD2 FRMPD4 FRY FRYL FSCB FSHR FSTL5 GATA3 GBF1 GCN1L1 GIGYF2 GLI2 GLI3
+1     0      0      0      0   0    0    0    0     0     0    0      0      0    0    0
+2     0      0      0      0   0    0    0    0     0     0    0      0      0    0    0
+3     0      0      0      0   0    0    0    0     0     0    0      0      0    0    0
+4     0      0      0      0   0    0    0    0     0     0    0      0      0    0    0
+5     0      0      0      0   0    0    0    0     0     0    0      0      0    0    0
+6     0      0      0      0   0    0    0    0     0     0    0      0      0    0    0
+  GNAS GOLGA3 GOLGA4 GOLGB1 GON4L GPATCH8 GPR112 GPR133 GPR158 GPR179 GPR98 GREB1 GRIA1
+1    0      0      0      0     0       0      0      0      0      0     0     0     0
+2    0      0      0      0     0       0      0      0      0      0     0     0     0
+3    0      0      0      0     0       0      0      0      1      0     0     0     0
+4    0      0      0      0     0       0      0      0      0      0     0     0     0
+5    0      0      0      0     0       0      0      0      0      0     0     0     0
+6    0      0      0      0     0       0      0      0      0      0     0     0     0
+  GRIA2 GRIA3 GRIA4 GRID1 GRID2 GRIK2 GRIK3 GRIN2A GRIN2B GRIN3A GRM1 GRM3 GRM5 GRM7
+1     0     0     0     0     0     0     0      0      0      0    0    0    0    0
+2     0     0     0     0     0     0     0      0      0      0    0    0    0    0
+3     0     0     0     0     0     0     0      0      0      0    0    0    0    0
+4     0     0     0     0     0     0     0      0      0      0    0    0    0    0
+5     0     0     0     0     0     0     0      0      0      0    0    0    0    0
+6     0     0     0     0     0     0     0      0      0      0    0    0    0    0
+  GRM8 GTF3C1 HCFC1 HCN1 HDAC9 HDLBP HEATR1 HEATR5B HEATR7B2 HECTD1 HECW1 HECW2 HELZ
+1    0      0     0    0     0     0      0       0        0      0     0     0    0
+2    0      0     0    0     0     0      0       0        0      0     0     0    0
+3    0      0     0    0     0     0      0       0        0      0     0     0    0
+4    0      0     0    0     0     0      0       0        0      0     0     0    0
+5    0      0     0    0     0     0      0       0        0      0     0     0    0
+6    0      0     0    0     0     0      0       0        0      0     0     0    0
+  HEPH HERC1 HERC2 HFM1 HIVEP1 HIVEP2 HIVEP3 HMCN1 HRNR HSPG2 HTT HUWE1 HYDIN IDH1 IGF2R
+1    0     0     0    0      0      0      0     0    0     0   0     0     0    0     0
+2    0     0     0    0      0      0      0     0    0     0   0     0     0    0     0
+3    0     0     0    0      0      0      0     0    0     0   0     0     0    0     0
+4    0     0     0    0      0      0      0     0    0     0   0     0     0    0     0
+5    0     0     0    0      0      0      0     0    0     0   0     0     0    0     0
+6    0     0     0    0      0      0      0     0    0     0   0     0     0    1     0
+  IGFN1 IGSF1 IGSF10 IGSF9B INADL INSRR INTS1 IRS4 ITGA8 ITGAL ITGAX ITGB4 ITIH5 ITPR1
+1     0     0      0      0     0     0     0    0     0     0     0     0     0     0
+2     0     0      0      0     0     0     0    0     0     0     0     1     0     0
+3     0     0      0      0     0     0     0    0     0     0     0     0     0     0
+4     0     0      0      0     0     0     0    0     0     0     0     0     0     1
+5     0     0      0      0     0     0     0    0     0     0     1     0     0     0
+6     0     0      0      0     0     0     0    0     0     0     0     0     0     0
+  ITPR2 ITPR3 ITSN1 ITSN2 JARID2 JMJD1C KALRN KCNA4 KCNB2 KCND2 KCNH1 KCNH5 KCNH7 KCNH8
+1     0     0     0     0      0      0     0     0     0     0     0     0     0     0
+2     0     0     0     0      0      0     0     0     0     0     0     0     0     0
+3     0     0     0     0      0      0     0     0     0     0     0     0     0     0
+4     0     0     0     0      0      0     0     0     0     0     0     0     0     0
+5     0     0     0     0      0      0     0     0     0     0     0     0     0     0
+6     0     0     0     0      0      0     0     0     0     0     0     0     0     0
+  KCNMA1 KCNQ3 KCNQ5 KCNT2 KCNU1 KDM3B KDM5A KDM5C KDM6A KDR KEAP1 KIAA0100 KIAA0430
+1      0     0     0     0     0     0     0     0     0   0     0        0        0
+2      0     0     0     0     0     0     0     0     0   0     0        0        0
+3      0     0     0     0     0     0     1     0     0   0     0        0        0
+4      0     0     0     0     0     0     0     0     0   0     0        0        0
+5      0     0     0     0     0     0     0     0     0   0     0        0        0
+6      0     0     0     0     0     0     0     0     0   0     0        0        0
+  KIAA0556 KIAA0947 KIAA1109 KIAA1210 KIAA1211 KIAA1217 KIAA1244 KIAA1409 KIAA1429
+1        0        0        0        0        0        0        0        0        0
+2        0        0        0        0        0        0        0        0        0
+3        0        0        0        0        0        0        0        0        0
+4        0        0        0        0        0        0        0        0        0
+5        0        0        0        0        0        0        0        0        0
+6        0        0        0        0        0        0        0        0        0
+  KIAA1462 KIAA1549 KIAA2018 KIAA2022 KIAA2026 KIF13A KIF16B KIF1A KIF1B KIF20B KIF21A
+1        0        0        0        0        0      0      0     0     0      0      0
+2        0        0        0        0        0      0      0     0     0      0      0
+3        0        0        0        0        0      0      0     0     0      0      0
+4        0        0        0        0        0      0      0     0     0      0      0
+5        1        0        0        0        0      1      1     0     0      0      0
+6        0        0        0        0        0      0      0     0     0      0      0
+  KIF21B KIF26B KIF2B KIF4B KIT KLHL1 KLHL4 KNDC1 KNTC1 KRAS KSR2 L1CAM LAMA1 LAMA2
+1      0      0     0     0   0     0     0     0     0    0    0     0     0     0
+2      0      0     0     0   0     0     0     0     0    0    0     0     0     0
+3      0      0     0     0   0     0     0     0     0    0    0     0     0     1
+4      0      0     0     0   0     0     0     0     0    0    0     0     0     0
+5      0      0     0     0   0     0     0     0     0    0    0     0     0     0
+6      0      0     0     0   0     0     0     0     0    0    0     0     0     0
+  LAMA3 LAMA4 LAMA5 LAMB1 LAMB2 LAMB4 LAMC1 LAMC3 LCT LEPR LMO7 LPA LPHN2 LPHN3 LRBA
+1     0     0     0     0     0     0     0     0   0    0    0   0     0     0    0
+2     0     0     0     0     0     0     0     0   0    0    0   0     0     0    0
+3     0     0     0     0     0     0     0     0   0    1    0   0     0     0    0
+4     0     0     0     0     0     0     0     0   0    0    0   0     0     0    0
+5     0     0     0     0     0     0     0     0   0    0    0   0     0     0    0
+6     0     0     0     0     0     0     0     0   0    0    0   0     0     0    0
+  LRFN5 LRP1 LRP12 LRP1B LRP2 LRP4 LRP5 LRP6 LRRC4C LRRC7 LRRIQ1 LRRK1 LRRK2 LTBP1 LTBP2
+1     0    0     0     0    0    0    0    0      0     0      0     0     0     0     0
+2     0    0     0     0    0    0    0    0      0     0      0     0     0     0     0
+3     0    0     0     0    0    0    0    1      0     0      0     0     0     0     0
+4     0    0     0     0    0    0    0    0      0     0      0     0     0     0     0
+5     0    0     0     0    0    0    0    0      0     0      0     0     0     0     0
+6     0    0     0     0    0    0    0    0      0     0      0     0     0     0     0
+  LYST MACF1 MADD MAGEC1 MAGEC3 MAGI1 MAGI2 MAML2 MAML3 MAP1A MAP1B MAP2 MAP3K1 MAP3K4
+1    0     0    0      0      0     0     0     0     0     0     0    0      0      0
+2    0     0    0      0      0     0     0     0     0     0     0    0      0      0
+3    0     0    0      0      0     0     0     0     0     0     0    0      0      0
+4    0     0    0      0      0     0     0     0     0     0     0    0      0      0
+5    0     0    0      0      0     0     0     0     0     0     0    0      0      0
+6    0     0    0      0      0     0     0     0     0     0     0    0      0      0
+  MAST1 MAST4 MBD5 MCM3AP MDC1 MDGA2 MDN1 MECOM MED12 MED12L MED13 MED13L MEGF8 MET MGA
+1     0     0    0      0    0     0    0     0     0      0     0      0     0   0   0
+2     0     0    0      0    0     0    0     0     0      0     0      0     0   0   0
+3     0     0    0      0    0     0    0     0     0      0     0      0     0   0   0
+4     0     0    0      0    0     0    0     0     0      0     0      0     0   0   0
+5     0     0    0      0    0     0    0     0     0      0     0      0     0   0   0
+6     0     0    0      0    0     0    0     0     0      0     0      0     0   0   0
+  MGAM MIA3 MICAL3 MKI67 MLL MLL2 MLL3 MLL4 MLLT3 MLLT4 MORC1 MPDZ MTOR MTUS2 MUC12
+1    0    0      0     0   0    0    0    0     0     0     0    0    0     0     0
+2    0    0      0     0   0    0    0    0     0     0     0    0    0     0     0
+3    0    0      0     0   0    0    0    0     0     0     0    0    0     0     0
+4    0    0      0     0   0    0    0    0     0     0     0    0    0     0     0
+5    0    0      0     0   0    0    1    0     0     0     0    0    0     0     0
+6    0    0      0     0   0    0    0    0     0     0     0    0    0     0     0
+  MUC16 MUC17 MUC2 MUC4 MUC5B MUC6 MXRA5 MYCBP2 MYH1 MYH10 MYH11 MYH13 MYH14 MYH15 MYH2
+1     0     1    0    0     0    0     0      0    0     0     0     0     0     0    0
+2     0     0    0    0     0    0     0      0    0     0     0     0     0     0    0
+3     0     0    0    0     0    0     0      0    0     0     0     0     0     0    0
+4     0     0    0    0     0    0     0      0    0     0     0     0     0     0    0
+5     0     0    0    0     0    0     0      0    0     0     0     0     0     0    0
+6     0     0    0    0     0    0     0      0    0     0     0     0     0     0    0
+  MYH3 MYH4 MYH6 MYH7 MYH7B MYH8 MYH9 MYLK MYO10 MYO15A MYO16 MYO18A MYO18B MYO3A MYO5A
+1    0    0    1    0     0    0    0    0     0      0     0      0      0     0     0
+2    0    0    0    0     0    0    0    0     0      0     0      0      0     0     0
+3    0    0    0    0     0    0    0    0     0      0     0      0      0     1     0
+4    0    0    0    0     0    0    0    0     0      0     0      0      0     0     0
+5    0    0    0    0     0    0    0    0     0      0     0      0      0     0     0
+6    0    0    0    0     0    0    0    0     0      0     0      0      0     0     0
+  MYO5B MYO7A MYO7B MYO9A MYO9B MYOCD MYOF MYOM1 MYOM2 MYPN MYT1 MYT1L NALCN NAV1 NAV2
+1     0     0     0     0     0     0    0     0     0    0    0     0     0    0    0
+2     0     0     0     0     0     0    0     0     0    0    0     0     0    0    0
+3     0     0     0     0     0     0    0     0     0    0    0     0     0    1    0
+4     0     0     0     0     0     0    0     0     0    0    0     0     0    0    0
+5     0     0     0     0     0     0    0     0     0    0    0     0     0    0    0
+6     0     0     0     0     0     0    0     0     0    0    0     0     0    0    0
+  NAV3 NBAS NBEA NBEAL2 NBPF1 NBPF10 NCAM2 NCAN NCKAP1L NCKAP5 NCOA3 NCOA6 NCOR1 NCOR2
+1    0    0    0      0     0      0     0    0       0      0     0     0     0     0
+2    0    0    0      0     0      0     0    0       0      0     0     0     0     0
+3    0    0    0      0     0      1     0    0       0      0     0     0     0     0
+4    0    0    0      0     0      0     0    0       0      0     0     0     0     0
+5    0    0    0      0     0      0     0    0       0      0     0     0     0     0
+6    0    0    0      0     0      0     0    0       0      0     0     0     0     0
+  NDST4 NEB NEBL NELL1 NES NF1 NFASC NFE2L2 NHS NID1 NID2 NIN NINL NIPBL NLGN1 NLGN4X
+1     0   0    0     0   0   0     0      0   0    0    0   0    0     0     0      0
+2     0   0    0     0   0   1     0      0   0    0    0   0    0     0     0      0
+3     0   0    0     0   0   0     0      0   0    0    0   0    0     0     0      0
+4     0   0    0     0   0   0     0      0   0    0    0   0    0     0     0      0
+5     0   0    1     0   0   0     0      0   0    0    0   0    0     0     0      0
+6     0   0    0     0   0   0     0      0   0    0    0   0    0     0     0      0
+  NLRC5 NLRP1 NLRP12 NLRP13 NLRP14 NLRP2 NLRP3 NLRP4 NLRP5 NLRP7 NLRP8 NLRP9 NOS1 NOTCH1
+1     0     0      0      0      0     0     0     0     1     0     0     0    0      0
+2     0     0      0      0      0     0     0     0     0     0     0     0    0      0
+3     0     0      0      0      0     0     0     0     0     0     0     0    0      0
+4     0     0      0      0      0     0     0     0     0     0     0     0    1      0
+5     0     0      0      0      0     0     0     0     0     0     0     0    0      0
+6     0     0      0      0      0     0     0     0     0     0     0     0    0      0
+  NOTCH2 NOTCH3 NOTCH4 NPC1L1 NRAP NRK NRXN1 NRXN2 NRXN3 NSD1 NTRK3 NUMA1 NUP188 NUP205
+1      0      0      0      0    0   0     0     0     0    0     0     0      0      0
+2      0      0      0      0    0   0     0     0     0    0     0     0      0      0
+3      0      0      0      0    0   0     0     0     0    0     0     0      0      0
+4      0      0      0      0    0   0     0     0     0    0     0     0      0      0
+5      0      0      0      0    0   0     0     0     0    0     0     0      0      0
+6      0      0      0      0    0   0     0     0     0    0     0     0      0      0
+  NUP210 NUP210L NWD1 NYNRIN OBSCN OBSL1 ODZ1 ODZ2 ODZ3 ODZ4 OGDHL OTOF PABPC3
+1      0       0    0      0     0     1    0    0    0    0     0    0      0
+2      0       0    0      0     0     0    0    0    0    0     0    0      0
+3      0       0    0      0     0     0    0    0    0    0     0    0      1
+4      0       0    0      0     1     0    0    0    0    0     0    0      0
+5      0       0    0      0     0     0    0    0    0    0     0    0      0
+6      0       0    0      0     0     0    0    0    0    0     0    0      0
+  PALM2AKAP2 PAPPA PAPPA2 PBRM1 PCDH10 PCDH11X PCDH15 PCDH17 PCDH18 PCDH19 PCDH20 PCDH7
+1          0     0      0     0      0       0      0      0      0      0      0     0
+2          0     0      0     0      0       0      0      0      0      0      0     0
+3          0     0      0     0      0       0      0      0      0      0      0     0
+4          0     0      0     0      0       0      0      0      0      0      0     0
+5          0     0      0     0      0       0      0      0      0      0      0     0
+6          0     0      0     0      0       0      0      0      0      0      0     0
+  PCDH9 PCDHA1 PCDHA10 PCDHA11 PCDHA12 PCDHA13 PCDHA2 PCDHA3 PCDHA4 PCDHA5 PCDHA6 PCDHA7
+1     0      0       0       0       0       0      0      0      0      0      0      0
+2     0      1       0       0       0       0      0      0      0      0      0      0
+3     0      0       0       0       0       0      0      0      0      0      0      0
+4     0      0       0       0       0       0      0      0      0      0      0      0
+5     0      0       1       0       0       0      0      0      0      0      0      0
+6     0      0       0       0       0       0      0      0      0      0      0      0
+  PCDHA8 PCDHA9 PCDHAC2 PCDHB10 PCDHB11 PCDHB12 PCDHB13 PCDHB14 PCDHB16 PCDHB2 PCDHB3
+1      0      0       0       0       0       0       0       0       0      0      0
+2      0      0       0       0       0       0       0       0       0      0      0
+3      0      0       0       0       0       0       0       0       0      0      0
+4      0      0       0       0       0       0       0       0       0      0      0
+5      0      0       0       0       0       0       0       0       0      0      0
+6      0      0       0       0       0       0       0       0       0      0      0
+  PCDHB4 PCDHB5 PCDHB6 PCDHB7 PCDHB8 PCDHGA1 PCDHGA2 PCDHGA3 PCDHGC5 PCLO PCNT PCNX
+1      0      0      0      0      0       0       0       0       0    0    0    0
+2      0      0      0      0      0       0       0       0       0    0    0    0
+3      0      0      0      0      0       0       0       0       0    0    0    0
+4      0      0      0      0      0       1       0       0       0    0    0    0
+5      0      0      0      0      0       0       0       0       0    0    0    0
+6      0      0      0      0      0       0       0       0       0    1    0    0
+  PCNXL2 PCSK5 PDCD11 PDE10A PDE1C PDE3A PDE4DIP PDGFRA PDZD2 PDZRN3 PDZRN4 PEG3 PHF3
+1      0     0      0      0     0     0       0      0     0      0      0    0    0
+2      0     0      0      0     0     0       0      0     0      0      0    0    0
+3      1     0      0      0     0     0       0      1     0      0      0    0    0
+4      0     0      0      0     0     0       0      0     0      0      0    0    0
+5      0     0      0      0     0     0       0      0     0      0      0    0    0
+6      0     0      0      0     0     0       0      0     0      0      0    0    0
+  PHLDB2 PI4KA PIK3C2B PIK3C2G PIK3CA PIK3CG PIK3R1 PIKFYVE PKD1 PKD1L1 PKD1L2 PKDREJ
+1      0     0       0       0      0      0      1       0    0      0      0      1
+2      0     0       0       0      1      0      0       0    0      0      0      0
+3      0     0       0       0      1      0      0       0    0      0      0      0
+4      0     0       0       0      0      0      0       0    0      0      0      0
+5      0     0       0       0      0      0      0       0    0      0      0      0
+6      0     0       0       0      0      0      0       0    0      0      0      0
+  PKHD1 PKHD1L1 PLCB1 PLCB4 PLCE1 PLCH1 PLCL1 PLEC PLXNA1 PLXNA2 PLXNA4 PLXNB2 PLXNC1
+1     0       0     0     0     0     0     1    0      0      0      0      0      0
+2     0       0     0     0     0     0     0    0      0      0      0      0      0
+3     0       0     0     0     0     0     0    0      0      0      0      1      0
+4     0       0     0     0     0     0     0    0      0      0      0      0      0
+5     0       0     0     1     0     0     0    0      0      0      0      0      0
+6     0       0     0     0     0     0     0    0      0      0      0      0      0
+  PLXND1 POLE POLQ POLR1A POM121L12 POTEC POTEE POTEF PPFIA2 PPL PPP1R3A PRDM16 PRDM2
+1      0    0    0      0         0     0     0     0      0   0       0      0     0
+2      0    0    0      0         0     0     0     0      0   0       0      0     0
+3      0    0    0      0         0     0     0     0      0   0       0      0     0
+4      0    0    0      0         0     0     0     0      0   0       0      0     0
+5      0    0    0      0         0     0     0     0      0   0       0      0     0
+6      0    0    0      0         0     0     0     0      0   0       0      0     0
+  PRDM9 PREX1 PREX2 PRG4 PRKD1 PRKDC PRPF8 PRUNE2 PSME4 PTCH1 PTCHD2 PTEN PTPN13 PTPRB
+1     0     0     0    0     0     0     0      0     0     0      0    0      0     0
+2     0     0     0    0     0     0     0      0     0     0      0    0      0     0
+3     0     0     0    0     0     0     0      0     0     0      0    0      0     0
+4     0     0     0    0     0     0     0      0     0     0      0    1      0     0
+5     0     0     0    0     0     0     0      0     1     0      0    1      0     0
+6     0     0     0    0     0     0     0      0     0     0      0    0      0     0
+  PTPRC PTPRD PTPRF PTPRK PTPRM PTPRN2 PTPRS PTPRT PTPRU PTPRZ1 PXDN PXDNL PZP RAI1
+1     0     0     0     0     0      0     0     0     0      0    0     0   0    0
+2     0     0     0     0     0      0     0     0     0      0    0     0   0    0
+3     1     0     0     0     0      0     0     0     0      0    0     0   0    0
+4     0     0     0     0     0      0     0     0     0      0    0     0   0    0
+5     0     0     0     0     0      0     0     0     0      0    0     0   0    0
+6     0     0     0     0     0      0     1     0     0      0    0     0   0    0
+  RALGAPA2 RANBP2 RASGRF1 RB1 RBBP6 RBP3 RELN RERE RET REV3L RGAG1 RGPD3 RGS22 RIF1
+1        0      0       0   0     0    0    0    0   0     0     0     0     0    0
+2        0      0       0   1     0    0    0    0   0     0     0     0     0    0
+3        0      0       0   0     0    0    0    0   0     0     0     0     0    0
+4        0      0       0   0     0    0    0    0   0     0     0     0     0    0
+5        0      0       0   0     0    0    0    0   0     0     0     0     0    0
+6        0      0       0   0     0    0    0    0   0     0     0     0     0    0
+  RIMBP2 RIMS1 RIMS2 RNF17 RNF213 RNF43 ROBO1 ROBO2 ROS1 RP1 RP1L1 RREB1 RTTN RUNX1T1
+1      0     0     0     0      0     0     0     0    0   0     0     0    0       0
+2      0     0     0     0      0     0     0     0    0   0     0     0    0       0
+3      0     0     0     0      0     0     0     0    0   0     0     0    0       0
+4      0     0     0     0      0     0     0     0    0   0     0     0    0       0
+5      1     0     0     0      0     0     0     0    0   0     0     0    0       0
+6      0     0     0     0      0     0     0     0    0   0     0     0    0       0
+  RYR1 RYR2 RYR3 SACS SALL1 SALL3 SAMD9 SAMD9L SBF1 SCAND3 SCN10A SCN11A SCN1A SCN2A
+1    0    0    0    0     0     0     0      0    0      0      0      0     0     0
+2    0    0    0    0     0     0     0      0    0      0      0      0     0     0
+3    0    1    1    0     0     0     0      0    0      0      0      0     0     0
+4    0    0    0    0     0     0     0      0    0      0      0      0     0     0
+5    0    1    0    0     0     0     0      0    0      0      0      0     0     0
+6    0    0    0    0     0     0     0      0    0      0      0      0     0     0
+  SCN3A SCN4A SCN5A SCN7A SCN8A SCN9A SCRIB SDK1 SDK2 SEC16A SEMA5A SEMA5B SEMA6D SETBP1
+1     0     0     0     0     0     0     0    0    0      0      0      0      0      0
+2     0     0     0     0     0     0     0    0    0      0      0      0      0      0
+3     0     0     0     0     0     0     0    0    0      0      0      0      0      0
+4     0     0     0     0     0     0     0    0    0      0      0      0      1      0
+5     0     0     0     0     0     0     0    0    0      0      0      0      0      0
+6     0     0     0     0     0     0     0    0    0      0      0      0      0      0
+  SETD1A SETD2 SETX SEZ6L SF3B1 SFMBT2 SGIP1 SHANK1 SHANK2 SHPRH SHROOM3 SHROOM4 SI
+1      0     0    0     0     0      0     0      0      0     1       0       0  0
+2      0     0    0     0     0      0     0      0      0     0       0       0  0
+3      0     0    0     0     0      0     0      0      0     0       0       0  0
+4      0     0    0     0     0      0     0      0      0     0       0       0  0
+5      0     0    0     0     0      0     0      0      0     0       0       0  0
+6      0     0    0     0     0      0     0      0      0     0       0       0  0
+  SIGLEC1 SIM1 SIPA1L1 SIPA1L2 SIPA1L3 SLC12A5 SLC4A4 SLC8A1 SLCO6A1 SLIT2 SLIT3 SLITRK1
+1       0    0       0       0       0       0      0      0       0     0     0       0
+2       0    0       0       0       0       0      0      0       0     0     0       0
+3       0    0       0       0       0       0      0      0       0     0     0       0
+4       0    0       0       0       0       0      0      0       0     0     0       0
+5       0    0       0       0       0       0      0      0       0     0     0       0
+6       0    0       0       0       0       0      0      0       0     0     0       0
+  SLITRK2 SLITRK3 SLITRK5 SMAD4 SMARCA2 SMARCA4 SMG1 SNRNP200 SON SORCS1 SORCS3 SORL1
+1       0       0       0     0       0       0    0        0   0      0      0     0
+2       0       0       0     0       0       0    0        0   0      0      0     0
+3       0       0       0     0       0       0    0        0   0      0      0     0
+4       0       0       0     0       0       0    0        0   0      0      0     0
+5       0       0       0     0       0       0    0        0   0      0      0     0
+6       0       0       0     0       0       0    0        0   0      0      0     0
+  SPAG17 SPEF2 SPEG SPEN SPG11 SPHKAP SPTA1 SPTAN1 SPTB SPTBN1 SPTBN2 SPTBN4 SPTBN5
+1      0     0    0    0     0      0     0      0    0      0      0      0      0
+2      0     0    0    0     0      0     0      0    0      0      0      0      0
+3      0     0    0    0     0      0     0      0    0      1      0      0      0
+4      0     0    0    0     1      0     0      0    0      0      0      0      0
+5      0     0    0    0     0      0     0      0    0      0      0      0      0
+6      0     0    0    0     0      0     0      0    0      1      0      0      0
+  SRCAP SRRM2 SSPO ST18 STAB1 STAB2 STAG2 STXBP5L SULF1 SUPT6H SVEP1 SVIL SYCP2 SYNE1
+1     0     0    0    0     0     0     0       0     0      0     0    0     0     0
+2     0     0    0    0     0     0     0       0     0      0     0    0     0     0
+3     0     0    0    0     0     0     0       0     0      0     0    0     0     0
+4     0     0    0    0     0     0     0       0     0      0     0    0     0     0
+5     0     0    0    0     0     0     0       0     0      0     0    1     0     0
+6     0     0    0    0     0     0     0       0     0      0     0    0     0     0
+  SYNE2 TACC2 TAF1 TAF1L TANC1 TCF20 TCHH TDRD6 TECTA TEP1 TET1 TEX15 TG THADA THBS2
+1     0     1    0     0     0     0    0     0     0    0    0     0  0     0     0
+2     0     0    0     0     0     0    0     0     0    0    0     0  0     0     0
+3     0     0    0     0     0     0    0     0     0    0    0     0  0     0     0
+4     0     0    0     0     0     0    0     0     0    0    0     0  0     0     0
+5     0     0    0     0     0     0    0     0     0    0    0     0  0     0     0
+6     0     0    0     0     0     0    0     0     0    0    0     0  0     0     0
+  THOC2 THSD7A THSD7B TIAM1 TIAM2 TJP1 TLL1 TLN1 TLN2 TLR4 TMEM131 TMEM132B TMEM132D
+1     0      0      0     0     0    0    0    0    0    0       0        0        0
+2     0      0      0     0     0    0    0    0    0    0       0        0        0
+3     0      0      0     0     0    0    0    0    0    0       0        0        0
+4     0      0      0     0     0    0    0    0    0    0       0        0        0
+5     0      0      0     0     0    0    0    0    0    0       0        0        0
+6     0      0      0     0     0    0    0    0    0    0       0        0        0
+  TMPRSS15 TNC TNIK TNKS1BP1 TNN TNR TNRC18 TNRC6A TNS1 TNS3 TNXB TP53 TP53BP1 TPO TPR
+1        0   0    0        0   0   0      0      0    0    0    0    1       0   0   0
+2        0   0    0        0   0   0      0      0    0    0    0    1       0   0   0
+3        0   0    0        0   0   0      0      0    0    0    0    0       0   0   0
+4        0   0    0        0   0   0      0      0    0    0    0    1       0   0   0
+5        0   0    0        0   0   0      0      0    0    0    0    0       0   1   0
+6        0   0    0        0   0   0      0      0    0    0    0    1       0   0   0
+  TPTE TRANK1 TRHDE TRIO TRIOBP TRIP12 TRO TRPA1 TRPC4 TRPM1 TRPM2 TRPM3 TRPM6 TRPS1
+1    0      0     0    0      0      0   0     0     0     0     0     0     0     0
+2    0      0     0    0      0      0   0     0     0     0     0     0     0     0
+3    0      0     0    0      0      0   0     0     0     0     0     0     0     0
+4    0      0     0    0      0      0   0     0     0     1     0     0     0     0
+5    0      0     0    0      0      0   0     0     0     0     0     0     0     0
+6    0      0     0    0      0      0   0     0     0     0     0     0     0     0
+  TRRAP TSC2 TSHZ2 TSHZ3 TTC3 TTN TULP4 UBR4 UBR5 UNC13A UNC13C UNC5D USH2A USP34 USP9X
+1     0    0     1     0    0   0     0    0    1      0      0     0     0     0     0
+2     0    0     0     0    0   0     0    0    0      0      0     0     0     0     0
+3     0    0     0     0    0   0     0    0    0      0      0     0     0     0     1
+4     0    0     0     0    0   1     0    0    0      0      0     0     0     0     0
+5     0    0     0     0    0   0     0    0    0      0      0     0     0     0     0
+6     0    0     0     0    0   0     0    0    0      0      0     0     0     0     0
+  UTP20 UTRN Unknown VCAN VHL VPS13A VPS13B VPS13C VPS13D VWA3B VWF WBSCR17 WDFY3 WDR17
+1     0    0       1    0   0      0      0      0      0     0   0       0     0     0
+2     0    0       0    0   0      0      0      0      0     0   0       0     0     0
+3     0    0       0    0   0      0      0      0      1     0   0       0     0     0
+4     0    0       1    0   0      0      0      0      0     0   0       0     0     0
+5     0    0       1    0   0      0      0      0      0     0   0       0     0     0
+6     0    0       0    0   0      0      0      0      0     0   0       0     0     0
+  WDR7 WDR72 WNK1 WNK3 XDH XIRP1 XIRP2 XYLT1 YLPM1 ZAN ZBBX ZC3H13 ZDBF2 ZEB2 ZFAT
+1    0     1    0    0   0     0     0     0     0   0    0      0     0    0    0
+2    0     0    0    0   0     0     0     0     0   0    0      0     0    0    0
+3    0     0    0    0   0     0     0     0     0   0    0      0     0    0    0
+4    0     0    0    0   0     0     0     0     0   0    0      0     0    0    0
+5    0     0    0    0   0     0     0     0     0   0    0      0     0    0    0
+6    0     0    0    0   0     0     0     0     0   0    0      0     0    0    0
+  ZFC3H1 ZFHX3 ZFHX4 ZFPM2 ZFYVE26 ZMYM3 ZNF208 ZNF236 ZNF292 ZNF318 ZNF407 ZNF423
+1      0     0     0     0       0     0      0      0      0      0      0      0
+2      0     0     0     0       0     0      0      0      0      0      0      0
+3      0     0     0     0       0     0      0      0      0      0      0      0
+4      0     0     0     0       0     0      0      0      0      0      0      0
+5      0     0     0     0       0     0      0      0      0      0      0      0
+6      0     0     0     0       0     0      0      0      0      0      0      0
+  ZNF462 ZNF521 ZNF536 ZNF638 ZNF676 ZNF804A ZNF804B ZNF814 ZNF831 ZNF91 ZNF99 ZNFX1
+1      0      0      0      0      0       0       0      0      0     0     0     0
+2      0      0      0      0      0       0       0      0      0     0     1     0
+3      0      0      0      0      0       0       0      1      0     0     0     0
+4      0      0      0      0      0       0       0      0      0     0     0     0
+5      0      0      0      0      0       0       0      0      0     0     0     0
+6      0      0      0      0      0       0       0      0      0     0     0     0
+  ZZEF1
+1     0
+2     0
+3     0
+4     0
+5     0
+6     0

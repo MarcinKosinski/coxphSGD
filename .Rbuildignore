@@ -10,3 +10,5 @@ PL_vignettes_PL
 .pdf
 ^.*\.RData$
 ^.*\.rda$
+backback.db
+gallery/
