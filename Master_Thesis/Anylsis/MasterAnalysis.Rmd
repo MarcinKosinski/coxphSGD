@@ -147,6 +147,28 @@ library(RTCGA.clinical)
 library(RTCGA.mutations)
 library(data.table)
 library(coxphSGD)
+library(archivist)
+#setLocalRepo(getwd())
+# createEmptyLocalRepo(getwd(), default = TRUE)
+# alink('e8f55d0bc8c17d6c4c663f871866c0ec', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(survivalData)
+# alink('8aa74b9f156f087944defb48347e0d3e', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(mutationsData)
+# alink('4644873a37d69da344d5db8647389415', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(coxData_split)
+# alink('aa0d32d2f32d39197e65ff632fdd600e', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(formulaSGD)
+# alink('064277e1c2a1fbea36d7d0ac518b9c8d', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(testCox) # 3eebc99bd231b16a3ea4dbeec9ab5edb
+# alink('3eebc99bd231b16a3ea4dbeec9ab5edb', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(trainCox) # 1a06bef4a60a237bb65ca3e2f3f23515
+# alink('1a06bef4a60a237bb65ca3e2f3f23515', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(model_1_over_t) # "446ac4dcb7d65bf39057bb341b296f1a"
+# alink('446ac4dcb7d65bf39057bb341b296f1a', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(model_1_over_50sqrt_t) #"044ad9f336ac4626ee779f8468dc6a4a"
+# alink('044ad9f336ac4626ee779f8468dc6a4a', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+# saveToRepo(model_1_over_100sqrt_t) # "47de266ea701af9f81d90b9e204250f2"
+# alink('47de266ea701af9f81d90b9e204250f2', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
 ```
 
 
@@ -156,16 +178,23 @@ Do analizy badającej wpływ występowania mutacji genów na czas przeżycia wyk
 (extractCohortIntersection() -> cohorts)
 ```
 
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/e8f55d0bc8c17d6c4c663f871866c0ec.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/e8f55d0bc8c17d6c4c663f871866c0ec')}
+
 Następnie dla tak otrzymanych 35 kohort nowotworowych uzyskano dane o statusie pacjenta (śmierć bądź cenzurowanie) oraz jego czasie spędzonym pod obseracją dzięki funkcji
 ```{r, eval = TRUE}
 head(extractSurvival(cohorts) -> survivalData)
 ```
 
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/8aa74b9f156f087944defb48347e0d3e.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/8aa74b9f156f087944defb48347e0d3e')}
+
 Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych pacjentów uzyskano za pomocą
 ```{r, eval = TRUE}
 extractMutations(cohorts, 0.02) -> mutationsData
-mutationsData[1:6, c(1,4,56,100,207,801)]
+mutationsData[1:8, c(1,4,56,100,207,801)]
 ```
+
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/4644873a37d69da344d5db8647389415.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/4644873a37d69da344d5db8647389415')}
+
 gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2 % pacjentów mających zarówno dane kliniczne jak i dane o występujących mutacjach w genach.
 
 Dla tak otrzymanych dwóch zbiorów danych połączono dla pacjentów informacje kliniczne z informacjami o mutacjach dzięki przypisanym do pacjentów i ich próbek kodów `bcr_patient_barcode`, by ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
@@ -175,10 +204,14 @@ prepareCoxDataSplit(mutationsData,survivalData, groups = 100) -> coxData_split
 head(coxData_split[[1]][c(1,10), c(210,302,356,898,911,1092:1093)])
 ```
 
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/aa0d32d2f32d39197e65ff632fdd600e.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/aa0d32d2f32d39197e65ff632fdd600e')}
+
 Niezbędną formułę modelu potrzebną do sprezycowania, które geny (a pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki pomocniczej funkcji
 ```{r}
 prepareForumlaSGD(coxData_split) -> formulaSGD
 ```
+
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/064277e1c2a1fbea36d7d0ac518b9c8d.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/064277e1c2a1fbea36d7d0ac518b9c8d')}
 
 Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o występujących mutacjach, oraz dla których odnotowano komplet i poprawność danych klinicznych dotyczących statusu i obserwowanego czasu przeżycia wyliczono wspólczynniki modelu proporcjonalnych hazardów Coxa z wykorzystaniem stochastycznego spadku gradientu do estymacji. Model dopasowano wielokrotnie z różnymi ciągami odpowiadającymi za długość kroku algorytmu, dodatkowo badano różną ilość epok w algorytmie. Dla tak powstałych kilku modeli wybrano ten, który dla swoich współczynników dawał największą wartość funkcji częściowej log-wiarogodności dla niewykorzystanej do uczenia próbki, zawierającej 2 ostatnie zaobserwowane podzbiory obserwacji. Dla każdego z ciągów $1/t, 1/50*\sqrt(t), 100/5*\sqrt(100)$ odpowiadających długościom kroków w algorytmie wyznaczono współczynniki modelu dla 5 epok, dzięki czemu możliwe było rozważanie postępu danego wariantu algorytmu również po 1, 2, 3 czy 4 epokach.
 
@@ -190,12 +223,14 @@ coxphSGD(formulaSGD, data = trainCox, max.iter = 490,
          learningRates = function(t){1/(50*sqrt(t))}) -> model_1_over_50sqrt_t
 coxphSGD(formulaSGD, data = trainCox, max.iter = 490,
          learningRates = function(t){1/(100*sqrt(t))}) -> model_1_over_100sqrt_t
-save(model_1_over_t, file = "model_1_over_t.rda")
-save(model_1_over_50sqrt_t, file = "model_1_over_50sqrt_t.rda")
-save(model_1_over_100sqrt_t, file = "model_1_over_100sqrt_t.rda")
+saveToRepo(testCox)
+saveToRepo(trainCox)
+saveToRepo(model_1_over_t)
+saveToRepo(model_1_over_50sqrt_t)
+saveToRepo(model_1_over_100sqrt_t)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 model_1_over_t$coefficients[c(98, 196, 294, 392, 490)] -> coeffs_1_overt
 do.call(rbind, coeffs_1_overt) %>%
   as.data.frame %>%
@@ -206,9 +241,9 @@ library(ggplot2)
 gat %>%
   ggplot(aes(value)) + geom_histogram(fill=4, col = 1, binwidth =  0.01) +
   facet_grid(epoka~.) +
-  theme_dark(base_size = 15) +
+  theme_classic(base_size = 15) +
   ylab('liczność') + xlab('wartości współczynników modelu') +
-  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') 
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') + coord_cartesian(xlim = c(-0.5,0.5)) -> fig1
 
 
 model_1_over_50sqrt_t$coefficients[c(98, 196, 294, 392, 490)] -> coeffs_over_50sqrt_t
@@ -221,9 +256,9 @@ library(ggplot2)
 gat2 %>%
   ggplot(aes(value)) + geom_histogram(fill=5, col = 1, binwidth =  0.01) +
   facet_grid(epoka~.) +
-  theme_dark(base_size = 15) +
+  theme_classic(base_size = 15) +
   ylab('liczność') + xlab('wartości współczynników modelu') +
-  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') 
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') + coord_cartesian(xlim = c(-0.25,0.25)) -> fig2
 
 model_1_over_100sqrt_t$coefficients[c(98, 196, 294, 392, 490)] -> coeffs_over_100sqrt_t
 do.call(rbind, coeffs_over_100sqrt_t) %>%
@@ -234,9 +269,9 @@ names(gat3)[2]<- "gen"
 gat3 %>%
   ggplot(aes(value)) + geom_histogram(fill=6, col = 1, binwidth =  0.01) +
   facet_grid(epoka~.) +
-  theme_dark(base_size = 15) +
+  theme_classic(base_size = 15) +
   ylab('liczność') + xlab('wartości współczynników modelu') +
-  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') 
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') + coord_cartesian(xlim = c(-0.1,0.1)) -> fig3
 
 
 
@@ -248,9 +283,9 @@ gat %>%
               mutate(model = "model3")) %>% 
   ggplot(aes(value)) + geom_histogram(fill=4, col = 1, binwidth = 0.001) +
   facet_grid(epoka~model) +
-  theme_dark(base_size = 15) +
+  theme_classic(base_size = 15) +
   ylab('liczność') + xlab('wartość współczynnika modelu') +
-  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach')
+  ggtitle('Histogramy wartości współczynników modelu po kolejnych epokach') -> fig4
 
 do.call(rbind, coeffs_over_100sqrt_t) %>% t %>%  as.data.frame -> model3
 do.call(rbind, coeffs_over_50sqrt_t) %>% t %>%  as.data.frame -> model2
@@ -261,19 +296,75 @@ names(model1) <- c("epoka1", "epoka2","epoka3", "epoka4", "epoka5")
 
 library(GGally)
 ggpairs(  title = 'Różnice między współczynnikami w kolejnych epokach',
-  model1, alpha = 0.4, params = c(color = "white"),
+  model1, 
   upper = "blank",
   lower = list(continuous = "points")
-) + theme_dark() 
+) -> fig5 
+
+
+saveToRepo(fig1) # 3dc2e14a037bbaae9e892dd255150c28
+saveToRepo(fig2) # 6e5065abdbeae888a2836c1e59460424
+saveToRepo(fig3) # ac9a06e9c6428581cdacb2c1e56e5b57
+saveToRepo(fig4) # 60e327d310c600493c6c661f7330b868
+saveToRepo(fig5) # db5b77ff56b7128244e88d905173cf22
+
+pdf('hist_overt_t.pdf', width = 10, height = 8 )
+fig2
+dev.off()
+
+alink('3dc2e14a037bbaae9e892dd255150c28', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+alink('6e5065abdbeae888a2836c1e59460424', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+alink('ac9a06e9c6428581cdacb2c1e56e5b57', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+alink('60e327d310c600493c6c661f7330b868', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+alink('db5b77ff56b7128244e88d905173cf22', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+
+
+
+
 ```
 
 Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności hazardu, gdyż zakładano napływającą postać danych (stąd podział danych na 100 grup). Dla takiej postaci pojawiania się danych ciężko także mówić o jakiejkolwiek diagnostyce poprawności dopasowania modelu i dokładności otrzymanych wpsółczynników. Nie stworzono teorii pozwalającej badać istotność statystyczną otrzymanych współczynników w modelu, jednak założono, że współczynniki dostatecznie odległe od $0$ można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta posiadającego mutację w danym genie w stosunku do pacjentów nie posiadających mutacji w danym genie. Wzrost proporcji hazardu można otrzymać dla danego genu poprzez obłożenie współczynnika funkcją wykładniczą o wykładniku $e$.
 
 Wyniki estymacji dla genów zawierających największe co do modułu współczynniki można znaleźć w Tabeli 1.
 
-```{r, echo = FALSE}
-names(tail(sort(abs(tail(model_1_over_t$coefficients,1)[[1]])),40)) -> top40
-tail(model_1_over_t$coefficients,1)[[1]][which(names(tail(model_1_over_t$coefficients,1)[[1]]) %in% top40)] -> real_top40
-data.frame(beta = sort(real_top40, decreasing = TRUE),
-           exp_beta = exp(sort(real_top40, decreasing = TRUE))) %>% xtable::xtable()
+```{r, echo = FALSE, eval=FALSE}
+# names(tail(sort(abs(tail(model_1_over_t$coefficients,1)[[1]])),40)) -> top40
+# tail(model_1_over_t$coefficients,1)[[1]][which(names(tail(model_1_over_t$coefficients,1)[[1]]) %in% top40)] -> real_top40
+# data.frame(beta = sort(real_top40, decreasing = TRUE),
+#            exp_beta = exp(sort(real_top40, decreasing = TRUE))) %>% xtable::xtable()
+
+
+do.call(rbind, trainCox) -> trainCox_df
+colMeans(trainCox_df[, -c(1092:1093)]) -> srednie_trainCox_df
+
+data.frame( beta =tail(model_1_over_t$coefficients,1)[[1]],
+beta_star = srednie_trainCox_df) -> wyniki
+
+data.frame( gen = rownames(wyniki),
+            beta = round(wyniki[, 1], 3),
+            exp_beta = round(exp(wyniki[, 1]),2),
+            srednia = round(wyniki[, 2],3),
+            beta_star = round(wyniki[, 1]/wyniki[, 2], 2) ) %>%
+  arrange(desc(beta_star)) %>%
+  .[1:40,] %>% xtable::xtable()
+
+
+
+
+do.call(rbind, model_1_over_t$coefficients) -> wspolczynniki
+qplot(1:491,wspolczynniki[ ,which(colnames(wspolczynniki) == "CHRM2")]) +
+  xlab('Krok algorytmu') +
+  ylab('Wartość współczynnika') +
+  theme_minimal(base_size = 20) +
+  ggtitle('Wartości współczynnika genu CHRM2') -> fig6
+qplot(1:491,wspolczynniki[ ,which(colnames(wspolczynniki) == "NDST4")]) +
+xlab('Krok algorytmu') +
+  ylab('Wartość współczynnika') +
+  theme_minimal(base_size = 20) +
+  ggtitle('Wartości współczynnika genu NDST4') -> fig7
+
+saveToRepo(fig6) # d6b293f40d035fa66bdc9f43beffe45a
+alink('d6b293f40d035fa66bdc9f43beffe45a', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+saveToRepo(fig7) # 9ae2874f836ae8d1eb279e1dd158c04b
+alink('9ae2874f836ae8d1eb279e1dd158c04b', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
 ```

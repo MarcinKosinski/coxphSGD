@@ -1,0 +1,10 @@
+Source: local data frame [6 x 4]
+
+  epoka    gen        value  model
+  (int) (fctr)        (dbl)  (chr)
+1     1    A2M -0.002283314 model1
+2     2    A2M  0.024616223 model1
+3     3    A2M  0.037837892 model1
+4     4    A2M  0.046325246 model1
+5     5    A2M  0.052458574 model1
+6     1  A2ML1  0.222668604 model1

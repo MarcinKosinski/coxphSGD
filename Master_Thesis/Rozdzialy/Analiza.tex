@@ -11,6 +11,8 @@ Niniejszy rozdział poświęcony jest analizie danych genomicznych. W podrozdzia
 W ramach analizy starano się ocenić wpływ mutacji poszczególnych genów na przeżywalność pacjentów. Celem było uzyskanie odpowiedzi na pytanie czy istnieją geny, których mutacje powodują, że ryzyko wystąpienia zdarzenia jakim jest zgon w wyniku choroby nowotworowej jest większe niż u pacjentów bez mutacji w danym genie. Aby zweryfikować hipotezę na tak obszernych danych zdecydowano się zastosować metodę strumieniowej estymacj współczynników w modelu Coxa przy pomocy stochastycznego spadku gradientu. Jej stworzenie było głównym założeniem pracy. Tradycyjna metoda zaimplementowana w~funkcji \texttt{coxph()} w~pakiecie \texttt{survival} \citep{survival} nie była wystarczająca, gdyż nie jest przystosowana do tak dużych zbiorów danych jak te z TCGA. Z racji zbyt dużej liczby genów (przekraczającą kilkanaście tysięcy), które mogłyby być zmutowane i wzięte do analizy jako zmienna objaśniająca czas do zdarzenia, niemożliwe byłoby wyestymowanie współczynników modelu standardową metodą.
 
 Wielką zaletą modelu Coxa z estymacją przy użyciu metody stochastycznego spadku gradientu jest możliwość zastosowania go do zbiorów danych o rozmiarze zmiennych znacznie przekraczającym wymiar obserwacji. Zaprezentowana w rozdziale \ref{implemento} implementacja pozwala w skończonym czasie znaleźć współczynniki modelu odpowiadające za wpływ danych genów na śmiertelność pacjentów w chorobach nowotworowych. Jest to ważne narzędzie w analizach biostatystycznych danych dużej skali, które z~powodzeniem może zostać wykorzystywane do analizy ludzkiego genomu, by w~przyszłości poszerzać zrozumienie procesów mutacji zachodzących w ludzkim organizmie, dzięki któremu możliwe byłoby skuteczniejsze leczenie chorób nowotworowych.
+
+Do każdego elementu analizy umieszczono link, wraz z kodem do $\mathcal{R}$, dzięki któremu możliwe jest pobranie wykresów i powstałych w trakcie analizy obiektów. Możliwe to było za sprawą pakietu \texttt{archivist} \citep{archivist}.
 \newpage
 \section{Genetyczne podstawy nowotworzenia}\label{cha:gen}
 Choroby nowotworowe stanowią drugą, po chorobach serca, przyczynę zachorowań i zgonów na świecie. Opracowania Polskiej Unii Onkologicznej wskazują na tendencję wzrostową liczby zachorowań na nowotwory i rokują na utrzymanie się jej do 2020~\citep{zikula}.
@@ -91,6 +93,8 @@ Częśc wspólną nazw kohort zawierających komplet informacji wygenerowano dzi
 [31] "TGCT"     "THCA"     "UCEC"     "UCS"      "UVM"     
 \end{verbatim}
 
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/e8f55d0bc8c17d6c4c663f871866c0ec.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/e8f55d0bc8c17d6c4c663f871866c0ec')}
+
 Następnie, mając tak otrzymanych 35 kohort nowotworowych uzyskano dane o
 statusie pacjenta (śmierć bądź cenzurowanie) oraz czasie spędzonym
 pod obserwacją dzięki funkcji
@@ -111,12 +115,14 @@ ACC.5        TCGA-OR-A5J5                    1   365
 ACC.6        TCGA-OR-A5J6                    0  2428
 \end{verbatim}
 
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/8aa74b9f156f087944defb48347e0d3e.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/8aa74b9f156f087944defb48347e0d3e')}
+
 Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych pacjentów 
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{extractMutations}\NormalTok{(cohorts, }\FloatTok{0.02}\NormalTok{) ->}\StringTok{ }\NormalTok{mutationsData}
-\NormalTok{mutationsData[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{)}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{56}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{207}\NormalTok{,}\DecValTok{801}\NormalTok{)]}
+\NormalTok{mutationsData[}\DecValTok{1}\NormalTok{:}\DecValTok{8}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{56}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{207}\NormalTok{,}\DecValTok{801}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -124,15 +130,21 @@ Dane o mutacjach występujących wśród tkanek nowotworowych kolejnych pacjent�
   bcr_patient_barcode A2ML1 ALMS1 ATP2B2 CNTNAP4 PLEC
 1     TCGA-02-0003-01     0     1      0       0    0
 2     TCGA-02-0033-01     0     0      0       0    0
+3     TCGA-02-0047-01     0     0      0       0    0
+4     TCGA-02-0055-01     0     0      0       0    0
 5     TCGA-02-2470-01     0     0      0       0    0
 6     TCGA-02-2483-01     0     0      1       0    0
+7     TCGA-02-2485-01     0     0      0       0    0
+8     TCGA-02-2486-01     0     0      0       0    0
 \end{verbatim}
+
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/4644873a37d69da344d5db8647389415.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/4644873a37d69da344d5db8647389415')}
 
 gdzie wybrano jedynie te geny, których mutacja dotyczyła co najmniej 2
 \% pacjentów mających zarówno dane kliniczne jak i dane o występujących
 mutacjach w genach.
 
-Mając tak otrzymane dwa zbiory danych, połączono informacje kliniczne z informacjami o mutacjach dzięki przypisanym do
+Mając tak otrzymane dwa zbiory danych, połączono informacje kliniczne z informacjami o~mutacjach dzięki przypisanym do
 pacjentów i ich próbek kodów \texttt{bcr\_patient\_barcode}, by
 ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 
@@ -150,6 +162,8 @@ ostatecznie podzielić zbiór pacjentów na 100 losowo utworzonych grup.
 1068       1     0    0      1     0                    1  1171
 \end{verbatim}
 
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/aa0d32d2f32d39197e65ff632fdd600e.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/aa0d32d2f32d39197e65ff632fdd600e')}
+
 Niezbędną formułę modelu potrzebną do sprecyzowania, które geny (a
 pozostało ich 1091) należy uwzględnić w modelu uzyskano dzięki
 pomocniczej funkcji
@@ -159,6 +173,8 @@ pomocniczej funkcji
 \KeywordTok{prepareForumlaSGD}\NormalTok{(coxData_split) ->}\StringTok{ }\NormalTok{formulaSGD}
 \end{Highlighting}
 \end{Shaded}
+
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/064277e1c2a1fbea36d7d0ac518b9c8d.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/064277e1c2a1fbea36d7d0ac518b9c8d')}
 
 Ostatecznie dla 6085 pacjentów, którzy posiadali informacje o
 występujących mutacjach, oraz wśród których odnotowano komplet i~poprawność danych klinicznych dotyczących statusu i~obserwowanego czasu
@@ -187,68 +203,16 @@ po 1, 2, 3 czy 4 epokach.
 \end{Highlighting}
 \end{Shaded}
 
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/3eebc99bd231b16a3ea4dbeec9ab5edb.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/3eebc99bd231b16a3ea4dbeec9ab5edb')} \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/1a06bef4a60a237bb65ca3e2f3f23515.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/1a06bef4a60a237bb65ca3e2f3f23515')} \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/446ac4dcb7d65bf39057bb341b296f1a.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/446ac4dcb7d65bf39057bb341b296f1a')} \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/044ad9f336ac4626ee779f8468dc6a4a.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/044ad9f336ac4626ee779f8468dc6a4a')} \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/47de266ea701af9f81d90b9e204250f2.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/47de266ea701af9f81d90b9e204250f2')} \\
 
-Po dopasowaniu modeli, sporządzono wykresy przedstawiające histogramy wartości współczynników modelu po każdej epoce, w rozróżnieniu na trzy typy ciągów odpowiedzialnych za długość kroku. Histogramy przedstawiono na Rysunkach \ref{fig:hist1} - \ref{fig:hist3}, zaś na Rysunku \ref{fig:hist4} przedstawiono ich porównanie na wspólnych osiach. Największe zróżnicowanie wśród współczynników modelu można zaobserwować w modelu \texttt{model\_1\_over\_t}, w którym ciąg odpowiadający za długość kroku algorytmu to $1/t$. W pozostałych modelach współczynniki grupują się bliżej $0$ i rzadko co do modułu są większe od $0.5$. W przypadku modelu \texttt{model\_1\_over\_t} wartości współczynników bywają co do modułu niekiedy większe od $1$. Oznaczać to może, że przy takim ciągu długości kroków, algorytm jest w stanie uwypuklić rolę genów mających istotny wpływ na czas przeżycia pacjentów poprzez wyestymowanie większych wartości wśród odpowiednich współczynników. Różnice wśród wartości współczynników pomiędzy modelami najwyraźniej widać na Rysunku \ref{fig:hist4}, gdzie w przypadku modelu \texttt{model\_1\_over\_100sqrt\_t} ($\alpha_{model3} = 1/100\sqrt{t}$) pik w okolicach zera wskazuje na to, że mało genów można uznać za istotnie wpływające na czas przeżycia z powodu odpowiadających im współczynnikom bliskim $0$. Nie oznacza to jednak, że w tym przypadku istnieją jakiekolwiek podstawy by uznać którykolwiek z modeli za gorszy.
+Po dopasowaniu modeli, sporządzono wykresy przedstawiające histogramy wartości współczynników modelu po każdej epoce, w rozróżnieniu na trzy typy ciągów odpowiedzialnych za długość kroku. Histogramy przedstawiono na Rysunkach \ref{fig:hist1} - \ref{fig:hist3}, zaś na Rysunku \ref{fig:hist4} przedstawiono ich porównanie na wspólnych osiach. Największe zróżnicowanie wśród współczynników modelu można zaobserwować w modelu \texttt{model\_1\_over\_t}, w którym ciąg odpowiadający za długość kroku algorytmu to $1/t$. W pozostałych modelach współczynniki grupują się bliżej $0$ i rzadko co do modułu są większe od $0.5$. W przypadku modelu \texttt{model\_1\_over\_t} wartości współczynników bywają co do modułu niekiedy większe od $1$. Oznaczać to może, że przy takim ciągu długości kroków, algorytm jest w stanie uwypuklić rolę genów mających istotny wpływ na czas przeżycia pacjentów poprzez wyestymowanie większych wartości wśród odpowiednich współczynników. 
 
-Zdecydowano się uznać za najlepszy ten model, który da największą wartość częściowej funkcji log-wiarogodności na testowym zbiorze wyznaczonym przez dwa ostatnie zaobserwowane podzbiory.  Do obliczenia częściowej funkcji log-wiarogodności wykorzystano istniejącą implementację z pakietu \texttt{survival}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{coxph_loglik <-}\StringTok{ }\NormalTok{function(beta, formula, data) \{}
-  \KeywordTok{coxph}\NormalTok{(formula, }\DataTypeTok{init=}\NormalTok{beta, }\DataTypeTok{control=}\KeywordTok{list}\NormalTok{(}\StringTok{'iter.max'}\NormalTok{=}\DecValTok{0}\NormalTok{), }\DataTypeTok{data =}\NormalTok{data)\$loglik[}\DecValTok{2}\NormalTok{]}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/wartosci_loglik_test_ver_minus.png}
-\caption{\label{wykres5} Zmiany wartości częściowej funkcji log-wiarogodności, konstruowanej w~oparciu o~zbiór testowy, w kolejnych krokach trzech rozważanych algorytmów. Za najlepszy, maksymalizujący częściową funkcję log-wiarogodności, uznano model z ciągiem $\alpha_{model1} = 1/t$.}
-\ \\
-\includegraphics[width=0.99\textwidth, height = 280pt]{Obrazki/analiza/ggpairs_2.pdf}
-\caption{\label{wykres6} Różnice wartości współczynników pomiędzy epokami.}
-\end{figure}
-
-\begin{figure}[hbt!]
-  %\vspace{-10pt}
-  \begin{center}
-   \begin{subfigure}[h!]{0.45\textwidth}
-      \includegraphics[width=\textwidth, height=250pt]{Obrazki/analiza/BRAF.pdf}
-      \caption{Współczynnik genu \texttt{BRAF}.}
-   \end{subfigure}     
-   \begin{subfigure}[h!]{0.45\textwidth}
-      \includegraphics[width=\textwidth, height=250pt]{Obrazki/analiza/EGFR.pdf}
-            \caption{Współczynnik genu \texttt{EGFR}.}
-   \end{subfigure}  
-      \end{center}
-  %\vspace{-10pt}
-  \caption{\label{trajAnalisis} Zmiany wartości współczynników, w zależności od kroku iteracji wśród dwóch genów o największym i najmniejszym współczynniku w najlepszym modelu ($\alpha_{model1} = 1/t$).}
-\end{figure}
-
-
-
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_overt_t.pdf}
-\caption{\label{fig:hist1} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/t$.}
-\ \\
-\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_over_50sqrt_t.pdf}
-\caption{\label{fig:hist2} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/50\sqrt{t}$.}
-\end{figure}
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_overt_100sqrt_t.pdf}
-\caption{\label{fig:hist3} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/100\sqrt{t}$.}
-\ \\
-\includegraphics[width=0.95\textwidth, height = 260pt]{Obrazki/analiza/hist_together.pdf}
-\caption{\label{fig:hist4} Porównanie histogramów wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym kolejne ciągi odpowiadający za długość kroku to odpowiednio: $\alpha_{model1} = 1/t, \alpha_{model2} = 1/50\sqrt{t},  \alpha_{model3} = 1/100\sqrt{t}$.}
-\end{figure}
-
-
+Różnice wśród wartości współczynników pomiędzy modelami najwyraźniej widać na Rysunku \ref{fig:hist4}, gdzie w przypadku modelu \texttt{model\_1\_over\_100sqrt\_t} ($\alpha_{model3} = 1/100\sqrt{t}$) pik w~okolicach zera wskazuje na to, że mało genów można uznać za istotnie wpływające na czas przeżycia z powodu odpowiadających im współczynnikom bliskim $0$. Nie oznacza to jednak, że w tym przypadku istnieją jakiekolwiek podstawy by uznać którykolwiek z modeli za gorszy. Zdecydowano się uznać za najlepszy ten model, który da największą wartość częściowej funkcji log-wiarogodności na testowym zbiorze wyznaczonym przez dwa ostatnie podzbiory.
 \subsubsection{Rezultaty analizy przeżycia}
-
 Niemożliwym było sprawdzenie założeń modelu dotyczących proporcjonalności
 hazardu, gdyż zakładano napływającą postać danych (stąd podział danych
 na 100 grup). Przy takiej postaci pojawiania się danych ciężko także
@@ -262,13 +226,56 @@ danym genie, w stosunku do pacjentów nie posiadających tej mutacji. Analogiczn
 posiadającego mutację w danym genie, w stosunku do pacjentów nie
 posiadających tej mutacji. Wzrost proporcji hazardu można
 otrzymać dla danego genu poprzez obłożenie współczynnika funkcją
-wykładniczą o wykładniku $e$.
-
-
-Wyniki estymacji wśród genów zawierających 40 największych, co do modułu,
+wykładniczą o wykładniku $e$. Wyniki estymacji wśród genów zawierających 40 największych uśrednionych
 współczynników (pochodzących z modelu maksymalizującego częściową funkcję log-wiarogodności, konstruowaną na bazie dwóch ostatnich zaobserwowanych zbiorów) zawarto w~Tabeli~\ref{tabelka}.
-Na Rysunku \ref{wykres5} ukazano jak zmieniały się wartości częściowej funkcji log-wiarogodności skonstruowanej w~oparciu o~zbiór testowy, w kolejnych krokach trzech rozważanych algorytmów. Za najlepszy, dający największe wartości częściowej funkcji log-wiarogodności wybrano model z ciągiem $\alpha_{model1} = 1/t$ (\texttt{model\_1\_over\_t}). Sporządzono również wykres pokazujące zmiany wartości współczynników, w zależności od kroku iteracji wśród dwóch genów o największym i najmniejszym współczynniku (Rysunek \ref{trajAnalisis}). Ogólne różnice wartości współczynników pomiędzy epokami ukazano na Rysunku \ref{wykres6}.
+Na Rysunku \ref{wykres5} ukazano jak zmieniały się wartości częściowej funkcji log-wiarogodności skonstruowanej w~oparciu o~zbiór testowy, w kolejnych krokach trzech rozważanych algorytmów. Za najlepszy, dający największe wartości częściowej funkcji log-wiarogodności wybrano model z ciągiem $\alpha_{model1} = 1/t$ (\texttt{model\_1\_over\_t}). Sporządzono również wykres pokazujące zmiany wartości współczynników, w zależności od kroku iteracji wśród dwóch genów o największych uśrednionych współczynnikach (Rysunek \ref{trajAnalisis}). Ogólne różnice wartości współczynników pomiędzy epokami ukazano na Rysunku \ref{wykres6}.
+\begin{figure}[hbt!]
+  %\vspace{-10pt}
+  \begin{center}
+   \begin{subfigure}[h!]{0.45\textwidth}
+      \includegraphics[width=\textwidth, height=130pt]{Obrazki/analiza/fig6.pdf}
+      \caption{Współczynnik genu \texttt{CHRM2}.}
+   \end{subfigure}     
+   \begin{subfigure}[h!]{0.45\textwidth}
+      \includegraphics[width=\textwidth, height=130pt]{Obrazki/analiza/fig7.pdf}
+            \caption{Współczynnik genu \texttt{NDST4}.}
+   \end{subfigure}  
+      \end{center}
+  %\vspace{-10pt}
+  \caption{\label{trajAnalisis} Zmiany wartości współczynników, w zależności od kroku iteracji wśród dwóch genów o największych uśrednionych współczynnikach w najlepszym modelu ($\alpha_{model1} = 1/t$). \\
+  \href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/d6b293f40d035fa66bdc9f43beffe45a.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/d6b293f40d035fa66bdc9f43beffe45a')} \\
+  \href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/9ae2874f836ae8d1eb279e1dd158c04b.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/9ae2874f836ae8d1eb279e1dd158c04b')}}
+\end{figure}
+ 
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/wartosci_loglik_test_ver_minus.png}
+\caption{\label{wykres5} Zmiany wartości częściowej funkcji log-wiarogodności, konstruowanej w~oparciu o~zbiór testowy, w kolejnych krokach trzech rozważanych algorytmów. Za najlepszy, maksymalizujący częściową funkcję log-wiarogodności, uznano model z ciągiem $\alpha_{model1} = 1/t$.}
+\ \\
+\includegraphics[width=0.99\textwidth, height = 280pt]{Obrazki/analiza/ggpairs_2.pdf}
+\caption{\label{wykres6} Różnice wartości współczynników pomiędzy epokami. \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/db5b77ff56b7128244e88d905173cf22.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/db5b77ff56b7128244e88d905173cf22')}}
+\end{figure}
 
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_overt_t.pdf}
+\caption{\label{fig:hist1} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/t$. \href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/3dc2e14a037bbaae9e892dd255150c28.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/3dc2e14a037bbaae9e892dd255150c28')}}
+\ \\
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_over_50sqrt_t.pdf}
+\caption{\label{fig:hist2} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/50\sqrt{t}$.
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/6e5065abdbeae888a2836c1e59460424.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/6e5065abdbeae888a2836c1e59460424')}}
+\end{figure}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/hist_overt_100sqrt_t.pdf}
+\caption{\label{fig:hist3} Histogram wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym ciąg odpowiadający za długość kroku to $\alpha_t = 1/100\sqrt{t}$.
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/ac9a06e9c6428581cdacb2c1e56e5b57.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/ac9a06e9c6428581cdacb2c1e56e5b57')}}
+\ \\
+\includegraphics[width=0.95\textwidth, height = 260pt]{Obrazki/analiza/hist_together.pdf}
+\caption{\label{fig:hist4} Porównanie histogramów wartości współczynników w modelu Coxa proporcjonalnych hazardów po kolejnych epokach. Współczynniki uzyskano dzięki wykorzystaniu algorytmu stochastycznego spadku gradientu, w którym kolejne ciągi odpowiadający za długość kroku to odpowiednio: $\alpha_{model1} = 1/t, \alpha_{model2} = 1/50\sqrt{t},  \alpha_{model3} = 1/100\sqrt{t}$. \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/60e327d310c600493c6c661f7330b868.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/60e327d310c600493c6c661f7330b868')}}
+\end{figure}
 
 
 
@@ -277,51 +284,52 @@ Na Rysunku \ref{wykres5} ukazano jak zmieniały się wartości częściowej funk
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrr}
+
+\begin{tabular}{rlrrrr}
   \toprule
- & $\beta$ & $e^{\beta}$ \\ 
+ & gen & $\beta$ & $e^{\beta}$  & średnia & $\beta_{r}$ \\ 
   \toprule
-EGFR & 0.98 & 2.66 \\ 
-  ATP2B2 & 0.72 & 2.06 \\ 
-  TP53 & 0.71 & 2.03 \\ 
-  NDST4 & 0.70 & 2.02 \\ 
-  CHRM2 & 0.64 & 1.90 \\ 
-  LRRC4C & 0.62 & 1.87 \\ 
-  CDKN2A & 0.62 & 1.85 \\ 
-  C3 & 0.59 & 1.81 \\ 
-  GLI2 & 0.59 & 1.81 \\ 
-  KIAA1409 & 0.58 & 1.78 \\ 
-  KEAP1 & 0.57 & 1.76 \\ 
-  Unknown & 0.55 & 1.74 \\ 
-  TMEM132D & 0.54 & 1.71 \\ 
-  ZNF804B & 0.53 & 1.71 \\ 
-  C15orf2 & 0.53 & 1.70 \\ 
-  LTBP2 & 0.53 & 1.69 \\ 
-  NTRK3 & 0.52 & 1.69 \\ 
-  PCDH9 & 0.51 & 1.67 \\ 
-  PRKD1 & 0.51 & 1.67 \\ 
-  SMAD4 & 0.49 & 1.64 \\ 
-  ZFAT & 0.49 & 1.63 \\ 
-  GRIA4 & 0.48 & 1.62 \\ 
-  GPR133 & 0.48 & 1.62 \\ 
-  FAM5C & 0.48 & 1.62 \\ 
-  TRHDE & 0.48 & 1.61 \\ 
-  PCDH7 & 0.47 & 1.60 \\ 
-  PDGFRA & 0.47 & 1.60 \\ 
-  LRRIQ1 & 0.47 & 1.59 \\ 
-  MUC16 & 0.46 & 1.59 \\ 
-  ITGA8 & 0.46 & 1.59 \\ 
-  ZMYM3 & -0.46 & 0.63 \\ 
-  IDH1 & -0.50 & 0.61 \\ 
-  CTCF & -0.52 & 0.60 \\ 
-  DNAH17 & -0.54 & 0.58 \\ 
-  DLGAP2 & -0.54 & 0.58 \\ 
-  BCORL1 & -0.55 & 0.58 \\ 
-  PLXNC1 & -0.57 & 0.57 \\ 
-  CDH1 & -0.59 & 0.56 \\ 
-  FLRT2 & -0.88 & 0.41 \\ 
-  BRAF & -0.95 & 0.39 \\ 
+1 & CHRM2 & 0.64 & 1.90 & 0.02 & 34.89 \\ 
+  2 & NDST4 & 0.70 & 2.02 & 0.02 & 34.65 \\ 
+  3 & ATP2B2 & 0.72 & 2.06 & 0.02 & 31.30 \\ 
+  4 & KIAA1409 & 0.57 & 1.78 & 0.02 & 28.15 \\ 
+  5 & LRRC4C & 0.62 & 1.87 & 0.02 & 28.02 \\ 
+  6 & LTBP2 & 0.53 & 1.69 & 0.02 & 26.17 \\ 
+  7 & KEAP1 & 0.57 & 1.76 & 0.02 & 25.63 \\ 
+  8 & GLI2 & 0.59 & 1.81 & 0.02 & 24.77 \\ 
+  9 & PRKD1 & 0.51 & 1.67 & 0.02 & 24.71 \\ 
+  10 & NTRK3 & 0.52 & 1.69 & 0.02 & 24.42 \\ 
+  11 & ZFAT & 0.49 & 1.63 & 0.02 & 24.20 \\ 
+  12 & SMAD4 & 0.49 & 1.64 & 0.02 & 23.77 \\ 
+  13 & GPR133 & 0.48 & 1.62 & 0.02 & 23.69 \\ 
+  14 & EGFR & 0.98 & 2.66 & 0.04 & 23.63 \\ 
+  15 & GRIA4 & 0.48 & 1.62 & 0.02 & 23.50 \\ 
+  16 & PCDH7 & 0.47 & 1.60 & 0.02 & 23.23 \\ 
+  17 & ELTD1 & 0.46 & 1.58 & 0.02 & 22.86 \\ 
+  18 & NLGN1 & 0.42 & 1.52 & 0.02 & 22.08 \\ 
+  19 & ATG2A & 0.43 & 1.54 & 0.02 & 21.39 \\ 
+  20 & MBD5 & 0.41 & 1.50 & 0.02 & 20.84 \\ 
+  21 & ABCA6 & 0.42 & 1.53 & 0.02 & 20.35 \\ 
+  22 & PDGFRA & 0.47 & 1.60 & 0.02 & 19.93 \\ 
+  23 & LAMC3 & 0.46 & 1.58 & 0.02 & 19.74 \\ 
+  24 & C3 & 0.59 & 1.81 & 0.03 & 19.70 \\ 
+  25 & ITGA8 & 0.46 & 1.59 & 0.02 & 19.59 \\ 
+  26 & PCDH20 & 0.38 & 1.46 & 0.02 & 19.57 \\ 
+  27 & GOLGA3 & 0.37 & 1.45 & 0.02 & 19.35 \\ 
+  28 & C15orf2 & 0.53 & 1.70 & 0.03 & 19.30 \\ 
+  29 & TRHDE & 0.48 & 1.61 & 0.02 & 19.14 \\ 
+  30 & POTEC & 0.40 & 1.49 & 0.02 & 19.02 \\ 
+  31 & DICER1 & 0.41 & 1.51 & 0.02 & 19.00 \\ 
+  32 & KIAA0100 & 0.42 & 1.52 & 0.02 & 18.89 \\ 
+  33 & CTTNBP2 & 0.45 & 1.56 & 0.02 & 18.70 \\ 
+  34 & CTNNA3 & 0.40 & 1.49 & 0.02 & 18.69 \\ 
+  35 & ATP2B3 & 0.36 & 1.44 & 0.02 & 18.52 \\ 
+  36 & FAM47B & 0.40 & 1.49 & 0.02 & 18.52 \\ 
+  37 & CDKN2A & 0.61 & 1.85 & 0.03 & 18.47 \\ 
+  38 & PCDH9 & 0.51 & 1.67 & 0.03 & 18.39 \\ 
+  39 & RGS22 & 0.36 & 1.43 & 0.02 & 18.35 \\ 
+  40 & EIF4G3 & 0.36 & 1.43 & 0.02 & 18.33 \\ 
    \bottomrule
 \end{tabular}
-\caption{\label{tabelka}Współczynniki oraz stosunki hazardów ($e^{\beta}$) w modelu proporcjonalnych hazardów Coxa w modelu maksymalizującym częściową funkcję log-wiarogodności na zbiorze testowym. }
+\caption{\label{tabelka}Współczynniki oraz stosunki hazardów ($e^{\beta}$) w modelu proporcjonalnych hazardów Coxa, w modelu maksymalizującym częściową funkcję log-wiarogodności na zbiorze testowym. Geny uszeregowano po uśrednionym współczynniku $\beta_{r}$, który powstał poprzez podzielenie współczynników przez średnie w danych genach.}
 \end{table}
