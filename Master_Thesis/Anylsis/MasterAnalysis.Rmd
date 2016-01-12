@@ -328,10 +328,10 @@ Niemożliwe było sprawdzenie założeń modelu dotyczących proporcjonalności 
 Wyniki estymacji dla genów zawierających największe co do modułu współczynniki można znaleźć w Tabeli 1.
 
 ```{r, echo = FALSE, eval=FALSE}
-# names(tail(sort(abs(tail(model_1_over_t$coefficients,1)[[1]])),40)) -> top40
-# tail(model_1_over_t$coefficients,1)[[1]][which(names(tail(model_1_over_t$coefficients,1)[[1]]) %in% top40)] -> real_top40
-# data.frame(beta = sort(real_top40, decreasing = TRUE),
-#            exp_beta = exp(sort(real_top40, decreasing = TRUE))) %>% xtable::xtable()
+names(tail(sort(abs(tail(model_1_over_t$coefficients,1)[[1]])),40)) -> top40
+tail(model_1_over_t$coefficients,1)[[1]][which(names(tail(model_1_over_t$coefficients,1)[[1]]) %in% top40)] -> real_top40
+data.frame(beta = sort(real_top40, decreasing = TRUE),
+           exp_beta = exp(sort(real_top40, decreasing = TRUE))) %>% xtable::xtable()
 
 
 do.call(rbind, trainCox) -> trainCox_df
