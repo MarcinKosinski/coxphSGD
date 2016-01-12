@@ -349,22 +349,64 @@ data.frame( gen = rownames(wyniki),
   .[1:40,] %>% xtable::xtable()
 
 
-
+aoptions('repoDir', getwd())
+loadFromLocalRepo('446ac4dcb7d65bf39057bb341b296f1a')
 
 do.call(rbind, model_1_over_t$coefficients) -> wspolczynniki
-qplot(1:491,wspolczynniki[ ,which(colnames(wspolczynniki) == "CHRM2")]) +
+qplot(1:491,wspolczynniki[ ,which(colnames(wspolczynniki) == "BRAF")]) +
   xlab('Krok algorytmu') +
   ylab('Wartość współczynnika') +
   theme_minimal(base_size = 20) +
-  ggtitle('Wartości współczynnika genu CHRM2') -> fig6
-qplot(1:491,wspolczynniki[ ,which(colnames(wspolczynniki) == "NDST4")]) +
+  ggtitle('Wartości współczynnika genu BRAF') -> fig8
+qplot(1:491,wspolczynniki[ ,which(colnames(wspolczynniki) == "EGFR")]) +
 xlab('Krok algorytmu') +
   ylab('Wartość współczynnika') +
   theme_minimal(base_size = 20) +
-  ggtitle('Wartości współczynnika genu NDST4') -> fig7
+  ggtitle('Wartości współczynnika genu EGFR') -> fig9
 
-saveToRepo(fig6) # d6b293f40d035fa66bdc9f43beffe45a
-alink('d6b293f40d035fa66bdc9f43beffe45a', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
-saveToRepo(fig7) # 9ae2874f836ae8d1eb279e1dd158c04b
-alink('9ae2874f836ae8d1eb279e1dd158c04b', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+saveToRepo(fig8) # 3cd8e1f6da766d3028fc2d8f5fef220f
+alink('3cd8e1f6da766d3028fc2d8f5fef220f', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+saveToRepo(fig9) # 0f5e8e306cc2cba11fceb2bb5f34cbeb
+alink('0f5e8e306cc2cba11fceb2bb5f34cbeb', repo = 'coxphSGD', user = 'MarcinKosinski', format = 'latex')
+
+pdf('fig8.pdf', width = 10, height = 8 )
+fig8
+dev.off()
+pdf('fig9.pdf', width = 10, height = 8 )
+fig9
+dev.off()
 ```
+
+
+# wykresy przeżycia
+
+```{r, eval=FALSE}
+library(archivist)
+setLocalRepo(getwd())
+loadFromLocalRepo('1a06bef4a60a237bb65ca3e2f3f23515')
+loadFromLocalRepo('3eebc99bd231b16a3ea4dbeec9ab5edb')
+
+do.call(rbind,testCox) -> testCox_binded
+do.call(rbind,trainCox) -> trainCox_binded
+library(dplyr)
+library(survMisc)
+trainCox_binded %>%
+  select(patient.vital_status, times, BRAF, EGFR) %>%
+  survfit( Surv(times, patient.vital_status) ~ BRAF, data = .) %>%
+  survMisc:::autoplot.survfit( titleSize=12, type="CI", palette = "Set1",
+                               alpha = 0.7, survLineSize=2,
+                               pX = 0.3, sigP =3, title = "Przeżycie a mutacja genu BRAF" ) -> km_plot
+
+xlims <- c(0,5000)
+library(ggplot2)
+km_plot[[1]] <- km_plot[[1]] +
+  coord_cartesian(xlim = c(xlims[1],xlims[2])) +
+  theme_light(base_size = 22) 
+km_plot[[2]] <- km_plot[[2]] +
+   coord_cartesian(xlim = xlims)+
+  theme_light(base_size = 22) 
+pdf("BRAF.pdf", width = 10, height = 8)
+survMisc::autoplot(km_plot)
+dev.off()
+```
+

@@ -211,7 +211,7 @@ po 1, 2, 3 czy 4 epokach.
 
 Po dopasowaniu modeli, sporządzono wykresy przedstawiające histogramy wartości współczynników modelu po każdej epoce, w rozróżnieniu na trzy typy ciągów odpowiedzialnych za długość kroku. Histogramy przedstawiono na Rysunkach \ref{fig:hist1} - \ref{fig:hist3}, zaś na Rysunku \ref{fig:hist4} przedstawiono ich porównanie na wspólnych osiach. Największe zróżnicowanie wśród współczynników modelu można zaobserwować w modelu \texttt{model\_1\_over\_t}, w którym ciąg odpowiadający za długość kroku algorytmu to $1/t$. W pozostałych modelach współczynniki grupują się bliżej $0$ i rzadko co do modułu są większe od $0.5$. W przypadku modelu \texttt{model\_1\_over\_t} wartości współczynników bywają co do modułu niekiedy większe od $1$. Oznaczać to może, że przy takim ciągu długości kroków, algorytm jest w stanie uwypuklić rolę genów mających istotny wpływ na czas przeżycia pacjentów poprzez wyestymowanie większych wartości wśród odpowiednich współczynników. 
 
-Różnice wśród wartości współczynników pomiędzy modelami najwyraźniej widać na Rysunku \ref{fig:hist4}, gdzie w przypadku modelu \texttt{model\_1\_over\_100sqrt\_t} ($\alpha_{model3} = 1/100\sqrt{t}$) pik w~okolicach zera wskazuje na to, że mało genów można uznać za istotnie wpływające na czas przeżycia z powodu odpowiadających im współczynnikom bliskim $0$. Nie oznacza to jednak, że w tym przypadku istnieją jakiekolwiek podstawy by uznać którykolwiek z modeli za gorszy. Zdecydowano się uznać za najlepszy ten model, który da największą wartość częściowej funkcji log-wiarogodności na testowym zbiorze wyznaczonym przez dwa ostatnie podzbiory.
+Różnice wśród wartości współczynników pomiędzy modelami najwyraźniej widać na Rysunku \ref{fig:hist4}, gdzie w przypadku modelu \texttt{model\_1\_over\_100sqrt\_t} ($\alpha_{model3} = 1/100\sqrt{t}$) pik w~okolicach zera wskazuje na to, że mało genów można uznać za istotnie wpływające na czas przeżycia z powodu odpowiadających im współczynnikom bliskim $0$. Nie oznacza to jednak, że w tym przypadku istnieją jakiekolwiek podstawy by uznać którykolwiek z modeli za gorszy. Zdecydowano się uznać za najlepszy ten model, który da największą wartość częściowej funkcji log-wiarogodności na testowym zbiorze wyznaczonym przez dwa ostatnie podzbiory.\vspace{-8pt}
 \subsubsection{Rezultaty analizy przeżycia}
 Niemożliwym było sprawdzenie założeń modelu dotyczących proporcjonalności
 hazardu, gdyż zakładano napływającą postać danych (stąd podział danych
@@ -223,28 +223,27 @@ modelu, jednak założono, że współczynniki dostatecznie odległe od $0$ doty
 można uznać za istotnie wpływające na czas życia pacjenta. Współczynniki
 dodatnie oznaczają zwiększenie hazardu pacjenta posiadającego mutację w
 danym genie, w stosunku do pacjentów nie posiadających tej mutacji. Analogicznie, współczynniki ujemne oznaczają zmniejszenie hazardu pacjenta
-posiadającego mutację w danym genie, w stosunku do pacjentów nie
-posiadających tej mutacji. Wzrost proporcji hazardu można
+posiadającego mutację w danym genie. Wzrost proporcji hazardu można
 otrzymać dla danego genu poprzez obłożenie współczynnika funkcją
-wykładniczą o wykładniku $e$. Wyniki estymacji wśród genów zawierających 40 największych uśrednionych
-współczynników (pochodzących z modelu maksymalizującego częściową funkcję log-wiarogodności, konstruowaną na bazie dwóch ostatnich zaobserwowanych zbiorów) zawarto w~Tabeli~\ref{tabelka}.
-Na Rysunku \ref{wykres5} ukazano jak zmieniały się wartości częściowej funkcji log-wiarogodności skonstruowanej w~oparciu o~zbiór testowy, w kolejnych krokach trzech rozważanych algorytmów. Za najlepszy, dający największe wartości częściowej funkcji log-wiarogodności wybrano model z ciągiem $\alpha_{model1} = 1/t$ (\texttt{model\_1\_over\_t}). Sporządzono również wykres pokazujące zmiany wartości współczynników, w zależności od kroku iteracji wśród dwóch genów o największych uśrednionych współczynnikach (Rysunek \ref{trajAnalisis}). Ogólne różnice wartości współczynników pomiędzy epokami ukazano na Rysunku \ref{wykres6}.
+wykładniczą o wykładniku $e$. Wyniki estymacji wśród genów zawierających 40 największych, co do modułu, współczynników
+(pochodzących z modelu maksymalizującego częściową funkcję log-wiarogodności, konstruowaną na bazie dwóch ostatnich zaobserwowanych zbiorów) zawarto w~Tabeli~\ref{tabelka}. Dla genów o największym (\texttt{EGFR}) i najmniejszym (\texttt{BRAF}) współczynniku na Rysunkach \ref{fig:surv1} oraz \ref{fig:surv2} przedstawiono krzywe przeżycia oszacowane metodą Kaplana-Meiera \citep{kaplanmeier}, w podziale na grupy związane z występowaniem mutacji w tych genach.
+Na Rysunku \ref{wykres5} ukazano jak zmieniały się wartości częściowej funkcji log-wiarogodności skonstruowanej w~oparciu o~zbiór testowy, w kolejnych krokach trzech rozważanych algorytmów. Za najlepszy, dający największe wartości częściowej funkcji log-wiarogodności wybrano model z ciągiem $\alpha_{model1} = 1/t$ (\texttt{model\_1\_over\_t}). Sporządzono również wykres pokazujące zmiany wartości współczynników, w zależności od kroku iteracji, wśród dwóch genów \texttt{BRAF} i \texttt{EGFR} (Rysunek \ref{trajAnalisis}). Ogólne różnice wartości współczynników pomiędzy epokami ukazano na Rysunku \ref{wykres6}.
 \begin{figure}[hbt!]
   %\vspace{-10pt}
   \begin{center}
    \begin{subfigure}[h!]{0.45\textwidth}
-      \includegraphics[width=\textwidth, height=130pt]{Obrazki/analiza/fig6.pdf}
-      \caption{Współczynnik genu \texttt{CHRM2}.}
+      \includegraphics[width=\textwidth, height=130pt]{Obrazki/analiza/fig8.pdf}
+      \caption{Współczynnik genu \texttt{BRAF}.}
    \end{subfigure}     
    \begin{subfigure}[h!]{0.45\textwidth}
-      \includegraphics[width=\textwidth, height=130pt]{Obrazki/analiza/fig7.pdf}
-            \caption{Współczynnik genu \texttt{NDST4}.}
+      \includegraphics[width=\textwidth, height=130pt]{Obrazki/analiza/fig9.pdf}
+            \caption{Współczynnik genu \texttt{EGFR}.}
    \end{subfigure}  
       \end{center}
   %\vspace{-10pt}
-  \caption{\label{trajAnalisis} Zmiany wartości współczynników, w zależności od kroku iteracji wśród dwóch genów o największych uśrednionych współczynnikach w najlepszym modelu ($\alpha_{model1} = 1/t$). \\
-  \href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/d6b293f40d035fa66bdc9f43beffe45a.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/d6b293f40d035fa66bdc9f43beffe45a')} \\
-  \href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/9ae2874f836ae8d1eb279e1dd158c04b.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/9ae2874f836ae8d1eb279e1dd158c04b')}}
+  \caption{\label{trajAnalisis} Zmiany wartości współczynników, w zależności od kroku iteracji wśród dwóch genów o największym i najmniejszym współczynniku w najlepszym modelu ($\alpha_{model1} = 1/t$). \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/3cd8e1f6da766d3028fc2d8f5fef220f.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/3cd8e1f6da766d3028fc2d8f5fef220f')} \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/0f5e8e306cc2cba11fceb2bb5f34cbeb.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/0f5e8e306cc2cba11fceb2bb5f34cbeb')}}
 \end{figure}
  
 \begin{figure}[!ht]
@@ -284,52 +283,65 @@ Na Rysunku \ref{wykres5} ukazano jak zmieniały się wartości częściowej funk
 
 \begin{table}[ht]
 \centering
-
-\begin{tabular}{rlrrrr}
+\begin{tabular}{rrr}
   \toprule
- & gen & $\beta$ & $e^{\beta}$  & średnia & $\beta_{r}$ \\ 
+ & $\beta$ & $e^{\beta}$ \\ 
   \toprule
-1 & CHRM2 & 0.64 & 1.90 & 0.02 & 34.89 \\ 
-  2 & NDST4 & 0.70 & 2.02 & 0.02 & 34.65 \\ 
-  3 & ATP2B2 & 0.72 & 2.06 & 0.02 & 31.30 \\ 
-  4 & KIAA1409 & 0.57 & 1.78 & 0.02 & 28.15 \\ 
-  5 & LRRC4C & 0.62 & 1.87 & 0.02 & 28.02 \\ 
-  6 & LTBP2 & 0.53 & 1.69 & 0.02 & 26.17 \\ 
-  7 & KEAP1 & 0.57 & 1.76 & 0.02 & 25.63 \\ 
-  8 & GLI2 & 0.59 & 1.81 & 0.02 & 24.77 \\ 
-  9 & PRKD1 & 0.51 & 1.67 & 0.02 & 24.71 \\ 
-  10 & NTRK3 & 0.52 & 1.69 & 0.02 & 24.42 \\ 
-  11 & ZFAT & 0.49 & 1.63 & 0.02 & 24.20 \\ 
-  12 & SMAD4 & 0.49 & 1.64 & 0.02 & 23.77 \\ 
-  13 & GPR133 & 0.48 & 1.62 & 0.02 & 23.69 \\ 
-  14 & EGFR & 0.98 & 2.66 & 0.04 & 23.63 \\ 
-  15 & GRIA4 & 0.48 & 1.62 & 0.02 & 23.50 \\ 
-  16 & PCDH7 & 0.47 & 1.60 & 0.02 & 23.23 \\ 
-  17 & ELTD1 & 0.46 & 1.58 & 0.02 & 22.86 \\ 
-  18 & NLGN1 & 0.42 & 1.52 & 0.02 & 22.08 \\ 
-  19 & ATG2A & 0.43 & 1.54 & 0.02 & 21.39 \\ 
-  20 & MBD5 & 0.41 & 1.50 & 0.02 & 20.84 \\ 
-  21 & ABCA6 & 0.42 & 1.53 & 0.02 & 20.35 \\ 
-  22 & PDGFRA & 0.47 & 1.60 & 0.02 & 19.93 \\ 
-  23 & LAMC3 & 0.46 & 1.58 & 0.02 & 19.74 \\ 
-  24 & C3 & 0.59 & 1.81 & 0.03 & 19.70 \\ 
-  25 & ITGA8 & 0.46 & 1.59 & 0.02 & 19.59 \\ 
-  26 & PCDH20 & 0.38 & 1.46 & 0.02 & 19.57 \\ 
-  27 & GOLGA3 & 0.37 & 1.45 & 0.02 & 19.35 \\ 
-  28 & C15orf2 & 0.53 & 1.70 & 0.03 & 19.30 \\ 
-  29 & TRHDE & 0.48 & 1.61 & 0.02 & 19.14 \\ 
-  30 & POTEC & 0.40 & 1.49 & 0.02 & 19.02 \\ 
-  31 & DICER1 & 0.41 & 1.51 & 0.02 & 19.00 \\ 
-  32 & KIAA0100 & 0.42 & 1.52 & 0.02 & 18.89 \\ 
-  33 & CTTNBP2 & 0.45 & 1.56 & 0.02 & 18.70 \\ 
-  34 & CTNNA3 & 0.40 & 1.49 & 0.02 & 18.69 \\ 
-  35 & ATP2B3 & 0.36 & 1.44 & 0.02 & 18.52 \\ 
-  36 & FAM47B & 0.40 & 1.49 & 0.02 & 18.52 \\ 
-  37 & CDKN2A & 0.61 & 1.85 & 0.03 & 18.47 \\ 
-  38 & PCDH9 & 0.51 & 1.67 & 0.03 & 18.39 \\ 
-  39 & RGS22 & 0.36 & 1.43 & 0.02 & 18.35 \\ 
-  40 & EIF4G3 & 0.36 & 1.43 & 0.02 & 18.33 \\ 
+EGFR & 0.98 & 2.66 \\ 
+  ATP2B2 & 0.72 & 2.06 \\ 
+  TP53 & 0.71 & 2.03 \\ 
+  NDST4 & 0.70 & 2.02 \\ 
+  CHRM2 & 0.64 & 1.90 \\ 
+  LRRC4C & 0.62 & 1.87 \\ 
+  CDKN2A & 0.62 & 1.85 \\ 
+  C3 & 0.59 & 1.81 \\ 
+  GLI2 & 0.59 & 1.81 \\ 
+  KIAA1409 & 0.58 & 1.78 \\ 
+  KEAP1 & 0.57 & 1.76 \\ 
+  Unknown & 0.55 & 1.74 \\ 
+  TMEM132D & 0.54 & 1.71 \\ 
+  ZNF804B & 0.53 & 1.71 \\ 
+  C15orf2 & 0.53 & 1.70 \\ 
+  LTBP2 & 0.53 & 1.69 \\ 
+  NTRK3 & 0.52 & 1.69 \\ 
+  PCDH9 & 0.51 & 1.67 \\ 
+  PRKD1 & 0.51 & 1.67 \\ 
+  SMAD4 & 0.49 & 1.64 \\ 
+  ZFAT & 0.49 & 1.63 \\ 
+  GRIA4 & 0.48 & 1.62 \\ 
+  GPR133 & 0.48 & 1.62 \\ 
+  FAM5C & 0.48 & 1.62 \\ 
+  TRHDE & 0.48 & 1.61 \\ 
+  PCDH7 & 0.47 & 1.60 \\ 
+  PDGFRA & 0.47 & 1.60 \\ 
+  LRRIQ1 & 0.47 & 1.59 \\ 
+  MUC16 & 0.46 & 1.59 \\ 
+  ITGA8 & 0.46 & 1.59 \\ 
+  ZMYM3 & -0.46 & 0.63 \\ 
+  IDH1 & -0.50 & 0.61 \\ 
+  CTCF & -0.52 & 0.60 \\ 
+  DNAH17 & -0.54 & 0.58 \\ 
+  DLGAP2 & -0.54 & 0.58 \\ 
+  BCORL1 & -0.55 & 0.58 \\ 
+  PLXNC1 & -0.57 & 0.57 \\ 
+  CDH1 & -0.59 & 0.56 \\ 
+  FLRT2 & -0.88 & 0.41 \\ 
+  BRAF & -0.95 & 0.39 \\ 
    \bottomrule
 \end{tabular}
-\caption{\label{tabelka}Współczynniki oraz stosunki hazardów ($e^{\beta}$) w modelu proporcjonalnych hazardów Coxa, w modelu maksymalizującym częściową funkcję log-wiarogodności na zbiorze testowym. Geny uszeregowano po uśrednionym współczynniku $\beta_{r}$, który powstał poprzez podzielenie współczynników przez średnie w danych genach.}
+\caption{\label{tabelka}Współczynniki oraz stosunki hazardów ($e^{\beta}$) w modelu proporcjonalnych hazardów Coxa, w modelu maksymalizującym częściową funkcję log-wiarogodności na zbiorze testowym. Przedstawiono 40 genów o największych, co do modułu, współczynnikach.}
 \end{table}
+
+
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth, height = 280pt]{Obrazki/analiza/EGFR_surv.pdf}
+\caption{\label{fig:surv1} Oszacowane metodą Kaplana-Meiera krzywe przeżycia a występowanie mutacji w genie \texttt{EGFR}. Pacjenci mający mutację w genie \texttt{EGFR} mają zwiększony hazard zgonu. \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/db03267b063709277e50bd4c0c1ddb04.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/db03267b063709277e50bd4c0c1ddb04')}}
+\ \\
+\includegraphics[width=0.95\textwidth, height = 260pt]{Obrazki/analiza/BRAF_surv.pdf}
+\caption{\label{fig:surv2} Oszacowane metodą Kaplana-Meiera krzywe przeżycia a występowanie mutacji w genie \texttt{BRAF}. Pacjenci mający mutację w genie \texttt{BRAF} mają zmniejszony hazard zgonu. \\
+\href{https://github.com/MarcinKosinski/coxphSGD/blob/master/gallery/569f4e9d0c8b1e558b766d8cc259e3d7.rda?raw=true}{archivist::aread('MarcinKosinski/coxphSGD/569f4e9d0c8b1e558b766d8cc259e3d7')}}
+\end{figure}
