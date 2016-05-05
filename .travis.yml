@@ -1,0 +1,12 @@
+language: r
+assert: false
+r_packages:
+ - survival
+ - assertthat
+ - dplyr
+ - magrittr
+ - reshape2
+ - knitr
+ - rmarkdown
+ - rlp
+sudo: required
