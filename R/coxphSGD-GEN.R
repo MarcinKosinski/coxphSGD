@@ -16,6 +16,7 @@
 #' equal to the number of variables after using \code{formula} in the \code{model.matrix}
 #' function
 #' @param epsilon a numeric value with the stop condition of the estimation algorithm. 
+#' @param max.iter numeric specifing maximal number of iterations.
 #'
 #' @details A \code{data} argument should be a list of data.frames, where in every batch data.frame
 #' there is the same structure and naming convention for explanatory and survival (times, censoring)
@@ -33,7 +34,9 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr arrange
 #' @importFrom dplyr filter
-#' @import foreach
+#' @importFrom stats model.extract
+#' @importFrom stats rexp
+#' @importFrom stats runif
 #' @author 
 #' Marcin Kosinski, \email{m.p.kosinski@@gmail.com}
 #' @examples

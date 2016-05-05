@@ -12,3 +12,5 @@ PL_vignettes_PL
 ^.*\.rda$
 backback.db
 gallery/
+.travis.yml
+Makefile

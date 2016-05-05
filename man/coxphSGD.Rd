@@ -25,6 +25,8 @@ equal to the number of variables after using \code{formula} in the \code{model.m
 function}
 
 \item{epsilon}{a numeric value with the stop condition of the estimation algorithm.}
+
+\item{max.iter}{numeric specifing maximal number of iterations.}
 }
 \description{
 Function \code{coxphSGD} estimates coefficients using stochastic
