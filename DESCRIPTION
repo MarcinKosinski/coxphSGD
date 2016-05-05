@@ -24,6 +24,8 @@ Suggests:
     knitr (>= 1.8.12),
     rmarkdown,
     rlp
+Remotes:
+    yihui/rlp
 VignetteBuilder: knitr
 URL: https://github.com/MarcinKosinski/Cox-SGD
 BugReports: https://github.com/MarcinKosinski/Cox-SGD/issues
