@@ -10,7 +10,7 @@ simulateCoxSGD(dCox = dCox, learningRates = function(x) {
 }
 \arguments{
 \item{dCox}{Input data.frame containing survival times (columnd should be named \code{time}) and status
-(columnd should be named \code{status}). So far this function only supports 2 explanatory variable 
+(columnd should be named \code{status}). So far this function only supports 2 explanatory variable
 (that should be named \code{x1} and \code{x2}.}
 
 \item{learningRates}{Parameter passed to \link{coxphSGD}.}
@@ -22,7 +22,7 @@ simulateCoxSGD(dCox = dCox, learningRates = function(x) {
 \item{max.iter}{Parameter passed to \link{coxphSGD} to multiple the maximal iterations by the rows number.}
 }
 \description{
-Function \code{simulateCoxSGD} splits input \code{dCox} data on 10, 30, 60, 90, 120 and 200 
+Function \code{simulateCoxSGD} splits input \code{dCox} data on 10, 30, 60, 90, 120 and 200
 groups and for each split it uses \link{coxphSGD} function to generate estimates for Cox
 Proportional Hazards Model with stochastic gradient descent optimization.
 }

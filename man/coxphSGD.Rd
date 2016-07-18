@@ -1,7 +1,7 @@
 % Please edit documentation in R/coxphSGD-GEN.R
 \name{coxphSGD}
 \alias{coxphSGD}
-\title{Stochastic Gradient Descent log-likelihood estimation in 
+\title{Stochastic Gradient Descent log-likelihood estimation in
 Cox proportional hazards model}
 \usage{
 coxphSGD(formula, data, learningRates = function(x) {
@@ -16,11 +16,11 @@ the Surv function.}
 \item{data}{a list of batch data.frames in which to interpret the variables named in the \code{formula}.
 See Details.}
 
-\item{learningRates}{a function specifing how to define learning rates in 
+\item{learningRates}{a function specifing how to define learning rates in
 steps of the algorithm. By default the \code{f(t)=1/t} is used, where \code{t} is
 the number of algorithm's step.}
 
-\item{beta_0}{a numeric vector (if of length 1 then will be replicated) of length 
+\item{beta_0}{a numeric vector (if of length 1 then will be replicated) of length
 equal to the number of variables after using \code{formula} in the \code{model.matrix}
 function}
 
@@ -41,7 +41,7 @@ variables. See Examples.
 If one of the conditions is fullfiled (j denotes the step number)
 \itemize{
  \item \eqn{||\beta_{j+1}-\beta_{j}|| <}\code{epsilon} parameter for any \eqn{j}
- \item \eqn{j>max.iter} 
+ \item \eqn{j>max.iter}
 }
 the estimation process is stopped.
 }

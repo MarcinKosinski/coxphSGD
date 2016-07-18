@@ -16,7 +16,7 @@ dataCox(N, lambda, rho, x, beta, censRate)
 
 \item{beta}{True model coefficients.}
 
-\item{censRate}{Parameter for exponential distribution, which is 
+\item{censRate}{Parameter for exponential distribution, which is
 responsible for censoring.}
 }
 \description{
@@ -26,7 +26,7 @@ distribution (with parameters \code{lambda} and \code{rho} for given input
 that comes from exponential distribution with parameter \code{censRate}.
 }
 \details{
-For each observation true survival time is generated and a censroing time. If censoring time is less then survival time, then the survival time 
+For each observation true survival time is generated and a censroing time. If censoring time is less then survival time, then the survival time
 is returned and a status of observations is set to \code{0} which means the
 observation had censored time. If the survival time is less than censoring
 time, then for this observation the true survival time is returned and the
