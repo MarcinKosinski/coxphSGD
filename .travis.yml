@@ -8,6 +8,7 @@ r_packages:
  - reshape2
  - knitr
  - rmarkdown
+ - foreach
 r_github_packages:
  - yihui/rlp
 sudo: required
