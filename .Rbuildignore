@@ -3,14 +3,14 @@
 Master_Thesis
 thesis_part
 PL_vignettes_PL
-^.*\.pdf$
 ^.*\.jpeg$
 .RData
 .rda
-.pdf
 ^.*\.RData$
 ^.*\.rda$
 backback.db
 gallery/
 .travis.yml
 Makefile
+backpack.db
+gallery
