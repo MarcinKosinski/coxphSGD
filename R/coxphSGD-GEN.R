@@ -1,3 +1,5 @@
+globalVariables("times")
+
 #' Stochastic Gradient Descent log-likelihood estimation in
 #' Cox proportional hazards model
 #'
