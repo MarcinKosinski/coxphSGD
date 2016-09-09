@@ -1,21 +1,21 @@
-#' Stochastic Gradient Descent log-likelihood estimation in 
+#' Stochastic Gradient Descent log-likelihood estimation in
 #' Cox proportional hazards model
-#' 
+#'
 #' Function \code{coxphSGD} estimates coefficients using stochastic
 #' gradient descent algorithm in Cox proportional hazards model.
-#' 
+#'
 #' @param formula a formula object, with the response on the left of a ~ operator,
 #' and the terms on the right. The response must be a survival object as returned by
 #' the Surv function.
 #' @param data a list of batch data.frames in which to interpret the variables named in the \code{formula}.
 #' See Details.
-#' @param learningRates a function specifing how to define learning rates in 
+#' @param learningRates a function specifing how to define learning rates in
 #' steps of the algorithm. By default the \code{f(t)=1/t} is used, where \code{t} is
 #' the number of algorithm's step.
-#' @param beta_0 a numeric vector (if of length 1 then will be replicated) of length 
+#' @param beta_0 a numeric vector (if of length 1 then will be replicated) of length
 #' equal to the number of variables after using \code{formula} in the \code{model.matrix}
 #' function
-#' @param epsilon a numeric value with the stop condition of the estimation algorithm. 
+#' @param epsilon a numeric value with the stop condition of the estimation algorithm.
 #' @param max.iter numeric specifing maximal number of iterations.
 #'
 #' @details A \code{data} argument should be a list of data.frames, where in every batch data.frame
@@ -25,7 +25,7 @@
 #' @note If one of the conditions is fullfiled (j denotes the step number)
 #' \itemize{
 #'  \item \eqn{||\beta_{j+1}-\beta_{j}|| <}\code{epsilon} parameter for any \eqn{j}
-#'  \item \eqn{j>max.iter} 
+#'  \item \eqn{j>max.iter}
 #' }
 #' the estimation process is stopped.
 #' @export
@@ -37,7 +37,7 @@
 #' @importFrom stats model.extract
 #' @importFrom stats rexp
 #' @importFrom stats runif
-#' @author 
+#' @author
 #' Marcin Kosinski, \email{m.p.kosinski@@gmail.com}
 #' @examples
 #' library(survival)
@@ -46,12 +46,12 @@
 #'          data= split(lung, sample(1:4, size = 228, replace = TRUE))
 #' )
 #' }
-#' 
+#'
 coxphSGD <- function(formula, data, learningRates = function(x){1/x},
                     beta_0 = 0, epsilon = 1e-5, max.iter = 500 ) {
   # check arguments
   checkArguments(formula, data, learningRates,
-                  beta_0, epsilon) -> beta_start 
+                  beta_0, epsilon) -> beta_start
   n <- length(data)
   diff <- epsilon + 1
   i <- 1
@@ -66,7 +66,7 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
     beta_old <- beta_new[[i]]
     i <- i + 1
     cat("\r iteration: ", i, "\r")
-  }  
+  }
   # return results
   list(Call = match.call(), epsilon = epsilon,
        learningRates = learningRates, steps = i,
@@ -74,24 +74,24 @@ coxphSGD <- function(formula, data, learningRates = function(x){1/x},
 }
 
 coxphSGD_batch <- function(formula, data, learningRate, beta){
-  # collect times, status, variables and reorder samples 
+  # collect times, status, variables and reorder samples
   # to make the algorithm more clear to read and track
   batchData <- prepareBatch(formula = formula, data = data)
   # calculate the log-likelihood for this batch sample
   batchData <- batchData %>% arrange(-times)
   # scores occure in nominator and denominator
-  scores <- apply(batchData[, -c(1, 2)], 1, 
+  scores <- apply(batchData[, -c(1, 2)], 1,
                   function(element) exp(element %*% beta) )
   nominator <- apply(batchData[, -c(1, 2)], 2,
     						 function(element) cumsum(scores*element) )
   denominator <- cumsum(scores)
   # sum over non-censored observations
   partial_sum <- (batchData[, -c(1, 2)] - nominator/denominator)*batchData[, "event"]
-  # each column indicates one explanatory variable  
+  # each column indicates one explanatory variable
   U_batch <- partial_sum %>% colSums()
   return(beta + learningRate * U_batch)
 }
-  
+
 checkArguments <- function(formula, data, learningRates,
                              beta_0, epsilon) {
   assert_that(is.list(data) & length(data) > 0)
@@ -100,7 +100,7 @@ checkArguments <- function(formula, data, learningRates,
   assert_that(is.function(learningRates))
   assert_that(is.numeric(epsilon))
   assert_that(is.numeric(beta_0))
-  
+
     # check length of the start parameter
   if (length(beta_0) == 1) {
     beta_0 <- rep(beta_0, as.character(formula)[3] %>%
@@ -108,7 +108,7 @@ checkArguments <- function(formula, data, learningRates,
                     unlist %>%
                     length)
   }
-  
+
   return(beta_0)
 }
 
@@ -118,28 +118,28 @@ prepareBatch <- function(formula, data) {
   Call <- match.call()
   indx <- match(c("formula", "data"),
                 names(Call), nomatch = 0)
-  if (indx[1] == 0) 
+  if (indx[1] == 0)
       stop("A formula argument is required")
   temp <- Call[c(1, indx)]
   temp[[1]] <- as.name("model.frame")
-  
+
   mf <- eval(temp, parent.frame())
   Y <- model.extract(mf, "response")
-  
-  if (!inherits(Y, "Surv")) 
+
+  if (!inherits(Y, "Surv"))
       stop("Response must be a survival object")
   type <- attr(Y, "type")
-  
-  if (type != "right" && type != "counting") 
-      stop(paste("Cox model doesn't support \"", type, "\" survival data", 
+
+  if (type != "right" && type != "counting")
+      stop(paste("Cox model doesn't support \"", type, "\" survival data",
           sep = ""))
-  
-  # collect times, status, variables and reorder samples 
+
+  # collect times, status, variables and reorder samples
   # to make the algorithm more clear to read and track
   cbind(event = unclass(Y)[,2], # 1 indicates event, 0 indicates cens
         times = unclass(Y)[,1],
         mf[, -1]) %>%
-    arrange(times) 
+    arrange(times)
 }
 
 #'
@@ -155,10 +155,10 @@ prepareBatch <- function(formula, data) {
 #' @param rho rho parameter for Weibull distribution.
 #' @param x A data.frame with input data to generate the survival times for.
 #' @param beta True model coefficients.
-#' @param censRate Parameter for exponential distribution, which is 
+#' @param censRate Parameter for exponential distribution, which is
 #' responsible for censoring.
 #'
-#' @details For each observation true survival time is generated and a censroing time. If censoring time is less then survival time, then the survival time 
+#' @details For each observation true survival time is generated and a censroing time. If censoring time is less then survival time, then the survival time
 #' is returned and a status of observations is set to \code{0} which means the
 #' observation had censored time. If the survival time is less than censoring
 #' time, then for this observation the true survival time is returned and the
@@ -173,7 +173,7 @@ prepareBatch <- function(formula, data) {
 #' @examples
 #' \dontrun{
 #' x <- matrix(sample(0:1, size = 20000, replace = TRUE), ncol = 2)
-#' dataCox(10^4, lambda = 3, rho = 2, x, 
+#' dataCox(10^4, lambda = 3, rho = 2, x,
 #' beta = c(1,3), censRate = 5) -> dCox
 #'}
 #' @export
@@ -223,14 +223,14 @@ calculate_outer_cox <- function(x1, x2, censored){
 
 #'
 #' Optimize Partial Log-Likelihood Function For Cox Propotional Hazards Model
-#' Using Stochastic Gradient Descent 
+#' Using Stochastic Gradient Descent
 #'
-#' Function \code{simulateCoxSGD} splits input \code{dCox} data on 10, 30, 60, 90, 120 and 200 
+#' Function \code{simulateCoxSGD} splits input \code{dCox} data on 10, 30, 60, 90, 120 and 200
 #' groups and for each split it uses \link{coxphSGD} function to generate estimates for Cox
 #' Proportional Hazards Model with stochastic gradient descent optimization.
 #'
 #' @param dCox Input data.frame containing survival times (columnd should be named \code{time}) and status
-#' (columnd should be named \code{status}). So far this function only supports 2 explanatory variable 
+#' (columnd should be named \code{status}). So far this function only supports 2 explanatory variable
 #' (that should be named \code{x1} and \code{x2}.
 #' @param learningRates Parameter passed to \link{coxphSGD}.
 #' @param epsilon Parameter passed to \link{coxphSGD}.
@@ -242,9 +242,9 @@ calculate_outer_cox <- function(x1, x2, censored){
 #' @examples
 #' \dontrun{
 #' x <- matrix(sample(0:1, size = 20000, replace = TRUE), ncol = 2)
-#' dataCox(10^4, lambda = 3, rho = 2, x, 
+#' dataCox(10^4, lambda = 3, rho = 2, x,
 #' beta = c(1,3), censRate = 5) -> dCox
-#'  simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))}, 
+#'  simulateCoxSGD(dCox, learningRates = function(x){1/(100*sqrt(x))},
 #'                 max.iter = 10, epsilon = 1e-5) -> d2ggplot
 #'}
 #' @export
