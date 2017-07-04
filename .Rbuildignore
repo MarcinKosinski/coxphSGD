@@ -1,16 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-Master_Thesis
-thesis_part
-PL_vignettes_PL
 ^.*\.jpeg$
 .RData
 .rda
 ^.*\.RData$
 ^.*\.rda$
-backback.db
-gallery/
 .travis.yml
-Makefile
-backpack.db
-gallery
+dev
