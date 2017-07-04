@@ -1,7 +1,7 @@
 coxphSGD 0.2.0
 ==============
 
-
+- 2017-07-04
 - Version submitted to CRAN.
 - Removed the `yihui/rlp` dependency and moved to regular `roxygen2` structure of the package's documentation.
 - Removed dependencies (imports) of `assertthat`, `magrittr` and `reshape2` as it's better to have less dependencies in the
@@ -13,6 +13,7 @@ fastly evolving software development world (backward incompatibilities).
 coxphSGD 0.1.0
 ==============
 
+- 2015-12-25
 - Library was build with the experimental approach using `yihui/rlp` package
 for creating package structures and documentation only in the vignette document.
 - In the root directory of the package one could found the master thesis (in polish), 

@@ -29,7 +29,7 @@
 simulateCoxSGD <- function(data = data, learn.rates = function(x){1/x},
                            epsilon = 1e-03, beta.zero = c(0,0), max.iter = 100){
 
-  # podziel na pozdzbiory
+  # divide to subgroups
   sample(1:90, size = 10^4, replace = TRUE) -> group
 
   split(data, group) -> data_splitted

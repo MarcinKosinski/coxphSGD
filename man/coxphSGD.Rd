@@ -6,7 +6,7 @@
 Cox Proportional Hazards Model}
 \usage{
 coxphSGD(formula, data, learn.rates = function(x) {     1/x },
-  beta.zero = 0, epsilon = 1e-05, max.iter = 500)
+  beta.zero = 0, epsilon = 1e-05, max.iter = 500, verbose = FALSE)
 }
 \arguments{
 \item{formula}{a formula object, with the response on the left of a ~ operator,
@@ -27,6 +27,8 @@ function}
 \item{epsilon}{a numeric value with the stop condition of the estimation algorithm.}
 
 \item{max.iter}{numeric specifing maximal number of iterations.}
+
+\item{verbose}{whether to cat the number of the iteration}
 }
 \description{
 \code{coxphSGD} estimates coefficients using stochastic

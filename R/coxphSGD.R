@@ -17,6 +17,7 @@
 #' function
 #' @param epsilon a numeric value with the stop condition of the estimation algorithm.
 #' @param max.iter numeric specifing maximal number of iterations.
+#' @param verbose whether to cat the number of the iteration
 #'
 #' @details A \code{data} argument should be a list of data.frames, where in every batch data.frame
 #' there is the same structure and naming convention for explanatory and survival (times, censoring)
@@ -44,7 +45,8 @@
 #' @export
 #' @rdname coxphSGD
 coxphSGD <- function(formula, data, learn.rates = function(x){1/x},
-                    beta.zero = 0, epsilon = 1e-5, max.iter = 500 ) {
+                    beta.zero = 0, epsilon = 1e-5, max.iter = 500,
+                    verbose = FALSE) {
   # check arguments
   beta_start <-
     coxphSGDcheck(
@@ -74,7 +76,9 @@ coxphSGD <- function(formula, data, learn.rates = function(x){1/x},
     diff <- sqrt(sum((beta_new[[i]] - beta_old)^2))
     beta_old <- beta_new[[i]]
     i <- i + 1
-    cat("\r iteration: ", i, "\r")
+    if (verbose) {
+      cat("\r iteration: ", i, "\r")
+    }
   }
   # return results
   list(

@@ -1,7 +1,7 @@
 Package: coxphSGD
 Type: Package
-Title: Stochastic Gradient Descent log-likelihood estimation in Cox proportional
-    hazards model
+Title: Stochastic Gradient Descent log-likelihood Estimation in Cox Proportional
+    Hazards Model
 Version: 0.2.0
 Date: 2017-07-03
 Authors@R: as.person(c(
@@ -13,11 +13,6 @@ License: GPL-2
 Depends:
     R (>= 3.3.0),
     survival
-Imports:
-    dplyr
-Suggests:
-    knitr (>= 1.8.12)
-VignetteBuilder: knitr
-URL: https://r-addict.com/coxphSGD
+URL: https://github.com/MarcinKosinski/coxphSGD/blob/master/README.md
 BugReports: https://github.com/MarcinKosinski/coxphSGD/issues
 RoxygenNote: 6.0.1
