@@ -3,6 +3,31 @@ coxphSGD
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/coxphSGD)](http://cran.r-project.org/web/packages/coxphSGD) [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/coxphSGD?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/coxphSGD) [![Build Status](https://api.travis-ci.org/MarcinKosinski/coxphSGD.png)](https://travis-ci.org/MarcinKosinski/coxphSGD)
 
+-   [Overview](#overview)
+    -   [Applications](#applications)
+    -   [Installation](#installation)
+    -   [Assumptions](#assumptions)
+-   [Simple example](#simple-example)
+    -   [Simulated data](#simulated-data)
+    -   [Fit the model](#fit-the-model)
+    -   [Track estimates during each iteration on the contour lines plot](#track-estimates-during-each-iteration-on-the-contour-lines-plot)
+    -   [Used code](#used-code)
+-   [Complex example](#complex-example)
+    -   [The Cancer Genome Atlas Data and RTCGA](#the-cancer-genome-atlas-and-rtcga)
+    -   [Fit the complex model](#fit-the-complex-model)
+    -   [Estimated survival curves](#estimated-survival-curves)
+-   [Mathematical formulas](#mathematical-formulas)
+-   [useR 2017](#user-2017)
+    -   [Long abstract](#long-abstract)
+    -   [Short abstract](#short-abstract)
+    -   [Presentation](#presentation)
+
+Overview
+========
+
+Applications
+------------
+
 Know the `survival::coxph()` function that calculates the estimates of the Cox Proportional Hazards model? <br> It uses the **gradient descent order II** method (known also as Newton-Raphson method) to optimize the **partial** log-likelihood function of the Cox PH model.
 
 The `coxphSGD::coxphSGD()` is an equivalent that uses the **stochastic gradient descent order I** method in the optimization process, which can be beneficial in situations like
@@ -28,14 +53,21 @@ library(coxphSGD)
 ```
 
 Assumptions
-===========
+-----------
 
-The Cox Proportional Hazards model assumes (mainly) that the explanatory variables are constant over time and that the **hazard** (one of the survival measures) estimates between considered groups are proportional over the time. This model calculates the estimates that can be interpreted as proportion of the hazard change while moving from one level of the considered explanatory variable to another (while all other variables are fixed). This is explained with details in the [Mathematical formulas](#mathematical-formulas) section.
+The Cox Proportional Hazards model assumes (mainly) that the explanatory variables are constant over time and that the **hazard** (one of the survival measures) estimates between considered groups are proportional over the time.
+
+This model calculates the estimates that can be interpreted as proportion of the hazard change while moving from one level of the considered explanatory variable to another (while all other variables are fixed) - explained with details in the [Mathematical formulas](#mathematical-formulas) section.
 
 Simple example
 ==============
 
-Let's simulate artificial/fake data that follows the Cox Proportional Hazards model assumptions. Such data can be simulated from the Weibull distribution of the survival times (times during which the patient/item is under observation till **the event or censoring**) with some exponentially distributed conditions on the occurance of the censoring. This approach was taken from the StackOverflow question [How to create a toy survival (time to event) data with right censoring](https://stats.stackexchange.com/questions/135124/how-to-create-a-toy-survival-time-to-event-data-with-right-censoring) and is based on [Generating survival times to simulate Cox proportional hazards models](http://onlinelibrary.wiley.com/doi/10.1002/sim.2059/abstract)
+Simulated data
+--------------
+
+Let's simulate artificial/fake data that follows the Cox Proportional Hazards model assumptions. Such data can be simulated from the Weibull distribution of the survival times (times during which the patient/item is under observation till **the event or censoring**) with some exponentially distributed conditions on the occurance of the censoring.
+
+The approach was taken from the StackOverflow question [How to create a toy survival (time to event) data with right censoring](https://stats.stackexchange.com/questions/135124/how-to-create-a-toy-survival-time-to-event-data-with-right-censoring) and is based on [Generating survival times to simulate Cox proportional hazards models](http://onlinelibrary.wiley.com/doi/10.1002/sim.2059/abstract)
 
 ``` r
 library(survival)
@@ -90,8 +122,8 @@ results <-
            max.iter    = 10*90)
 ```
 
-Plot contour lines and estimates of each iteration
---------------------------------------------------
+Track estimates during each iteration on the contour lines plot
+---------------------------------------------------------------
 
 One can extract the estimaes of the Cox PH model for each of the iteration with the following code.
 
@@ -120,15 +152,51 @@ Here with a black triangle the original `beta.zero` (set to iteration 0) are mar
 
 ![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
+### Used code
+
 The code to reproduce the graph can be found in [this gist](https://gist.github.com/MarcinKosinski/909826b62f8849675f0980384fd6e28e).
 
 Complex example
 ===============
 
+The Cancer Genome Atlas and RTCGA
+---------------------------------
+
 [The Cancer Genome Atlas](https://cancergenome.nih.gov/) data included in the [RTCGA](https://github.com/RTCGA/) family of R packages
 
-Surival curves results
-----------------------
+rtcga overview
+
+Fit the complex model
+---------------------
+
+data presentation
+
+fit model
+
+Estimated surival curves
+------------------------
+
+model results
+
+link to the code
 
 Mathematical formulas
 =====================
+
+useR 2017
+=========
+
+Long abstract
+-------------
+
+[Link]()
+
+Short abstract
+--------------
+
+[Link]()
+
+Presentation
+------------
+
+[Link]()
