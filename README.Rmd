@@ -32,14 +32,14 @@ opts_chunk$set(
     * [Fit the model](#fit-the-model)
     * [Track estimates during each iteration on the contour lines plot](#track-estimates-during-each-iteration-on-the-contour-lines-plot)
       - [Used code](#used-code)
-- [Complex example](#complex-example)
+- [Genomic data analysis](#genomic-data-analysis)
     * [The Cancer Genome Atlas Data and RTCGA](#the-cancer-genome-atlas-and-rtcga)
     * [Fit the complex model](#fit-the-complex-model)
     * [Estimated survival curves](#estimated-survival-curves)
 - [Mathematical formulas]  
 - [useR 2017](#user-2017)
-    * [Long abstract](#long-abstract)
-    * [Short abstract](#short-abstract)
+    * [Long abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski.pdf)
+    * [Short abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski_short.pdf)
     * [Presentation](#presentation)
 
 # Overview
@@ -213,39 +213,174 @@ p
 
 The code to reproduce the graph can be found in [this gist](https://gist.github.com/MarcinKosinski/909826b62f8849675f0980384fd6e28e).
 
-# Complex example
+# Genomic data analysis
 
 ## The Cancer Genome Atlas and RTCGA
 
 [The Cancer Genome Atlas](https://cancergenome.nih.gov/) data included in the [RTCGA](https://github.com/RTCGA/) family of R packages
 
-rtcga overview
+> The Cancer Genome Atlas (TCGA) is a comprehensive and coordinated effort to accelerate our understanding of the molecular basis of cancer through the application of genome analysis technologies, including large-scale genome sequencing - http://cancergenome.nih.gov/.
+
+<img src="https://raw.githubusercontent.com/RTCGA/RTCGA/master/RTCGA_workflow.png" height="500" width="800">
+
+I have converted selected datasets from this study into a few separate packages that are hosted on Bioconductor. These R packages make selected datasets easier to access and manage. Datasets in **RTCGA** data packages are large and cover complex relations between clinical outcomes and genetic background.
 
 ## Fit the complex model
 
-data presentation
+### Data overview
 
-fit model
+In the real life genetic problems for the algorithm application we will use the clinical outcomes (times and death status) for patients suffering from Breast Cancer and the information about genes that were mutated in the cancer tissue collected from the patient.
 
-## Estimated surival curves
+Data were processed during my master thesis and are stored in the [archivist](https://github.com/pbiecek/archivist) like repository and can be loaded with the following command
 
-model results
+```{r}
+library(archivist)
+testCox <- archivist::aread('MarcinKosinski/MasterThesis/3eebc99bd231b16a3ea4dbeec9ab5edb')
+trainCox<- archivist::aread('MarcinKosinski/MasterThesis/1a06bef4a60a237bb65ca3e2f3f23515')
+class(trainCox)
+length(trainCox)
+head(
+  trainCox[[1]][ # train data is a list of data frames that corresponds to batches
+    c(7, 10),    # pick few rows
+    c(210,302,356,898,911,1092:1093) # pick few columns, and survival outcomes
+    ]
+  )
+```
 
-link to the code
+### Actual fit
+
+```{r}
+formulaSGD <- archivist::aread('MarcinKosinski/MasterThesis/064277e1c2a1fbea36d7d0ac518b9c8d')
+# Surv(times, patient.vital_status ~ all posible genes
+# how many genes are there in the whole formula?
+length(
+  strsplit(
+    as.character(formulaSGD)[3],
+    split = "+",
+    fixed = T
+  )[[1]]
+)
+```
+
+One can evalute the code to fit the model or can download the already calculated model
+
+```{r, eval = FALSE}
+coxphSGD(
+  formula = formulaSGD,
+  data = trainCox,
+  learn.rates = function(x){1/x},
+  max.iter = 490 # 98*5 / 5 full epoches
+) -> model
+```
+```{r}
+model <- archivist::aread('MarcinKosinski/MasterThesis/446ac4dcb7d65bf39057bb341b296f1a')
+```
+
+### Coefficients/insights
+
+Please find the top 20 absolute values of the coefficients from the model with the names of genes mutations they correspond to.
+
+```{r, echo = FALSE}
+names(tail(sort(abs(tail(model$coefficients,1)[[1]])),20)) -> top40
+tail(model$coefficients,1)[[1]][which(names(tail(model$coefficients,1)[[1]]) %in% top40)] -> real_top40
+knitr::kable(
+  data.frame(
+    beta = 
+      round(    sort(real_top40, decreasing = TRUE),3),
+    exp_beta =
+      round(exp(sort(real_top40, decreasing = TRUE)),3)
+    )
+  )
+
+```
+
+
+
+
+## Estimated survival curves
+
+One could see, from the previous table that the `BRAF` gene if mutated has the negative impact on the hazard ratio (hazard is decreased 0.385 times), which means that people with that mutation will live longer. In the same time the `EGFR` gene mutation has a positive impact on the hazard ratio (hazard is increased 2.657 times) so that people with that gene mutation has a high death rate and short survival times.
+
+Let's see how the results of the Cox Proportional Hazards model where coefficients where estimated with the Stochastic Gradient Descent order I method corresponds to the trends in data. One visual way of testing the output is creating Kaplan-Meier estimates of survival curves for groups that corresponds to those genes mutations.
+
+
+```{r, fig.width=5}
+library(survminer)
+fit_braf <- survfit(
+  Surv(times, patient.vital_status) ~ BRAF,
+  data = do.call(rbind, trainCox)
+)
+ggsurvplot(
+  fit_braf,
+  palette = c("#E7B800", "#2E9FDF"),
+  surv.median.line = "hv",  # add the median survival pointer.
+  legend.labs =             # change legend labels.
+    c("No mutation in BRAF", "Mutation in BRAF"),    
+  risk.table = TRUE,       # show risk table.
+   pval = TRUE,             # show p-value of log-rank test.
+   conf.int = TRUE,         # show confidence intervals for 
+                            # point estimates of survival curves.
+   xlim = c(0,2500),         # present narrower X axis, but not affect
+                            # survival estimates.
+   xlab = "Time in days",   # customize X axis label.
+   break.time.by = 500,     # break X axis in time intervals by 500.
+   ggtheme = theme_light(), # customize plot and risk table with a theme.
+ risk.table.y.text.col = T, # colour risk table text annotations.
+  risk.table.y.text = FALSE # show bars instead of names in text annotations
+                            # in legend of risk table
+)
+
+fit_egfr <- survfit(
+  Surv(times, patient.vital_status) ~ EGFR,
+  data = do.call(rbind, trainCox)
+)
+ggsurvplot(
+  fit_egfr,
+  palette = c("#E7B800", "#2E9FDF"),
+  surv.median.line = "hv",  # add the median survival pointer.
+  legend.labs =             # change legend labels.
+    c("No mutation in EGFR", "Mutation in EGFR"),
+  risk.table = TRUE,       # show risk table.
+   pval = TRUE,             # show p-value of log-rank test.
+   conf.int = TRUE,         # show confidence intervals for 
+                            # point estimates of survival curves.
+   xlim = c(0,2500),         # present narrower X axis, but not affect
+                            # survival estimates.
+   xlab = "Time in days",   # customize X axis label.
+   break.time.by = 500,     # break X axis in time intervals by 500.
+   ggtheme = theme_light(), # customize plot and risk table with a theme.
+ risk.table.y.text.col = T, # colour risk table text annotations.
+  risk.table.y.text = FALSE # show bars instead of names in text annotations
+                            # in legend of risk table
+)
+
+```
+
+
+
+The code used for the whole analysis can be found [in this gist](https://gist.github.com/MarcinKosinski/bf8924c2ac1da613af675e66c6a12545)
 
 # Mathematical formulas
+
+## Cox model specification
+
+## Cox model assumptions
+
+## Cox model (partial) log-likelihood function
+
+## The Newton-Raphson method of optimization
+
+## The Stochastic Gradient Descent (order I) method of optimization
+
+## Remarks for the analysis
+
+- How to choose the proper learning rates function?
+- No diagnostics
+- No assumptions check
 
 
 # useR 2017
 
-## Long abstract
-
-[Link]()
-
-## Short abstract
-
-[Link]()
-
-## Presentation
-
-[Link]()
+- [Long abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski.pdf)
+- [Short abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski_short.pdf)
+- [Presentation]()
