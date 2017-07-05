@@ -13,7 +13,7 @@ fastly evolving software development world (backward incompatibilities).
 coxphSGD 0.1.0
 ==============
 
-- 2015-12-25
+- 2015-12-25 (released only on GitHub)
 - Library was build with the experimental approach using `yihui/rlp` package
 for creating package structures and documentation only in the vignette document.
 - In the root directory of the package one could found the master thesis (in polish), 
