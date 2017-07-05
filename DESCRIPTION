@@ -1,9 +1,9 @@
 Package: coxphSGD
 Type: Package
-Title: Stochastic Gradient Descent log-likelihood Estimation in Cox Proportional
+Title: Stochastic Gradient Descent log-Likelihood Estimation in Cox Proportional
     Hazards Model
-Version: 0.2.0
-Date: 2017-07-03
+Version: 0.2.1
+Date: 2017-07-05
 Authors@R: c(
      person("Marcin",   "Kosinski", role = c("aut", "cre"), email = "m.p.kosinski@gmail.com"),
      person("Przemyslaw", "Biecek", role = c("ctb"),        email = "przemyslaw.biecek@gmail.com")
