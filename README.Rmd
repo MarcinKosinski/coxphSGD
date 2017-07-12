@@ -40,7 +40,7 @@ opts_chunk$set(
 - [useR 2017](#user-2017)
     * [Long abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski.pdf)
     * [Short abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski_short.pdf)
-    * [Presentation](#presentation)
+    * [Presentation](https://r-addict.com/useR2017/)
 
 # Overview
 
@@ -364,23 +364,69 @@ The code used for the whole analysis can be found [in this gist](https://gist.gi
 
 ## Cox model specification
 
+Cox model assumes that the hazard function is of the form (for $i$th obserwation / $X_i$)
+$$\lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta}$$,
+where $\lambda_0$ is not specified nonnegative base hazard function and $\beta$ is a vector of coefficients.
+
+Cox model, for variables constat over time, is called **the model of proportional hazards**, due to the fact that proportion of hazards for two observations $X_i$ and $X_j$ is constant over the time:  
+$$\dfrac{\lambda_i(t)}{\lambda_j(t)} = \dfrac{\lambda_0(t)e^{X_i\beta}}{\lambda_0(t)e^{X_j\beta}} = \dfrac{e^{X_i\beta}}{e^{X_j\beta}} = e^{(X_i-X_j)\beta}.$$
+
 ## Cox model assumptions
+
+- Coefficients of the model $\beta_k, k = 1,\cdots,p$ are constant over the time. <br>
+- Functional form of independent variable effect - the form of the model $\lambda_i(t) = \lambda_0(t)e^{X_i(t)'\beta}$. <br>
+- Observations are independent. <br>
+- The censoring of event is non-informative. <br>
+- The censoring is independent (of the mechanism of events). <br>
 
 ## Cox model (partial) log-likelihood function
 
+$$\dfrac{e^{X_i'\beta}}{\sum\limits_{l\in \mathscr{R}(t_i)}^{}e^{X_l'\beta}}$$
+
+The full log-likelihood
+
+$$L(\beta,\varphi) = {}_{p}L(\beta)\cdot L^{*}(\beta,\varphi)$$
+
+The partial log-likelihood
+
+$${}_{p}L(\beta) = \prod\limits_{i=1}^{K}\dfrac{e^{X_i'\beta}}{\sum\limits_{l=1}^{n}Y_l(t_i)e^{X_l'\beta}}$$
+
 ## The Newton-Raphson method of optimization
+
+Newtona-Raphsona - the regular method in `coxph` function <br>
+Minimization of the $Q(w)$ function <br>
+
+Start with a start solution, e.g. $w_{0} = 0$. Then for $k = 1, 2, \dots$ till convergence
+	
+- Calculate gradient in the point $w_{k-1}, \nabla_{Q}(w_{k-1})$ and the inverse of hesian $(D_{Q}^{2}(w_{k-1}))^{-1}$.
+- Do a step in the direction og the negative gradient with the distance of the step corresponding to the Hesian
+$$w_{k} = w_{k-1} - (D_{Q}^{2}(w_{k-1}))^{-1}\nabla_{Q}(w_{k-1})$$ 
 
 ## The Stochastic Gradient Descent (order I) method of optimization
 
+Stochastic Gradient Descent - the regular method in `coxphSGD` function <br>
+Minimization of the $Q(w)$ function <br>
+
+Start with a start solution, e.g. $w_{0} = 0$. Then for $k = 1, 2, \dots$ till convergence 
+
+- Sample $i \in \{1,\dots,n\}$ (one point or more).
+- Calculate the gradient $Q_{i}$ (for corrsponding observations) in the point $w_{k-1}, \nabla_{Q_{i}}(w_{k-1})$. 
+- Do a step in the direction og the negative gradient
+$$w_{k} = w_{k-1} - \alpha_{k}\nabla_{Q_{i}}(w_{k-1})$$
+
+where the step $\alpha_k$ is given by a user.
+
 ## Remarks for the analysis
 
-- How to choose the proper learning rates function?
-- No diagnostics
-- No assumptions check
-
+- Model can be used for **streaming** data or data stored in **blocks**
+- We did not checked the assumptions of the Cox PH model during the analysis.
+- We didn't provide any diagnostic of residuals after the analysis.
+- There is no clear way on how could one choose the distances of learning rates.
+- No solution (yet) for stratified models.
+- No solution (yet) for models where patients (could) have more than 1 event (of the same or various types).
 
 # useR 2017
 
 - [Long abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski.pdf)
 - [Short abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski_short.pdf)
-- [Presentation]()
+- [Presentation](https://r-addict.com/useR2017/)

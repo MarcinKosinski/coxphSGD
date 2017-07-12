@@ -20,7 +20,7 @@ coxphSGD
 -   [useR 2017](#user-2017)
     -   [Long abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski.pdf)
     -   [Short abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski_short.pdf)
-    -   [Presentation](#presentation)
+    -   [Presentation](https://r-addict.com/useR2017/)
 
 Overview
 ========
@@ -266,8 +266,8 @@ Please find the top 20 absolute values of the coefficients from the model with t
 | FLRT2    |  -0.883|      0.413|
 | BRAF     |  -0.954|      0.385|
 
-Estimated surival curves
-------------------------
+Estimated survival curves
+-------------------------
 
 One could see, from the previous table that the `BRAF` gene if mutated has the negative impact on the hazard ratio (hazard is decreased 0.385 times), which means that people with that mutation will live longer. In the same time the `EGFR` gene mutation has a positive impact on the hazard ratio (hazard is increased 2.657 times) so that people with that gene mutation has a high death rate and short survival times.
 
@@ -338,24 +338,73 @@ Mathematical formulas
 Cox model specification
 -----------------------
 
+Cox model assumes that the hazard function is of the form (for *i*th obserwation / *X*<sub>*i*</sub>)
+*λ*<sub>*i*</sub>(*t*)=*λ*<sub>0</sub>(*t*)*e*<sup>*X*<sub>*i*</sub>(*t*)′*β*</sup>
+, where *λ*<sub>0</sub> is not specified nonnegative base hazard function and *β* is a vector of coefficients.
+
+Cox model, for variables constat over time, is called **the model of proportional hazards**, due to the fact that proportion of hazards for two observations *X*<sub>*i*</sub> and *X*<sub>*j*</sub> is constant over the time:
+$$\\dfrac{\\lambda\_i(t)}{\\lambda\_j(t)} = \\dfrac{\\lambda\_0(t)e^{X\_i\\beta}}{\\lambda\_0(t)e^{X\_j\\beta}} = \\dfrac{e^{X\_i\\beta}}{e^{X\_j\\beta}} = e^{(X\_i-X\_j)\\beta}.$$
+
 Cox model assumptions
 ---------------------
+
+-   Coefficients of the model *β*<sub>*k*</sub>, *k* = 1, ⋯, *p* are constant over the time. <br>
+-   Functional form of independent variable effect - the form of the model *λ*<sub>*i*</sub>(*t*)=*λ*<sub>0</sub>(*t*)*e*<sup>*X*<sub>*i*</sub>(*t*)′*β*</sup>. <br>
+-   Observations are independent. <br>
+-   The censoring of event is non-informative. <br>
+-   The censoring is independent (of the mechanism of events). <br>
 
 Cox model (partial) log-likelihood function
 -------------------------------------------
 
+$$\\dfrac{e^{X\_i'\\beta}}{\\sum\\limits\_{l\\in \\mathscr{R}(t\_i)}^{}e^{X\_l'\\beta}}$$
+
+The full log-likelihood
+
+*L*(*β*, *φ*)=<sub>*p*</sub>*L*(*β*)⋅*L*<sup>\*</sup>(*β*, *φ*)
+
+The partial log-likelihood
+
+$${}\_{p}L(\\beta) = \\prod\\limits\_{i=1}^{K}\\dfrac{e^{X\_i'\\beta}}{\\sum\\limits\_{l=1}^{n}Y\_l(t\_i)e^{X\_l'\\beta}}$$
+
 The Newton-Raphson method of optimization
 -----------------------------------------
+
+Newtona-Raphsona - the regular method in `coxph` function <br> Minimization of the *Q*(*w*) function <br>
+
+Start with a start solution, e.g. *w*<sub>0</sub> = 0. Then for *k* = 1, 2, … till convergence
+
+-   Calculate gradient in the point *w*<sub>*k* − 1</sub>, ∇<sub>*Q*</sub>(*w*<sub>*k* − 1</sub>) and the inverse of hesian (*D*<sub>*Q*</sub><sup>2</sup>(*w*<sub>*k* − 1</sub>))<sup>−1</sup>.
+-   Do a step in the direction og the negative gradient with the distance of the step corresponding to the Hesian
+    *w*<sub>*k*</sub> = *w*<sub>*k* − 1</sub> − (*D*<sub>*Q*</sub><sup>2</sup>(*w*<sub>*k* − 1</sub>))<sup>−1</sup>∇<sub>*Q*</sub>(*w*<sub>*k* − 1</sub>)
 
 The Stochastic Gradient Descent (order I) method of optimization
 ----------------------------------------------------------------
 
+Stochastic Gradient Descent - the regular method in `coxphSGD` function <br> Minimization of the *Q*(*w*) function <br>
+
+Start with a start solution, e.g. *w*<sub>0</sub> = 0. Then for *k* = 1, 2, … till convergence
+
+-   Sample *i* ∈ {1, …, *n*} (one point or more).
+-   Calculate the gradient *Q*<sub>*i*</sub> (for corrsponding observations) in the point *w*<sub>*k* − 1</sub>, ∇<sub>*Q*<sub>*i*</sub></sub>(*w*<sub>*k* − 1</sub>).
+-   Do a step in the direction og the negative gradient
+    *w*<sub>*k*</sub> = *w*<sub>*k* − 1</sub> − *α*<sub>*k*</sub>∇<sub>*Q*<sub>*i*</sub></sub>(*w*<sub>*k* − 1</sub>)
+
+where the step *α*<sub>*k*</sub> is given by a user.
+
 Remarks for the analysis
 ------------------------
+
+-   Model can be used for **streaming** data or data stored in **blocks**
+-   We did not checked the assumptions of the Cox PH model during the analysis.
+-   We didn't provide any diagnostic of residuals after the analysis.
+-   There is no clear way on how could one choose the distances of learning rates.
+-   No solution (yet) for stratified models.
+-   No solution (yet) for models where patients (could) have more than 1 event (of the same or various types).
 
 useR 2017
 =========
 
 -   [Long abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski.pdf)
 -   [Short abstract](https://github.com/MarcinKosinski/useR2017/blob/master/abstract_MarcinKosinski_short.pdf)
--   [Presentation]()
+-   [Presentation](https://r-addict.com/useR2017/)
